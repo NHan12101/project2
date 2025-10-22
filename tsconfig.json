@@ -22,5 +22,5 @@
         "resources/js/**/*.ts", 
         "resources/js/**/*.d.ts", 
         "resources/js/**/*.tsx"
-    ]
+, "resources/js/pages/Register.jsx", "resources/js/app.jsx"    ]
 }
