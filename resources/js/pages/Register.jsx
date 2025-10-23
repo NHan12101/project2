@@ -20,22 +20,11 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 🔒 Kiểm tra mật khẩu khớp nhau
     if (formData.password !== formData.password_confirmation) {
       setLocalError("Mật khẩu và xác nhận mật khẩu không khớp!");
       return;
     }
 
-    // 🔒 Validate mật khẩu cơ bản ở frontend
-    const passwordRegex = /^(?=.*[!@#$%^&*_\-])[^\s]{8,}$/;
-    if (!passwordRegex.test(formData.password)) {
-      setLocalError(
-        "Mật khẩu phải có ít nhất 8 ký tự, gồm 1 ký tự đặc biệt và không chứa khoảng trắng!"
-      );
-      return;
-    }
-
-    // 🔒 Gửi dữ liệu lên server
     router.post("/register", formData, {
       onError: (err) => setErrors(err),
     });
@@ -48,48 +37,55 @@ export default function Register() {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
-          <br />
           <input
             type="email"
             name="email"
-            placeholder="Nhập email của bạn"
             value={formData.email}
             onChange={handleChange}
             required
           />
-          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
         </div>
 
         <div>
           <label>Mật khẩu:</label>
-          <br />
           <input
             type="password"
             name="password"
-            placeholder="Nhập mật khẩu"
             value={formData.password}
             onChange={handleChange}
             required
           />
-          {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
         </div>
 
         <div>
           <label>Xác nhận mật khẩu:</label>
-          <br />
           <input
             type="password"
             name="password_confirmation"
-            placeholder="Nhập lại mật khẩu"
             value={formData.password_confirmation}
             onChange={handleChange}
             required
           />
-          {localError && <p style={{ color: "red" }}>{localError}</p>}
         </div>
 
+        {localError && <p style={{ color: "red" }}>{localError}</p>}
         <button type="submit">Đăng ký</button>
       </form>
+
+      {/* 🔥 Đăng ký bằng Google */}
+      <button
+        onClick={() => window.location.href = '/auth/google'}
+        style={{
+          marginTop: "1rem",
+          backgroundColor: "#db4437",
+          color: "white",
+          padding: "8px 16px",
+          border: "none",
+          cursor: "pointer"
+        }}
+      >
+        Đăng ký bằng Google
+      </button>
     </div>
   );
 }

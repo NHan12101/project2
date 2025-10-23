@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
@@ -13,19 +14,16 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'email' => 'required|email|unique:users',
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/^(?=.*[!@#$%^&*_\-])[^\s]+$/',
-                'confirmed',
-            ],
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $user = User::create([
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => bcrypt($validated['password']),
         ]);
+
+        // 🔥 Gửi email xác minh
+        event(new Registered($user));
 
         Auth::login($user);
 
@@ -36,7 +34,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -45,7 +43,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không đúng.',
+            'email' => 'Sai thông tin đăng nhập!',
         ]);
     }
 
@@ -55,6 +53,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/home');
+        return redirect('/force-logout');
     }
 }

@@ -33,3 +33,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ===== GOOGLE LOGIN =====
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+
+// Trang hoàn tất đăng ký sau khi đăng nhập bằng Google
+Route::get('/complete-register', fn() => Inertia::render('CompleteRegister'))->name('complete.register');
+Route::post('/complete-register', [GoogleController::class, 'completeRegister']);
+
+// ✅ Email xác minh
+// Auth::routes(['verify' => true]);
+
+// Trang yêu cầu xác minh email
+Route::get('/force-logout', function () {
+    return Inertia::render('ForceLogout');
+});
