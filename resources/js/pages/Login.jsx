@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 
+
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
 

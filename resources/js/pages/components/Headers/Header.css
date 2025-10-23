@@ -1,0 +1,88 @@
+/* ============= common ============= */
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.main-content {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+
+/* ============= header ============ */
+.header {
+    margin-top: 16px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.header__search {
+    height: 50px;
+    width: 800px;
+    border-radius: 999px;
+    border: 1px solid white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2rem;
+    padding: 32px;
+    cursor: pointer;
+}
+
+.header__search-btn{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header__search--icon{
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    object-fit: cover;
+}
+
+.header__search--title {
+    color: white;
+}
+
+.search {
+    background: none;
+    border: none;
+    font-size: 2rem;
+
+    &:focus {
+        outline: none;
+        color: #fff;
+    }
+}
+
+
+.btn {
+    height: 50px;
+    width: 120px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-size: 1.2rem;
+    margin-right: 8px;
+    background: none;
+    transition: 0.25s;
+    color: #fff;
+
+    &:hover {
+        border: 2px solid #fff;
+        cursor: pointer;
+    }
+}
+
+.header__banner {
+    margin-top: 40px;
+}
