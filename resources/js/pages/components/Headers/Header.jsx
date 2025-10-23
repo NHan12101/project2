@@ -57,7 +57,7 @@ export default function Header({ auth }) {
 
             <div className="header__banner">
                 <div className="main-content">
-                    <img src={banner} alt="" />
+                    <img src={banner} alt="banner" />
                 </div>
             </div>
         </header>

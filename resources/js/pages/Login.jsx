@@ -14,6 +14,7 @@ export default function Login() {
             <h1>Đăng nhập</h1>
             <form onSubmit={handleSubmit}>
                 <input
+                className='card__input'
                     type="email"
                     placeholder="Email"
                     value={form.email}
@@ -22,6 +23,7 @@ export default function Login() {
                     }
                 />
                 <input
+                className='card__input'
                     type="password"
                     placeholder="Mật khẩu"
                     value={form.password}
@@ -29,7 +31,7 @@ export default function Login() {
                         setForm({ ...form, password: e.target.value })
                     }
                 />
-                <button type="submit">Đăng nhập</button>
+                <button type="submit" className='card__btn'>Đăng nhập</button>
             </form>
 
             <p style={{ margin: '15px 0', color: '#666' }}>hoặc</p>
@@ -43,7 +45,7 @@ export default function Login() {
             </a>
 
             <p style={{ marginTop: '20px' }}>
-                Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
+                Chưa có tài khoản? <a href="/register" className='none-account'>Đăng ký ngay</a>
             </p>
         </div>
     );
