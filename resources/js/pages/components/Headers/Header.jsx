@@ -14,7 +14,11 @@ export default function Header({ auth }) {
                 <nav className="nav">
                     <img src={logo} alt="Logo" />
                     <div className="header__search">
-                        <input type="text" placeholder="Thanh tìm kiếm" className='search'/>
+                        <input
+                            type="text"
+                            placeholder="Thanh tìm kiếm"
+                            className="search"
+                        />
                         <button className="header__search-btn">
                             {' '}
                             <img
@@ -25,22 +29,28 @@ export default function Header({ auth }) {
                         </button>
                     </div>
 
-                    {auth ? (
-                        <div className="header__btn">
-                            <button className="btn header__btn-login">
-                                Đăng nhập
-                            </button>
-                            <button className="btn header__btn-register">
-                                Đăng kí
-                            </button>
-                        </div>
-                    ) : (
+                    {auth && auth.user ? (
                         <button
                             className="btn header__btn-register"
                             onClick={handleLogout}
                         >
                             Đăng xuất
                         </button>
+                    ) : (
+                        <div className="header__btn">
+                            <button
+                                className="btn header__btn-login"
+                                onClick={() => router.visit('/login')}
+                            >
+                                Đăng nhập
+                            </button>
+                            <button
+                                className="btn header__btn-register"
+                                onClick={() => router.visit('/register')}
+                            >
+                                Đăng ký
+                            </button>
+                        </div>
                     )}
                 </nav>
             </div>

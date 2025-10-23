@@ -2,58 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use Inertia\Inertia;
 
 class AuthController extends Controller
 {
-    // Đăng ký
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => bcrypt($validated['password']),
         ]);
+
+        // 🔥 Gửi email xác minh
+        event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect('/home');
     }
 
-    // Đăng nhập
     public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/home');
+            return redirect('/home');
         }
 
         return back()->withErrors([
-            'email' => 'Thông tin đăng nhập không chính xác.',
+            'email' => 'Sai thông tin đăng nhập!',
         ]);
     }
 
-    // Đăng xuất
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+
+        return redirect('/force-logout');
     }
 }

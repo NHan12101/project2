@@ -1,77 +1,54 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\User;
-use Laravel\Socialite\Facades\Socialite;
+use Inertia\Inertia;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GoogleController;
 
-// ===== TRANG GIAO DIỆN =====
-Route::get('/', fn() => Inertia::render('Login'))->name('login');
-Route::get('/register', fn() => Inertia::render('Register'))->name('register');
-Route::get('/home', fn() => Inertia::render('Home', [
-    'auth' => ['user' => Auth::user()],
-]))->middleware('auth')->name('home');
-
-// ===== ĐĂNG NHẬP / ĐĂNG KÝ THƯỜNG =====
-Route::post('/register', function (Request $request) {
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|string|min:6',
-    ]);
-
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
-
-    Auth::login($user);
-
+// ===== TRANG MẶC ĐỊNH =====
+Route::get('/', function () {
     return redirect('/home');
 });
 
-Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
-
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect('/home');
-    }
-
-    return back()->withErrors([
-        'email' => 'Thông tin đăng nhập không chính xác.',
+// ===== TRANG HOME =====
+Route::get('/home', function () {
+    return Inertia::render('Home', [
+        'auth' => [
+            'user' => Auth::user(), // null nếu chưa đăng nhập
+        ],
     ]);
 });
 
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/');
-});
+// ===== PROPERTY DETAIL =====
+Route::get('/property-detail', fn() =>
+    Inertia::render('PropertyDetail', [
+        'auth' => ['user' => Auth::user()],
+    ])
+)->middleware('auth')->name('property-detail');
+
+// ===== TRANG ĐĂNG KÝ / ĐĂNG NHẬP =====
+// ⚠️ Quan trọng: thêm GET routes để hiển thị giao diện đăng nhập/đăng ký
+Route::get('/login', fn() => Inertia::render('Login'))->name('login');
+Route::get('/register', fn() => Inertia::render('Register'))->name('register');
+
+// ===== XỬ LÝ FORM ĐĂNG KÝ / ĐĂNG NHẬP / ĐĂNG XUẤT =====
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ===== GOOGLE LOGIN =====
-Route::get('/auth/google', fn() => Socialite::driver('google')->redirect());
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
-Route::get('/auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
+// Trang hoàn tất đăng ký sau khi đăng nhập bằng Google
+Route::get('/complete-register', fn() => Inertia::render('CompleteRegister'))->name('complete.register');
+Route::post('/complete-register', [GoogleController::class, 'completeRegister']);
 
-    $user = User::updateOrCreate(
-        ['email' => $googleUser->getEmail()],
-        [
-            'name' => $googleUser->getName(),
-            'avatar_image_url' => $googleUser->getAvatar(),
-            'password' => bcrypt(str()->random(16)),
-        ]
-    );
+// ✅ Email xác minh
+// Auth::routes(['verify' => true]);
 
-    Auth::login($user);
-
-    return redirect('/home');
+// Trang yêu cầu xác minh email
+Route::get('/force-logout', function () {
+    return Inertia::render('ForceLogout');
 });

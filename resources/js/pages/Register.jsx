@@ -2,61 +2,90 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 
 export default function Register() {
-  const [form, setForm] = useState({
-    name: "",
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
+    password_confirmation: "",
   });
+
+  const [errors, setErrors] = useState({});
+  const [localError, setLocalError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setLocalError("");
+    setErrors({});
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.post("/register", form);
+
+    if (formData.password !== formData.password_confirmation) {
+      setLocalError("Mật khẩu và xác nhận mật khẩu không khớp!");
+      return;
+    }
+
+    router.post("/register", formData, {
+      onError: (err) => setErrors(err),
+    });
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-lg w-96"
-      >
-        <h1 className="text-2xl font-bold mb-4 text-center">Đăng ký tài khoản</h1>
+    <div>
+      <h2>Đăng ký tài khoản</h2>
 
-        <input
-          type="text"
-          placeholder="Họ và tên"
-          className="w-full mb-3 p-2 border rounded"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-3 p-2 border rounded"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          className="w-full mb-4 p-2 border rounded"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-        >
-          Đăng ký
-        </button>
+        <div>
+          <label>Mật khẩu:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <p className="mt-4 text-center text-sm">
-          Đã có tài khoản?{" "}
-          <a href="/" className="text-blue-500 hover:underline">
-            Đăng nhập
-          </a>
-        </p>
+        <div>
+          <label>Xác nhận mật khẩu:</label>
+          <input
+            type="password"
+            name="password_confirmation"
+            value={formData.password_confirmation}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {localError && <p style={{ color: "red" }}>{localError}</p>}
+        <button type="submit">Đăng ký</button>
       </form>
+
+      {/* 🔥 Đăng ký bằng Google */}
+      <button
+        onClick={() => window.location.href = '/auth/google'}
+        style={{
+          marginTop: "1rem",
+          backgroundColor: "#db4437",
+          color: "white",
+          padding: "8px 16px",
+          border: "none",
+          cursor: "pointer"
+        }}
+      >
+        Đăng ký bằng Google
+      </button>
     </div>
   );
 }
