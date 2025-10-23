@@ -1,4 +1,4 @@
-.main-content {
+.main-contain {
     max-width: 1440px;
     margin: 0 auto;
 }
@@ -13,6 +13,7 @@
 }
 
 .property-card {
+    cursor: pointer;
     width: 100%;
     max-width: 430px;
     height: 510px;
@@ -25,8 +26,8 @@
 }
 
 .property-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
 }
 
 .vip-badge {

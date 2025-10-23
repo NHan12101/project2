@@ -77,7 +77,7 @@ export default function Card() {
     ];
 
     return (
-        <div className="main-content">
+        <div className="main-contain">
             <div className="property-grid">
                 {properties.map((item) => (
                     <div key={item.id} className="property-card">
