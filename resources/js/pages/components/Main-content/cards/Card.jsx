@@ -1,10 +1,10 @@
+import home1 from '../../../../../../public/images/home1.png';
+import home2 from '../../../../../../public/images/home2.png';
+import home3 from '../../../../../../public/images/home3.png';
+import home4 from '../../../../../../public/images/home4.png';
+import home5 from '../../../../../../public/images/home5.png';
+import home6 from '../../../../../../public/images/home6.png';
 import './Card.css';
-import home1 from '../../../../../../public/images/home1.png'
-import home2 from '../../../../../../public/images/home2.png'
-import home3 from '../../../../../../public/images/home3.png'
-import home4 from '../../../../../../public/images/home4.png'
-import home5 from '../../../../../../public/images/home5.png'
-import home6 from '../../../../../../public/images/home6.png'
 
 export default function Card() {
     const properties = [
@@ -78,28 +78,37 @@ export default function Card() {
 
     return (
         <div className="main-contain">
-            <div className="property-grid">
-                {properties.map((item) => (
-                    <div key={item.id} className="property-card">
-                        {item.isVip && <span className="vip-badge">VIP</span>}
-                        <img
-                            src={item.image}
-                            alt={item.title}
-                            className="property-img"
-                        />
-                        <div className="property-info">
-                            <h3 className="property-title">{item.title}</h3>
-                            <p className="property-meta">
-                                Phòng ngủ: <b>{item.bedrooms}</b> &nbsp;|&nbsp;
-                                Diện tích: <b>{item.area}m²</b>
-                            </p>
-                            <p className="property-price">{item.price}</p>
-                            <p className="property-location">{item.location}</p>
-                            <p className="property-posted">{item.postedAt}</p>
+            <a href="../../../property-detail">
+                <div className="property-grid">
+                    {properties.map((item) => (
+                        <div key={item.id} className="property-card">
+                            {item.isVip && (
+                                <span className="vip-badge">VIP</span>
+                            )}
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                className="property-img"
+                            />
+                            <div className="property-info">
+                                <h3 className="property-title">{item.title}</h3>
+                                <p className="property-meta">
+                                    Phòng ngủ: <b>{item.bedrooms}</b>{' '}
+                                    &nbsp;|&nbsp; Diện tích:{' '}
+                                    <b>{item.area}m²</b>
+                                </p>
+                                <p className="property-price">{item.price}</p>
+                                <p className="property-location">
+                                    {item.location}
+                                </p>
+                                <p className="property-posted">
+                                    {item.postedAt}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </a>
         </div>
     );
 }

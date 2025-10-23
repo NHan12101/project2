@@ -3,6 +3,7 @@ import momo from '../../../../../public/images/momo.svg';
 import './MainContent.css';
 import Card from './cards/Card';
 import HomeListing from './home-listing/HomeListing';
+import BlogList from './blogs/BlogList';
 
 function MainContent() {
     const items = [
@@ -94,6 +95,8 @@ function MainContent() {
             </section>
 
             <HomeListing/>
+
+            <BlogList/>
         </>
     );
 }
