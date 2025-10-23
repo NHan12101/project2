@@ -1,12 +1,13 @@
 import Header from './components/Headers/Header.jsx';
 import MainContent from './components/Main-content/MainContent.jsx';
 
-
-export default function Home() {
+// Nhận props từ Inertia (Laravel gửi qua)
+export default function Home({ auth }) {
     return (
         <>
-            <Header />
-            <MainContent/>
+            {/* Truyền auth xuống Header */}
+            <Header auth={auth} />
+            <MainContent />
         </>
     );
 }
