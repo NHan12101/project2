@@ -1,5 +1,6 @@
 import { Building2, Home, House, LayoutGrid } from 'lucide-react';
 import './MainContent.css';
+import Card from './cards/Card';
 
 function MainContent() {
     const items = [
@@ -10,21 +11,22 @@ function MainContent() {
     ];
 
     return (
-        <section className="category">
-            <div className="main-content">
-                <h2 className="category__title--head">Danh mục nổi bật</h2>
-                <div className="category-list">
-                    {items.map((item, i) => (
-                        <div key={i} className="category-item">
-                            {item.icon}
-                            <p className="category__title">{item.name}</p>
-                        </div>
-                    ))}
+        <>
+            <section className="category">
+                <div className="main-content">
+                    <h2 className="category__title--head">Danh mục nổi bật</h2>
+                    <div className="category-list">
+                        {items.map((item, i) => (
+                            <div key={i} className="category-item">
+                                {item.icon}
+                                <p className="category__title">{item.name}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        
+            </section>
+            <Card />
+        </>
     );
 }
 

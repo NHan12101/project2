@@ -1,0 +1,83 @@
+.main-content {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.property-grid {
+    margin-top: 120px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding: 20px;
+    justify-items: center;
+}
+
+.property-card {
+    width: 100%;
+    max-width: 430px;
+    height: 510px;
+    background: #000000;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.property-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.vip-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: red;
+    color: white;
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.property-img {
+    width: 100%;
+    height: 245px;
+    object-fit: cover;
+}
+
+.property-info {
+    padding: 10px 15px;
+}
+
+.property-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 4px 0 12px;
+    color: #fff;
+}
+
+.property-meta {
+    font-size: 1.25rem;
+    color: #a9a9a9;
+}
+
+.property-price {
+    margin-top: 22px;
+    font-size: 1.4rem;
+    color: #d60000;
+    font-weight: bold;
+}
+
+.property-location {
+    font-size: 1.25rem;
+    color: #8e8e8e;
+    margin-top: 18px;
+}
+
+.property-posted {
+    font-size: 1.25rem;
+    color: rgb(105, 105, 105);
+    margin-top: 16px;
+}
