@@ -10,13 +10,11 @@ import {
 import './Header.css';
 
 export default function Header() {
-
     const [isLogin, setIsLogin] = useState(false);
     const banners = [banner1, banner2, banner3];
     const [current, setCurrent] = useState(0);
     const { props } = usePage();
     const auth = props.auth;
-
 
     useEffect(() => {
         // Nếu có user → true, không có user → false
@@ -31,7 +29,6 @@ export default function Header() {
     }, []);
 
     const handleLogout = () => router.post('/logout');
-
 
     return (
         <header className="header">
@@ -55,7 +52,7 @@ export default function Header() {
 
                     {isLogin ? (
                         <>
-                            <h4>Xin chao, {auth.user.name}</h4>
+                            <h4>Xin chào, {auth.user.name ?? ' bạn'}</h4>
                             <button
                                 className="btn header__btn-register"
                                 onClick={handleLogout}
