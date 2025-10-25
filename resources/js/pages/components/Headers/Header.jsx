@@ -1,4 +1,4 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import search_icon from '../../../../../public/images/Search-icon.svg';
 import logo from '../../../../../public/images/StayHub.svg';
@@ -9,9 +9,19 @@ import {
 } from '../../../../../public/images/baner.png';
 import './Header.css';
 
-export default function Header({ auth }) {
+export default function Header() {
+
+    const [isLogin, setIsLogin] = useState(false);
     const banners = [banner1, banner2, banner3];
     const [current, setCurrent] = useState(0);
+    const { props } = usePage();
+    const auth = props.auth;
+
+
+    useEffect(() => {
+        // Nếu có user → true, không có user → false
+        setIsLogin(!!auth?.user);
+    }, [auth]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -21,6 +31,7 @@ export default function Header({ auth }) {
     }, []);
 
     const handleLogout = () => router.post('/logout');
+
 
     return (
         <header className="header">
@@ -42,7 +53,7 @@ export default function Header({ auth }) {
                         </button>
                     </div>
 
-                    {auth && auth.user ? (
+                    {isLogin ? (
                         <>
                             <h4>Xin chao, {auth.user.name}</h4>
                             <button

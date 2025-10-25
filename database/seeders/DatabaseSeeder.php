@@ -11,13 +11,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
-            HomeDetailSeeder::class,
-            PropertyImageSeeder::class,
-            SubscriptionSeeder::class,
             PaymentSeeder::class,
             ConversationSeeder::class,
-            MessageSeeder::class,
             PersonalAccessTokenSeeder::class,
+            PropertySeeder::class
         ]);
     }
 }
