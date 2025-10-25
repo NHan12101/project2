@@ -93,8 +93,8 @@ export default function Card() {
                             <div className="property-info">
                                 <h3 className="property-title">{item.title}</h3>
                                 <p className="property-meta">
-                                    Phòng ngủ: <b>{item.bedrooms}</b>{' '}
-                                    &nbsp;|&nbsp; Diện tích:{' '}
+                                    Phòng ngủ: <b>{item.bedrooms}</b>
+                                    &nbsp;|&nbsp; Diện tích:
                                     <b>{item.area}m²</b>
                                 </p>
                                 <p className="property-price">{item.price}</p>

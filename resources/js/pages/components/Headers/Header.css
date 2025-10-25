@@ -1,5 +1,5 @@
 /* ============= common ============= */
-*{
+* {
     box-sizing: border-box;
     margin: 0;
 }
@@ -39,7 +39,7 @@
     }
 }
 
-.header__search-btn{
+.header__search-btn {
     height: 50px;
     width: 50px;
     border-radius: 50%;
@@ -48,7 +48,7 @@
     align-items: center;
 }
 
-.header__search--icon{
+.header__search--icon {
     cursor: pointer;
     height: 30px;
     width: 30px;
@@ -89,5 +89,43 @@
 }
 
 .header__banner {
-    margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 550px;
+  margin-top: 46px; 
+}
+
+.banner__wrapper {
+  display: flex;
+  transition: transform 0.8s ease-in-out;
+  width: 100%;
+}
+
+.banner__image {
+  width: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.banner__dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #333;
 }
