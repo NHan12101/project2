@@ -1,15 +1,6 @@
-.main-contain {
-    max-width: 1440px;
-    margin: 0 auto;
-}
-
-
-
 .category__title--head {
     margin-top: 52px;
-    color: #fff;
     font-size: 2.8rem;
-    font-weight: bold;
 }
 
 .category-list {
@@ -40,7 +31,7 @@
 
 /* ============ partner =========== */
 .partner {
-    margin-top: 240px;
+    margin-top: 160px;
     color: #fff
 }
 
@@ -48,55 +39,57 @@
     display: flex;
     justify-content: space-between;
     gap: 80px;
+    padding: 20px 0;
 }
 
 .partner__content--left {
-    max-width: 720px;
+    max-width: 80%;
 }
 
-.partner___content--title{
-    font-size: 2.8rem;
+.partner___content--title {
+    width: 70%;
+    line-height: 1.34;
 }
 
 .partner__content--desc {
     margin-top: 34px;
-    font-size: 1.4rem;
+    width: 60%;
+    font-size: 2rem;
     color: #888;
+    line-height: normal;
 }
 
 .partner__content--icon {
-    margin-top: 24px;
+    margin-top: 32px;
+    object-fit: cover;
+    height: 140px;
 }
 
 .partner__content--right {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 140px;
-}
-
-.partner__content--right div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.partner__content--right div p {
-    margin-top: 18px;
-    text-align: center;
-    font-size: 1.3rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 120px;
 }
 
 .partner-span {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 120px;
-    width: 200px;
-    background: #b2b2b2;
+    flex-direction: column;
+    user-select: none;
 }
 
 .partner__content--span {
-    font-size: 3rem;
+    font-family: Poppins, sans-serif;
+    font-size: 6.8rem;
     color: #eccc13;
-    font-weight: bold;
+    font-weight: 700;
+}
+
+.partner__content--right div p {
+    margin-top: 18px;
+    font-family: Poppins, sans-serif;
+    text-align: center;
+    font-size: 1.8rem;
+    color: #eccb13bb;
+    line-height: normal;
 }

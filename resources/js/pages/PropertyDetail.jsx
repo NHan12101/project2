@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './PropertyDetail.css';
+// import './PropertyDetail.css';
 import { 
   MapPin, Home, Maximize, Bed, Bath, Car, Calendar, 
   Phone, Mail, Share2, Heart, ChevronLeft, ChevronRight,

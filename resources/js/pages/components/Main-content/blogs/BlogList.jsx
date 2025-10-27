@@ -35,13 +35,13 @@ const BlogList = () => {
     return (
         <div className="news-section">
             <div className="main-contain">
-                <h2>TIN TỨC - SỰ KIỆN - HOẠT ĐỘNG</h2>
+                <h1 className='header_title'>TIN TỨC - SỰ KIỆN - HOẠT ĐỘNG</h1>
                 <div className="news-grid">
                     <div className="news-main">
                         <img src={newsData[0].image} alt={newsData[0].title} />
                         <div className="news-main-content">
                             <p>{newsData[0].date}</p>
-                            <h3>{newsData[0].title}</h3>
+                            <h2>{newsData[0].title}</h2>
                             <p>{newsData[0].desc}</p>
                         </div>
                     </div>
@@ -51,8 +51,8 @@ const BlogList = () => {
                             <div className="news-item" key={index}>
                                 <img src={item.image} alt={item.title} />
                                 <div>
-                                    <p>{item.date}</p>
-                                    <h4>{item.title}</h4>
+                                    <p className='news-item__date'>{item.date}</p>
+                                    <h1>{item.title}</h1>
                                     <p className='news-item__desc'>{item.desc}</p>
                                     <a href="#">ĐỌC BÀI VIẾT →</a>
                                 </div>

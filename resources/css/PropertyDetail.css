@@ -816,16 +816,6 @@ textarea {
   }
 }
 
-/* Hover Effects for Property Cards */
-.property-card {
-  transition: all 0.3s ease;
-}
-
-.property-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
-}
-
 /* Icon Styling */
 .icon-container {
   display: inline-flex;

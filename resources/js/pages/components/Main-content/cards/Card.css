@@ -1,8 +1,3 @@
-.main-contain {
-    max-width: 1440px;
-    margin: 0 auto;
-}
-
 .property-grid {
     margin-top: 120px;
     display: grid;
@@ -13,31 +8,32 @@
 }
 
 .property-card {
-    cursor: pointer;
     width: 100%;
     max-width: 430px;
-    height: 510px;
+    height: 505px;
     background: #000000;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(208, 208, 208, 0.1);
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     user-select: none;
+    cursor: pointer;
 }
 
 .property-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+    transform: scale(1.0036);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
 }
 
 .vip-badge {
     position: absolute;
     top: 8px;
     left: 8px;
+    z-index: 10;
     background-color: red;
     color: white;
-    font-size: 0.8rem;
+    font-size: 1.5rem;
     padding: 3px 6px;
     border-radius: 4px;
     font-weight: bold;
@@ -54,32 +50,166 @@
 }
 
 .property-title {
-    font-size: 1.5rem;
+    height: 50px;
+    font-size: 2.2rem;
     font-weight: 600;
     margin: 4px 0 12px;
-    color: #fff;
+    color: #dfdfdf;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
 }
 
 .property-meta {
-    font-size: 1.25rem;
+    font-size: 1.6rem;
     color: #a9a9a9;
 }
 
 .property-price {
     margin-top: 22px;
-    font-size: 1.4rem;
+    font-size: 2.1rem;
     color: #d60000;
     font-weight: bold;
 }
 
 .property-location {
-    font-size: 1.25rem;
-    color: #8e8e8e;
+    font-size: 1.6rem;
+    color: #818080;
     margin-top: 18px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+}
+
+.property-location span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 4px;
+}
+
+.property-heart {
+    padding: 2px;
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .property-posted {
-    font-size: 1.25rem;
-    color: rgb(105, 105, 105);
-    margin-top: 16px;
+    font-size: 1.5rem;
+    color: #616060;
+}
+
+.heart-button {
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.heart-button:hover {
+    transform: scale(1.1);
+}
+
+.show-more-container {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.show-more-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 26px; 
+    font-size: 1.7rem;
+    font-weight: 600;
+    border: 2px solid #e3e3e3;
+    border-radius: 12px;
+    background-color: transparent;
+    color: #fcfcfc;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.show-more-btn:hover {
+    background-color: #f8f8f8;
+    color: #000000
+}
+
+.expand-icon {
+    font-size: 1.7rem;
+    transition: transform 0.3s;
+}
+
+.show-more-btn:hover .expand-icon {
+    transform: translateY(2px);
+}
+
+
+
+
+
+
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(135, 133, 133, 0.775);
+    border: none;
+    outline: none;
+    font-size: 2.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #ffffffd4;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.arrow-btn:hover {
+    background: rgb(198, 195, 195);
+}
+
+.arrow-btn.left {
+    left: 9px;
+}
+
+.arrow-btn.right {
+    right: 9px;
+}
+
+
+.dot-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+}
+
+.card__dot {
+    width: 7px;
+    height: 7px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.card__dot.active {
+    background-color: white;
 }

@@ -11,7 +11,7 @@ export default function Login() {
 
     return (
         <div className="card">
-            <h1>Đăng nhập</h1>
+            <h1 className='card__title--login'>Đăng nhập</h1>
             <form onSubmit={handleSubmit}>
                 <input
                 className='card__input'

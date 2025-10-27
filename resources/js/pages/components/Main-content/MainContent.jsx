@@ -1,9 +1,9 @@
 import { Building2, Home, House, LayoutGrid } from 'lucide-react';
 import momo from '../../../../../public/images/momo.svg';
 import './MainContent.css';
-import Card from './cards/Card';
-import HomeListing from './home-listing/HomeListing';
-import BlogList from './blogs/BlogList';
+import BlogList from './blogs/BlogList.jsx';
+import Card from './cards/Card.jsx';
+import HomeListing from './home-listing/HomeListing.jsx';
 
 function MainContent() {
     const items = [
@@ -17,7 +17,9 @@ function MainContent() {
         <>
             <section className="category">
                 <div className="main-contain">
-                    <h2 className="category__title--head">Danh mục nổi bật</h2>
+                    <h1 className="header_title category__title--head">
+                        Danh mục nổi bật
+                    </h1>
                     <div className="category-list">
                         {items.map((item, i) => (
                             <div key={i} className="category-item">
@@ -35,9 +37,9 @@ function MainContent() {
                 <div className="main-contain">
                     <div className="partner__content">
                         <div className="partner__content--left">
-                            <h2 className="partner___content--title">
+                            <h1 className="header_title partner___content--title">
                                 ĐỐI TÁC & KHÁCH HÀNG BẤT ĐỘNG SẢN
-                            </h2>
+                            </h1>
                             <p className="partner__content--desc">
                                 Hàng trăm khách hàng cùng nhiều đối tác chiến
                                 lược đã lựa chọn và tin tưởng chúng tôi trong
@@ -51,42 +53,34 @@ function MainContent() {
                         </div>
 
                         <div className="partner__content--right">
-                            <div>
-                                <div className="partner-span">
-                                    <span className="partner__content--span">
-                                        100+
-                                    </span>
-                                </div>
+                            <div className="partner-span">
+                                <span className="partner__content--span">
+                                    100+
+                                </span>
                                 <p>Tin đăng mới mỗi tháng</p>
                             </div>
 
-                            <div>
-                                <div className="partner-span">
-                                    <span className="partner__content--span">
-                                        50+
-                                    </span>
-                                </div>
+                            <div className="partner-span">
+                                <span className="partner__content--span">
+                                    <strong>50+</strong>
+                                </span>
                                 <p>Đối tác dự kiến hợp tác trong năm tới</p>
                             </div>
 
-                            <div>
-                                <div className="partner-span">
-                                    <span className="partner__content--span">
-                                        200+
-                                    </span>
-                                </div>
+                            <div className="partner-span">
+                                <span className="partner__content--span">
+                                    <strong>200+</strong>
+                                </span>
                                 <p>
                                     Khách hàng sẽ được phục vụ trong giai đoạn
                                     đầu
                                 </p>
                             </div>
 
-                            <div>
-                                <div className="partner-span">
-                                    <span className="partner__content--span">
-                                        95%
-                                    </span>
-                                </div>
+                            <div className="partner-span">
+                                <span className="partner__content--span">
+                                    <strong>95%</strong>
+                                </span>
                                 <p>Khách hàng hài lòng</p>
                             </div>
                         </div>
@@ -94,9 +88,9 @@ function MainContent() {
                 </div>
             </section>
 
-            <HomeListing/>
+            <HomeListing />
 
-            <BlogList/>
+            <BlogList />
         </>
     );
 }

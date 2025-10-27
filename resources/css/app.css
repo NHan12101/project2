@@ -1,15 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* ================ common =================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+}
 
 /* Nền tổng thể */
 body {
-  margin: 0;
   font-family: "Inter", sans-serif;
-  /* background: linear-gradient(135deg, #e3f2fd, #ffffff); */
+  font-size: 1.6rem;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+input,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+.main-contain {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.header_title {
+  font-size: 4.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+
+/* ======================= */
 
 /* Card container */
 .card {
@@ -21,7 +55,7 @@ body {
   text-align: center;
 }
 
-h1 {
+.card__title--login {
   margin-bottom: 25px;
   color: #333;
 }

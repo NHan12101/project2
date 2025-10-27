@@ -33,7 +33,7 @@ export default function Register() {
     return (
         <div className="card">
             <div>
-                <h1>Đăng ký tài khoản</h1>
+                <h1 className='card__title--login'>Đăng ký tài khoản</h1>
 
                 <form onSubmit={handleSubmit}>
                     <div>
