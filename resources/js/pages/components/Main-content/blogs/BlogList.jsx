@@ -3,6 +3,7 @@ import blog2 from '../../../../../../public/images/blog2.png';
 import blog3 from '../../../../../../public/images/blog3.png';
 import blog4 from '../../../../../../public/images/blog4.png';
 import './BlogList.css';
+import { Link } from '@inertiajs/react';
 
 const newsData = [
     {
@@ -54,7 +55,8 @@ const BlogList = () => {
                                     <p>{item.date}</p>
                                     <h4>{item.title}</h4>
                                     <p className='news-item__desc'>{item.desc}</p>
-                                    <a href="#">ĐỌC BÀI VIẾT →</a>
+                                    <Link href="/blogs">ĐỌC BÀI VIẾT →</Link>
+
                                 </div>
                             </div>
                         ))}

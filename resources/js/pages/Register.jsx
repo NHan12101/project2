@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import './Register.css';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ export default function Register() {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setLocalError('');
-        setErrors({});
+        setErrors((prev) => ({ ...prev, [e.target.name]: '' }));
     };
 
     const handleSubmit = (e) => {
@@ -26,71 +27,115 @@ export default function Register() {
         }
 
         router.post('/register', formData, {
-            onError: (err) => setErrors(err),
+            onError: (err) => {
+                setErrors(err);
+                setLocalError('');
+            },
         });
     };
 
     return (
-        <div className="card">
-            <div>
-                <h1>Đăng ký tài khoản</h1>
-
-                <form onSubmit={handleSubmit}>
+        <div className="register-container">
+            {/* Left Side - Illustration */}
+            <div className="register-left">
+                <div className="logo">
+                    <img src="/logo-batdongsan.png" alt="Logo" />
                     <div>
-                        <input
-                            className="card__input"
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder='Email'
-                            required
-                        />
+                        <span>Batdongsan.com.vn</span>
+                        <small>by PropertyGuru</small>
                     </div>
+                </div>
 
-                    <div>
-                        <input
-                            className="card__input"
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder='Mật khẩu'
-                            required
-                        />
-                    </div>
+                <div className="illustration">
+                    <img src="/illustration-register.png" alt="Register" />
+                </div>
 
-                    <div>
-                        <input
-                            className="card__input"
-                            type="password"
-                            name="password_confirmation"
-                            value={formData.password_confirmation}
-                            onChange={handleChange}
-                            placeholder='Xác nhận mật khẩu'
-                            required
-                        />
-                    </div>
+                <div className="footer-text">
+                    <h3>Tìm nhà đất</h3>
+                    <p>Batdongsan.com.vn dẫn Lối</p>
+                </div>
+            </div>
 
-                    {localError && <p style={{ color: 'red' }}>{localError}</p>}
-                    <button type="submit" className='card__btn'>Đăng ký</button>
-                </form>
+            {/* Right Side - Form */}
+            <div className="register-right">
+                <div className="register-card">
+                    <button className="close-btn" onClick={() => router.visit('/')}>
+                        ×
+                    </button>
 
-                {/* 🔥 Đăng ký bằng Google */}
-                <button
-                    className="card__btn"
-                    onClick={() => (window.location.href = '/auth/google')}
-                    style={{
-                        marginTop: '1rem',
-                        backgroundColor: '#db4437',
-                        color: 'white',
-                        padding: '8px 16px',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
-                >
-                    Đăng ký bằng Google
-                </button>
+                    <h2>Xin chào bạn</h2>
+                    <h1>Đăng ký tài khoản mới</h1>
+
+                    <form onSubmit={handleSubmit} className="register-form">
+                        {/* Email */}
+                        <div className="input-group">
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Email"
+                                className={errors.email ? 'input-error' : ''}
+                                required
+                            />
+                            {errors.email && <span className="error-text">{errors.email}</span>}
+                        </div>
+
+                        {/* Password */}
+                        <div className="input-group">
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Mật khẩu"
+                                className={errors.password ? 'input-error' : ''}
+                                required
+                            />
+                            {errors.password && <span className="error-text">{errors.password}</span>}
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div className="input-group">
+                            <input
+                                type="password"
+                                name="password_confirmation"
+                                value={formData.password_confirmation}
+                                onChange={handleChange}
+                                placeholder="Xác nhận mật khẩu"
+                                className={localError || errors.password_confirmation ? 'input-error' : ''}
+                                required
+                            />
+                            {(localError || errors.password_confirmation) && (
+                                <span className="error-text">
+                                    {localError || errors.password_confirmation}
+                                </span>
+                            )}
+                        </div>
+
+                        <button type="submit" className="btn-continue">
+                            Đăng ký
+                        </button>
+                    </form>
+
+                    <div className="or-divider">Hoặc</div>
+
+                    {/* Google Login */}
+                    <button
+                        className="btn-social btn-google"
+                        onClick={() => (window.location.href = '/auth/google')}
+                    >
+                        
+                        Đăng ký bằng Google
+                    </button>
+
+                    <p className="terms">
+                        Bằng việc tiếp tục, bạn đồng ý với{' '}
+                        <a href="#">Điều khoản sử dụng</a>,{' '}
+                        <a href="#">Chính sách bảo mật</a>, <br />
+                        <a href="#">Quy chế, Chính sách của chúng tôi</a>.
+                    </p>
+                </div>
             </div>
         </div>
     );
