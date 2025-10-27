@@ -38,6 +38,17 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+//=== TRANG BLOGS====
+Route::get('/blogs', function () {
+    return Inertia::render('Blogs');  
+});
+
+// Route mở trang chi tiết blog
+Route::get('/blogsdetail', function () {
+    return Inertia::render('BlogsDetail');
+})->name('blogsdetail');
+
+
 // ===== GOOGLE LOGIN =====
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
