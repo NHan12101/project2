@@ -56,7 +56,6 @@ const BlogList = () => {
                                     <h1>{item.title}</h1>
                                     <p className='news-item__desc'>{item.desc}</p>
                                     <Link href="/blogs">ĐỌC BÀI VIẾT →</Link>
-
                                 </div>
                             </div>
                         ))}
