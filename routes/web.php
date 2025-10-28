@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\ChatController;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -18,7 +19,7 @@ Route::get('/home', function () {
             'user' => Auth::user(), // null nếu chưa đăng nhập
         ],
     ]);
-});
+})->name('home');
 
 // ===== PROPERTY DETAIL =====
 // Route::get('/property-detail', fn() =>
@@ -63,4 +64,8 @@ Route::post('/complete-register', [GoogleController::class, 'completeRegister'])
 // Trang yêu cầu xác minh email
 Route::get('/force-logout', function () {
     return Inertia::render('ForceLogout');
+});
+
+Route::get('/chat', function () {
+    return Inertia::render('Chat'); // Đây là React page bạn đang code
 });

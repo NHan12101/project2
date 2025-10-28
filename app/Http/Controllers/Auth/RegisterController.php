@@ -48,6 +48,6 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return response()->json(['message' => 'Đăng ký thành công'], 200);
+        return redirect()->route('home');
     }
 }
