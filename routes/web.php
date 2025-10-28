@@ -50,6 +50,11 @@ Route::get('/blogsdetail', function () {
 })->name('blogsdetail');
 
 
+//=== TRANG BLOGS====
+Route::get('/profile', function () {
+    return Inertia::render('Profile');  
+});
+
 // ===== GOOGLE LOGIN =====
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
