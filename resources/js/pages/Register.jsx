@@ -59,7 +59,7 @@ export default function Register() {
             {/* Right Side - Form */}
             <div className="register-right">
                 <div className="register-card">
-                    <button className="close-btn" onClick={() => router.visit('/')}>
+                    <button className="close-btn-reg" onClick={() => router.visit('/')}>
                         ×
                     </button>
 

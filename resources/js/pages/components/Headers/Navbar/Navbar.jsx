@@ -14,8 +14,25 @@ export default function Navbar() {
         setIsLogin(!!auth?.user);
     }, [auth]);
 
+    const [theme, setTheme] = useState(
+        document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    );
+
+    const toggleTheme = () => {
+        window.toggleTheme(); // gọi hàm trong blade
+        setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    };
+
     return (
-        <nav className="nav">
+        <nav
+            className="nav"
+            style={{ background: theme === 'dark' ? '#0a0a0ada' : '#fffffff4' }}
+        >
+            <button
+                onClick={toggleTheme}
+            >
+                {theme === 'light' ? 'Dark' : 'Light'}
+            </button>
             <div className="nav__item">
                 <a href="./">
                     <img src={logo} alt="Logo" className="nav__item--logo" />
@@ -49,13 +66,13 @@ export default function Navbar() {
                                 alt="avatar"
                                 className="header__info--avatar"
                             />
-                            <h4 style={{ color: '#fff' }}>
+                            <h4>
                                 Xin chào, {auth.user.name ?? 'bạn'}
                             </h4>
-                                <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className="dropdown-icon"
-                                />
+                            <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className="dropdown-icon"
+                            />
                             <div
                                 className="header__info--list"
                                 style={{ display: 'none' }}

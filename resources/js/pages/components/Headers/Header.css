@@ -4,12 +4,10 @@
 }
 
 .nav {
-    margin-top: 10px;
     position: sticky;
     width: 99vw;
     top: 0px;
     z-index: 999;
-    background: #0a0a0ada;
 }
 
 .nav__item {
@@ -39,7 +37,7 @@
 
 .nav__list li a {
     position: relative;
-    color: #bdbdbd;
+    color: #a3a3a3;
     transition: 0.25s;
 
     &::after {
@@ -57,8 +55,8 @@
 
 .nav__list li a:hover,
 .nav__list li a.active {
-    color: #fff;
-    text-shadow: -1px -1px 12px #c8c8c8, 1px 1px 12px #dbdbdb;
+    color: var(--text-color);
+    text-shadow: 1px 1px 12px var(--text-color);
     transform: scale(1.1);
 }
 
@@ -93,6 +91,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     margin: 0 10px 0 16px;
+    color: var(--text-color);
 }
 
 .header__info--avatar {
@@ -103,7 +102,7 @@
 }
 
 .dropdown-icon {
-    color: #fff;
+    color: var(--text-color);
 }
 
 .header__button--right {
@@ -123,26 +122,26 @@
     font-size: 1.7rem;
     margin-right: 8px;
     background: none;
-    transition: 0.25s;
-    color: #fff;
+    color: var(--text-color);
     cursor: pointer;
     white-space: nowrap;
+    transition: 0.25s;
 }
 
 .btn.header__btn-login {
     &:hover {
-        text-shadow: -1px -1px 12px #fff, 2px 2px 12px #fff;
-        transform: scale(1.1);
+        text-shadow: 1px 1px 14px var(--text-color);
+        transform: scale(1.06);
     }
 }
 
 
 .btn.header__btn-register {
-    border: 2px solid white;
+    border: 2px solid var(--text-color);
 
     &:hover {
-        background: white;
-        color: #000;
+        background: var(--text-color);
+        color: var(--bg-color);
     }
 }
 

@@ -21,11 +21,11 @@
     height: 280px;
     width: 420px;
     cursor: pointer;
-    box-shadow: 1px 2px 12px #ffffff7c;
-    transition: transform 0.3s;
+    box-shadow: 1px 2px 12px #ffffff7c, 1px 2px 14px #0000007c;
+    transition: 0.3s;
 
     &:hover {
-        box-shadow: 1px 2px 16px #ffffff;
+        box-shadow: 1px 2px 16px #ffffff, 1px 2px 22px #000000;
     }
 }
 
@@ -38,12 +38,12 @@
     transition: 0.3s;
 
     &:hover {
-        opacity: 0.6;
+        opacity: 0.7;
     }
 }
 
 .city-card img:hover+.city-info {
-    text-shadow: 0 0 12px #ffffff;
+    text-shadow: 0 0 12px #ffffff, 0 0 12px #000000;
 }
 
 .city-info {
@@ -54,7 +54,7 @@
     bottom: 20px;
     left: 14px;
     color: white;
-    text-shadow: 0 0 12px #000000;
+    text-shadow: 0 0 12px #000000, 0 0 12px #ffffff;
     transition: 0.42s;
 }
 

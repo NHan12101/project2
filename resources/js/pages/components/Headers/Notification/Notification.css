@@ -7,15 +7,15 @@
 }
 
 .bell-icon {
-  color: #bbbbbb;
+  color: #c9c9c9;
   background-color: transparent;
   padding: 4px;
   transition: 0.3s;
-  font-size: 3.2rem;
+  font-size: 3.4rem;
 }
 
 .bell-icon:hover {
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .bell-count {
@@ -36,7 +36,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.316);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
@@ -54,14 +54,13 @@
   right: 0;
   width: 396px;
   height: 100%;
-  background: #090909;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  background: var(--bg-color);
+  box-shadow: -2px 0 10px rgba(255, 255, 255, 0.32);
   transform: translateX(100%);
   transition: transform 0.3s ease;
   z-index: 50;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #1a1a1a;
 }
 
 .sidebar.open {
@@ -73,13 +72,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-bottom: 1px solid #5f5f5f;
+  border-bottom: 0.6px solid #b0afaf;
 }
 
 .sidebar-header h2 {
   font-size: 2.2rem;
   text-shadow: 0 0 2px #fff;
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .close-btn {
@@ -87,23 +86,23 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #666;
+  color: #777777;
 }
 
 .close-btn:hover {
-  color: rgb(255, 255, 255);
+  color: var(--text-color);
 }
 
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  color: #d1d1d1;
+  color: var(--text-color);
 }
 
 .notify-item {
-  background: #0f0f0f;
-  box-shadow: 0 3px 6px rgba(208, 208, 208, 0.2);
+  background: var(--bg-color);
+  box-shadow: 0 3px 6px rgba(208, 208, 208, 0.2), 0 3px 6px var(--text-color);
   margin-top: 16px;
   padding: 22px;
   border-radius: 6px;
@@ -112,7 +111,7 @@
 }
 
 .notify-item:hover {
-  background: #1e1e1e;
-  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
+  background: var(--bg-color);
+  box-shadow: 0 6px 16px var(--box-shadown);
   transform: scale(1.04);
 }

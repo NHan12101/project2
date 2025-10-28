@@ -13,8 +13,9 @@
 
 .category__title {
     margin-top: 22px;
-    color: #fff;
+    color: var(--text-color);
     font-size: 1.8rem;
+    font-weight: 600;
 }
 
 .category-item {
@@ -32,7 +33,6 @@
 /* ============ partner =========== */
 .partner {
     margin-top: 160px;
-    color: #fff
 }
 
 .partner__content {
@@ -81,7 +81,7 @@
 .partner__content--span {
     font-family: Poppins, sans-serif;
     font-size: 6.8rem;
-    color: #eccc13;
+    color: var(--partner__content--span);
     font-weight: 700;
 }
 
@@ -90,6 +90,6 @@
     font-family: Poppins, sans-serif;
     text-align: center;
     font-size: 1.8rem;
-    color: #eccb13bb;
+    color: var(--partner__content--span-p);
     line-height: normal;
 }
