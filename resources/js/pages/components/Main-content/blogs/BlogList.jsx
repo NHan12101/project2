@@ -15,19 +15,19 @@ const newsData = [
     {
         date: 'Wed, 23/04/2025',
         title: 'NHỮNG BIẾN ĐỘNG THỊ TRƯỜNG BẤT ĐỘNG SẢN ĐÀ NẴNG 2025',
-        desc: 'Thị trường bất động sản Đà Nẵng đang trải qua nhiều thay đổi về giá cả và loại hình.',
+        desc: 'Thị trường bắt động sản Đà Nẵng đang trải qua những biến động đáng chủ ý trong thời gian gần đây, với sự thay đổi về giá cả, loại hình',
         image: blog2,
     },
     {
         date: 'Wed, 23/04/2025',
         title: 'CÓ NÊN ĐẦU TƯ ĐẤT NỀN LÂM ĐỒNG TẠI THỜI ĐIỂM NÀY?',
-        desc: 'Đất nền Lâm Đồng thu hút sự quan tâm lớn từ các nhà đầu tư do tiềm năng phát triển cao.',
+        desc: 'Thị trường đất nền tại Lâm Đồng đang thu hút sự quan tâm của nhiều nhà đầu tư nhờ vào tiềm năng phát triển và mức giá hợp lý. Dưới',
         image: blog3,
     },
     {
         date: 'Wed, 23/04/2025',
         title: 'NHỮNG BIẾN ĐỘNG THỊ TRƯỜNG BẤT ĐỘNG SẢN ĐÀ NẴNG 2025',
-        desc: 'Thị trường bất động sản Đà Nẵng đang trải qua những thay đổi đáng kể gần đây.',
+        desc: 'Thị trường bắt động sản Đà Nẵng đang trải qua những biến động đáng chủ ý trong thời gian gần đây, với sự thay đổi về giá cả, loại hình.',
         image: blog4,
     },
 ];

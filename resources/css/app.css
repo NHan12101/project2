@@ -8,6 +8,7 @@
   --partner__content--span: #0D1111;
   --partner__content--span-p: #767E7E;
   --card-text: #303030;
+  --hover-bg: #ff0000a0;
 }
 
 html.dark {
@@ -17,6 +18,7 @@ html.dark {
   --partner__content--span: #eccb13;
   --partner__content--span-p: #eccb13bb;
   --card-text: #dfdfdf;
+  --hover-bg: #f2f2f2;
 }
 
 

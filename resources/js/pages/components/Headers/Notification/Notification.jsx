@@ -6,13 +6,11 @@ import './Notification.css';
 function NotificationList({ closeSidebar, isOpen }) {
     return (
         <>
-            {/* Overlay mờ đằng sau */}
             <div
                 className={`overlay ${isOpen ? 'show' : ''}`}
                 onClick={closeSidebar}
             ></div>
 
-            {/* Sidebar bên phải */}
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <h2>Thông báo</h2>

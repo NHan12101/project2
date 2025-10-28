@@ -9,7 +9,7 @@ export default function Footer() {
             <div className="main-contain">
                 <div className="footer__top">
                     <div className="footer__col">
-                        <a href='./'><img src={logo} alt="Logo" className='nav__item--logo'/></a>
+                        <a href='./'><img src={logo} alt="Logo" className='nav__item--logo' style={{marginLeft: '12px'}}/></a>
                         <p className="footer__slogan">"Nhà đẹp chọn nhanh"</p>
                     </div>
 

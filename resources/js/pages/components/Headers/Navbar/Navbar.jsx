@@ -1,36 +1,49 @@
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { router, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FaDoorOpen } from 'react-icons/fa';
 import logo from '../../../../../../public/images/StayHub.svg';
 import avatar from '../../../../../../public/images/ava2.jpg';
-import Notification from '../Notification/Notification';
+import Notification from '../Notification/Notification.jsx';
+import './Navbar.css';
 
 export default function Navbar() {
     const [isLogin, setIsLogin] = useState(false);
+    const [open, setOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const [theme, setTheme] = useState(
+        document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    );
+    const toggleTheme = () => {
+        window.toggleTheme(); // gọi hàm trong blade
+        setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    };
+    
     const { props } = usePage();
     const auth = props.auth;
     useEffect(() => {
         setIsLogin(!!auth?.user);
     }, [auth]);
 
-    const [theme, setTheme] = useState(
-        document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-    );
-
-    const toggleTheme = () => {
-        window.toggleTheme(); // gọi hàm trong blade
-        setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-    };
-
     return (
         <nav
             className="nav"
             style={{ background: theme === 'dark' ? '#0a0a0ada' : '#fffffff4' }}
         >
-            <button
-                onClick={toggleTheme}
-            >
+            <button onClick={toggleTheme}>
                 {theme === 'light' ? 'Dark' : 'Light'}
             </button>
             <div className="nav__item">
@@ -59,53 +72,74 @@ export default function Navbar() {
                 </ul>
 
                 {isLogin ? (
-                    <div className="header__info">
-                        <div className="header__info--name">
-                            <img
-                                src={avatar}
-                                alt="avatar"
-                                className="header__info--avatar"
-                            />
-                            <h4>
-                                Xin chào, {auth.user.name ?? 'bạn'}
-                            </h4>
-                            <FontAwesomeIcon
-                                icon={faChevronDown}
-                                className="dropdown-icon"
-                            />
-                            <div
-                                className="header__info--list"
-                                style={{ display: 'none' }}
+                    <div className="nav__info">
+                        <div className="nav__info--name" ref={menuRef}>
+                            <button
+                                className="dropdown-btn"
+                                onClick={() => setOpen((pre) => !pre)}
                             >
-                                <p className="header__info--desc">Hồ sơ</p>
-                                <p className="header__info--desc">Lịch sử</p>
-                                <p className="header__info--desc">undefined</p>
-                                <p className="header__info--desc">undefined</p>
-                                <p className="header__info--desc">Liên hệ</p>
-                                <p className="header__info--desc">Đăng xuất</p>
-                            </div>
+                                <img
+                                    src={avatar}
+                                    alt="avatar"
+                                    className="nav__info--avatar"
+                                />
+                                <h4>Xin chào, {auth.user.name ?? 'bạn'}</h4>
+                                <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={`dropdown-icon arrow ${open ? 'rotate' : ''}`}
+                                />
+                                {open && (
+                                    <div className="dropdown-menu">
+                                        <p className="dropdown-menu--desc">
+                                            Hồ sơ
+                                        </p>
+                                        <p className="dropdown-menu--desc">
+                                            Lịch sử
+                                        </p>
+                                        <p className="dropdown-menu--desc">
+                                            undefined
+                                        </p>
+                                        <p className="dropdown-menu--desc">
+                                            undefined
+                                        </p>
+                                        <p className="dropdown-menu--desc">
+                                            Liên hệ
+                                        </p>
+                                        <span className="dropdown-menu__equally"></span>
+                                        <button
+                                            className="dropdown-menu--desc drop-logout"
+                                            onClick={() =>
+                                                router.post('/logout')
+                                            }
+                                        >
+                                            Đăng xuất
+                                            <FaDoorOpen className="icon dooropen" />
+                                        </button>
+                                    </div>
+                                )}
+                            </button>
                         </div>
 
-                        <div className="header__button--right">
+                        <div className="nav__button--right">
                             <Notification />
                             <button
-                                className="btn header__btn-register"
-                                onClick={() => router.post('/logout')}
+                                className="btn nav__btn-register"
+                                // onClick={() => router.post('/logout')}
                             >
                                 Đăng tin
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="header__btn">
+                    <div className="nav__btn">
                         <button
-                            className="btn header__btn-login"
+                            className="btn nav__btn-login"
                             onClick={() => router.visit('/login')}
                         >
                             Đăng nhập
                         </button>
                         <button
-                            className="btn header__btn-register"
+                            className="btn nav__btn-register"
                             onClick={() => router.visit('/register')}
                         >
                             Đăng ký
