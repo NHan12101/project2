@@ -21,11 +21,12 @@ Route::get('/home', function () {
 });
 
 // ===== PROPERTY DETAIL =====
-Route::get('/property-detail', fn() =>
-    Inertia::render('PropertyDetail', [
-        'auth' => ['user' => Auth::user()],
-    ])
-)->middleware('auth')->name('property-detail');
+// Route::get('/property-detail', fn() =>
+//     Inertia::render('PropertyDetail', [
+//         'auth' => ['user' => Auth::user()],
+//     ])
+// )->middleware('auth')->name('property-detail');
+Route::get('/property-detail', fn() => Inertia::render('PropertyDetail'))->name('property-detail');
 
 // ===== TRANG ĐĂNG KÝ / ĐĂNG NHẬP =====
 // ⚠️ Quan trọng: thêm GET routes để hiển thị giao diện đăng nhập/đăng ký

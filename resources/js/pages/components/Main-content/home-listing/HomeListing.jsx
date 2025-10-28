@@ -39,15 +39,21 @@ export default function HomeListing() {
     return (
         <div className="city-section">
             <div className="main-contain">
-                <h2>Ngôi nhà bất động sản của Việt Nam</h2>
-                <div className="city-grid">
-                    {cities.map((city, index) => (
-                        <div className="city-card" key={index}>
-                            <img src={city.image} alt={city.name} />
-                            <h3 className="city-info">{city.name}</h3>
-                            <p className="city-info-more">XEM THÊM DỰ ÁN    ▶</p>
-                        </div>
-                    ))}
+                <div className="city-section__home">
+                    <h1 className="header_title city-section__title">
+                        NGÔI NHÀ BẤT ĐỘNG SẢN CỦA VIỆT NAM
+                    </h1>
+                    <div className="city-grid">
+                        {cities.map((city, index) => (
+                            <div className="city-card" key={index}>
+                                <img src={city.image} alt={city.name} />
+                                <h1 className="city-info">{city.name}</h1>
+                                <p className="city-info-more">
+                                    XEM THÊM DỰ ÁN    ▶
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
