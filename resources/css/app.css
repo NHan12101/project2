@@ -9,6 +9,8 @@
   --partner__content--span-p: #767E7E;
   --card-text: #303030;
   --hover-bg: #ff0000a0;
+  --bg-chat: rgb(255, 255, 255);
+  --selected-chat: #f0f0f0;
 }
 
 html.dark {
@@ -18,7 +20,9 @@ html.dark {
   --partner__content--span: #eccb13;
   --partner__content--span-p: #eccb13bb;
   --card-text: #dfdfdf;
-  --hover-bg: #f2f2f2;
+  --hover-bg: #e1e1e1;
+  --bg-chat: #1f1f1f;
+  --selected-chat: #3a3a3a;
 }
 
 
@@ -37,10 +41,6 @@ html {
 body {
   font-family: "Inter", sans-serif;
   font-size: 1.6rem;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 input,
@@ -55,8 +55,9 @@ a {
 }
 
 .main-contain {
-  max-width: 1440px;
-  margin: 0 auto;
+    width: 1440px;
+    max-width: calc(100% - 48px);
+    margin: 0 auto;
 }
 
 .header_title {

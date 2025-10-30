@@ -3,23 +3,24 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Conversation;
 use App\Models\Message;
 
 class MessageSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+        Message::truncate();
 
-        foreach (Conversation::all() as $conv) {
-            for ($i = 0; $i < rand(5, 15); $i++) {
-                Message::create([
-                    'conversation_id' => $conv->id,
-                    'sender_id'       => $conv->user_one,
-                    'message'         => $faker->sentence,
-                ]);
-            }
-        }
+        Message::create([
+            'conversation_id' => 1,
+            'sender_id' => 1,
+            'message' => 'Xin chao, ban khoe khong?',
+        ]);
+
+        Message::create([
+            'conversation_id' => 1,
+            'sender_id' => 2,
+            'message' => 'Toi khoe, cam on ban! Con ban thi sao?',
+        ]);
     }
 }

@@ -12,9 +12,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             PaymentSeeder::class,
-            ConversationSeeder::class,
             PersonalAccessTokenSeeder::class,
-            PropertySeeder::class
+            PropertySeeder::class,
+            // ConversationSeeder::class,
+            // MessageSeeder::class,
         ]);
     }
 }

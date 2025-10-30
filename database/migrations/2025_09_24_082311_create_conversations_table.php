@@ -9,9 +9,11 @@ return new class extends Migration {
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // user tạo cuộc trò chuyện
-            $table->string('title')->nullable(); // tên cuộc trò chuyện (optional)
+            $table->foreignId('user_one_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_two_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['user_one_id', 'user_two_id']); // tránh tạo trùng
         });
     }
 

@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\ChatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleController;
+use App\Models\User;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -18,14 +20,9 @@ Route::get('/home', function () {
             'user' => Auth::user(), // null nếu chưa đăng nhập
         ],
     ]);
-});
+})->name('home');
 
 // ===== PROPERTY DETAIL =====
-// Route::get('/property-detail', fn() =>
-//     Inertia::render('PropertyDetail', [
-//         'auth' => ['user' => Auth::user()],
-//     ])
-// )->middleware('auth')->name('property-detail');
 Route::get('/property-detail', fn() => Inertia::render('PropertyDetail'))->name('property-detail');
 
 // ===== TRANG ĐĂNG KÝ / ĐĂNG NHẬP =====
@@ -40,7 +37,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //=== TRANG BLOGS====
 Route::get('/blogs', function () {
-    return Inertia::render('Blogs');  
+    return Inertia::render('Blogs');
 });
 
 // Route mở trang chi tiết blog
@@ -63,4 +60,50 @@ Route::post('/complete-register', [GoogleController::class, 'completeRegister'])
 // Trang yêu cầu xác minh email
 Route::get('/force-logout', function () {
     return Inertia::render('ForceLogout');
+});
+
+
+// ========== CHAT ROUTES ==========
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/chatbox', function () {
+        return Inertia::render('ChatBox/ChatIndex', [
+            'userId' => Auth::id(),
+        ]);
+    })->name('chatbox.chatindex');
+
+    // Route::get('/chatbox/{id}', function ($id) {
+    //     $conversation = \App\Models\Conversation::findOrFail($id);
+
+    //     // ✅ Chặn người không thuộc hội thoại
+    //     if (!in_array(Auth::id(), [$conversation->user_one_id, $conversation->user_two_id])) {
+    //         abort(403, 'Unauthorized access to this conversation');
+    //     }
+
+    //     return Inertia::render('ChatBox/ChatShow', [
+    //         'conversationId' => (int) $id,
+    //         'userId' => Auth::id(),
+    //     ]);
+    // })->name('chatbox.chatshow');
+});
+
+// ========== PROFILE ROUTES ==========
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // 🔹 Trang hồ sơ người dùng
+    Route::get('/profile/{id}', function ($id) {
+        $user = User::findOrFail($id);
+        return Inertia::render('Profile/Show', [
+            'user' => $user,
+            'currentUserId' => Auth::id(),
+        ]);
+    })->name('profile.show');
+});
+
+// ========== Gọi Api của messages ==========
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/conversations', [ChatController::class, 'index']);
+    Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'messages']);
+    Route::post('/messages/send', [ChatController::class, 'sendMessage']);
+    Route::post('/messages/read', [ChatController::class, 'markAsRead']);
+    Route::post('/conversations/start', [ChatController::class, 'startConversation']);
 });

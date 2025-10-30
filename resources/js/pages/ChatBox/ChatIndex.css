@@ -1,0 +1,380 @@
+/* ============== Phần danh sách chat ================= */
+
+.chat-container {
+    display: flex;
+    margin: 14px auto 0;
+    gap: 30px;
+    color: var(--text-color);
+    width: calc(100% - 60px);
+    height: 88vh;
+
+}
+
+.conversation-list {
+    width: 23%;
+    border-radius: 22px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #999 transparent;
+    padding: 8px;
+    /* background: var(--bg-chat); */
+
+}
+
+.conversation-list__title {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: var(--bg-color);
+}
+
+.conversation-list__title h1 {
+    border-radius: 14px;
+    padding: 6px;
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.conversation-list__content {
+    margin-top: 22px;
+    border-radius: 14px;
+    border-radius: 16px;
+    height: auto;
+}
+
+.conversation-list__card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 2px;
+    cursor: pointer;
+
+    &:hover {
+        background: #f0f0f054;
+    }
+}
+
+.selected-mess {
+    background: var(--selected-chat);
+}
+
+.conversation-list__avatart {
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+    background: #00000011;
+    overflow: hidden;
+}
+
+.conversation-list__card--user {
+    font-size: 1.7rem;
+    font-weight: 500;
+}
+
+.conversation-list__card--count {
+    margin-top: 12px;
+    font-size: 1.4rem;
+}
+
+.conversation-content {
+    width: 74%;
+    border-radius: 22px;
+    background: var(--bg-chat);
+    box-shadow: inset 4px 2px 12px #00000035;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ============ Chat form ======================= */
+
+.chat-container__show {
+    display: flex;
+    flex-direction: column;
+    height: 88vh;
+    width: 74%;
+    padding: 10px;
+    border-radius: 22px;
+    background: var(--bg-chat);
+    box-shadow: inset 4px 2px 12px #00000035;
+}
+
+.message-info-user {
+    height: auto;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(89, 89, 89, 0.204);
+    background: var(--bg-chat);
+}
+
+.chat-user-header {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.message-list {
+    flex: 1;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #999 transparent;
+    padding: 42px;
+    border-radius: 14px;
+}
+
+.message-item {
+    margin-bottom: 32px;
+}
+
+.message-item.own {
+    text-align: right;
+}
+
+.message-item.other {
+    text-align: left;
+}
+
+.message-info {
+    font-size: 1.22rem;
+    color: #8d8c8c;
+    margin: 22px 0 6px;
+}
+
+.message-info span {
+    display: block;
+    text-align: center;
+}
+
+.message-bubble {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 18px;
+    max-width: 43%;
+    max-height: 300px;
+    word-wrap: break-word;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff transparent;
+}
+
+.bubble-own {
+    background: #ff6464;
+    color: white;
+}
+
+.bubble-other {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.message-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.message-images img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.chat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 14px;
+    box-shadow: 0 -2px 8px 0 rgba(89, 89, 89, .12);
+    background: var(--bg-chat);
+}
+
+.chat-form-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.chat-form textarea {
+    border: none;
+    padding: 4px 16px;
+    border-radius: 20px;
+    resize: none;
+    outline: none;
+    height: 60px;
+    background: none;
+}
+
+.chat-form textarea:focus {
+    border-color: #2563eb;
+}
+
+.file-upload-button {
+    display: flex;
+    align-items: center;
+    padding: 12px 19px;
+    background-color: var(--hover-bg);
+    color: var(--bg-color);
+    border-radius: 24px;
+    width: 10%;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.file-upload-button:hover {
+    opacity: 0.9;
+}
+
+.file-upload-button:active {
+    transform: scale(0.97);
+}
+
+.file-upload-wrapper {
+    margin-top: 10px;
+}
+
+.send-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #eb2525;
+    padding: 8px 20px;
+    border: none;
+    cursor: pointer;
+    transition: 0.012s;
+    background: transparent;
+}
+
+.send-button:disabled {
+    cursor: not-allowed;
+    opacity: 0;
+}
+
+.send-button:hover:not(:disabled) {
+    color: #eb2525ba;
+}
+
+/* ============== Phần xem hình ảnh đã được gửi =================== */
+
+.image-preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.image-preview-content {
+    background: var(--bg-chat);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 74%;
+    height: 74%;
+    display: flex;
+    align-items: center;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.arrow-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 3rem;
+    padding: 0 15px;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.arrow-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.arrow-button.left {
+    left: -62px;
+}
+
+.arrow-button.right {
+    right: -62px;
+}
+
+.close-button-img {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 8px 12px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.606);
+    }
+}
+
+
+
+
+/* ===== Phần xem trước hình ảnh trước khi gửi ===== */
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.remove-preview {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 3px 6px;
+    font-weight: bold;
+    color: red;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}

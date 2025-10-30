@@ -106,7 +106,7 @@ export default function Navbar() {
                                             Liên hệ
                                         </p>
                                         <span className="dropdown-menu__equally"></span>
-                                        <button
+                                        <div
                                             className="dropdown-menu--desc drop-logout"
                                             onClick={() =>
                                                 router.post('/logout')
@@ -114,7 +114,7 @@ export default function Navbar() {
                                         >
                                             Đăng xuất
                                             <FaDoorOpen className="icon dooropen" />
-                                        </button>
+                                        </div>
                                     </div>
                                 )}
                             </button>
