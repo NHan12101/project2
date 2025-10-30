@@ -167,4 +167,27 @@ class ChatController extends Controller
             'conversation_id' => $conversation->id,
         ]);
     }
+
+    /**
+     * 🔹 Lấy thông tin 1 cuộc trò chuyện (dành cho realtime)
+     */
+    public function show(Request $request, $id)
+    {
+        $userId = Auth::id() ?? $request->query('user_id', 1);
+
+        $conversation = Conversation::where(function ($q) use ($userId) {
+            $q->where('user_one_id', $userId)
+                ->orWhere('user_two_id', $userId);
+        })
+            ->where('id', $id)
+            ->with(['userOne', 'userTwo'])
+            ->withCount('messages')
+            ->first();
+
+        if (!$conversation) {
+            return response()->json(['error' => 'Unauthorized access to this conversation'], 403);
+        }
+
+        return response()->json($conversation);
+    }
 }

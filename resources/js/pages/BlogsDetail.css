@@ -23,9 +23,9 @@
           color: #764ba2;
         }
         .blog-detail-content {
-          display: grid;
+          /* display: grid;
           grid-template-columns: 1fr 350px;
-          gap: 3rem;
+          gap: 3rem; */
         }
         .main-content {
           background: white;

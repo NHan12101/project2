@@ -353,7 +353,7 @@
   gap: 24px;
 }
 
-.property-card {
+.property-card-profile {
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -361,7 +361,7 @@
   transition: all 0.3s ease;
 }
 
-.property-card:hover {
+.property-card-profile:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
@@ -414,14 +414,14 @@
   overflow: hidden;
 }
 
-.property-price {
+.property-price1 {
   font-size: 20px;
   font-weight: 700;
   color: #ef4444;
   margin: 0 0 12px 0;
 }
 
-.property-location {
+.property-location-profile {
   color: #718096;
   font-size: 14px;
   margin: 0 0 15px 0;
@@ -430,7 +430,7 @@
   gap: 6px;
 }
 
-.property-location i {
+.property-location-profile i {
   color: #667eea;
 }
 

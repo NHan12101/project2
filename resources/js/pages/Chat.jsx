@@ -1,57 +1,106 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import { IoSend } from 'react-icons/io5';
+import chatbot from '../../../public/images/chatbot.png';
+import './Chat.css';
 
 export default function Chat() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const scrollRef = useRef(null);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+    const sendMessage = async (e) => {
+        e.preventDefault();
+        if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: 'user', content: input }];
-    setMessages(newMessages);
-    setInput('');
-    setLoading(true);
+        const newMessages = [...messages, { role: 'user', content: input }];
+        setMessages(newMessages);
+        setInput('');
+        setLoading(true);
 
-    try {
-      const res = await axios.post('/api/chat', { messages: newMessages });
-      const reply = res.data.content;
-      setMessages([...newMessages, { role: 'assistant', content: reply }]);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        try {
+            const res = await axios.post('/api/chat', {
+                messages: newMessages,
+            });
+            const reply = res.data.content;
+            setMessages([
+                ...newMessages,
+                { role: 'assistant', content: reply },
+            ]);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">🤖 AI Chat</h1>
-      <div className="border p-4 h-96 overflow-y-auto rounded-lg bg-gray-50" style={{overflow: 'auto'}}>
-        {messages.map((msg, i) => (
-          <div key={i} className={`mb-2 ${msg.role === 'user' ? 'text-blue-600' : 'text-green-700'}`}>
-            <strong>{msg.role === 'user' ? 'You:' : 'AI:'}</strong> {msg.content}
-          </div>
-        ))}
-        {loading && <div className="text-gray-400 italic">Thinking...</div>}
-      </div>
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+        return () => clearTimeout(timeout);
+    }, [messages]);
 
-      <form onSubmit={sendMessage} className="mt-4 flex">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="flex-1 border rounded-l px-3 py-2"
-          placeholder="Type your message..."
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600"
-        >
-          Send
-        </button>
-      </form>
-    </div>
-  );
+    return (
+        <>
+            {open ? (
+                <div className="chat-box">
+                    <div className="chat-header">
+                        <span>🫡 LandMate Assistant</span>
+                        <button
+                            onClick={() => setOpen(false)}
+                            className="chat-close"
+                        >
+                            ✖
+                        </button>
+                    </div>
+
+                    <div className="chat-body">
+                        {messages.map((msg, i) => (
+                            <div
+                                key={i}
+                                className={`chat-msg ${msg.role === 'user' ? 'user' : 'assistant'}`}
+                            >
+                                <strong>
+                                    {msg.role === 'user' ? '' : 'AI:'}
+                                </strong>{' '}
+                                {msg.content}
+                            </div>
+                        ))}
+                        {loading && (
+                            <div className="chat-thinking">
+                                Đang suy nghĩ...
+                            </div>
+                        )}
+                        <div ref={scrollRef}></div>
+                    </div>
+
+                    <form onSubmit={sendMessage} className="chat-form-ai">
+                        <input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Nhập tin nhắn..."
+                        />
+                        <button type="submit">
+                            <span>
+                                <IoSend
+                                    size={28}
+                                    style={{ marginRight: '5px' }}
+                                />
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            ) : (
+                    <img
+                        src={chatbot}
+                        alt="chat-ai"
+                        className="chat-toggle"
+                        onClick={() => setOpen(!open)}
+                    />
+            )}
+        </>
+    );
 }

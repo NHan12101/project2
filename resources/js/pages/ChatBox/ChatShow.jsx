@@ -10,6 +10,7 @@ export default function ChatShow({ conversationId, userId, conversations }) {
     const [attachments, setAttachments] = useState([]);
     const [previewImages, setPreviewImages] = useState([]); // Danh sách ảnh trong modal
     const [currentIndex, setCurrentIndex] = useState(0); // Ảnh đang xem
+    const [isSending, setIsSending] = useState(false);
 
     const scrollRef = useRef(null);
     const fileRef = useRef(null);
@@ -60,7 +61,10 @@ export default function ChatShow({ conversationId, userId, conversations }) {
 
     const sendMessage = async (e) => {
         e.preventDefault();
+        if (isSending) return; // Nếu đang gửi thì không cho gửi tiếp
         if (!text.trim() && attachments.length === 0) return;
+
+        setIsSending(true); // Bắt đầu gửi
 
         const formData = new FormData();
         formData.append('conversation_id', conversationId);
@@ -78,14 +82,17 @@ export default function ChatShow({ conversationId, userId, conversations }) {
             setAttachments([]);
             if (fileRef.current) fileRef.current.value = '';
         } catch (err) {
-            console.error('❌ Send message failed:', err);
+            console.error('Send message failed:', err);
+        } finally {
+            setIsSending(false); // Cho phép gửi lại sau khi xong
         }
     };
 
     const handleKeyDown = (e) => {
+        if (isSending) return; // Đang gửi thì không xử lý phím
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault(); // chặn xuống dòng
-            sendMessage(e); // gọi luôn hàm gửi
+            e.preventDefault();
+            sendMessage(e);
         }
     };
 
@@ -141,8 +148,8 @@ export default function ChatShow({ conversationId, userId, conversations }) {
                             }`}
                         >
                             {msg.message && (
-                                <div style={{ fontSize: '1.8rem' }}>
-                                    {msg.message}
+                                <div style={{ fontSize: '1.8rem', }}>
+                                    <p style={{textAlign: 'left'}}>{msg.message}</p>
                                 </div>
                             )}
                             {msg.attachments?.length > 0 && (
@@ -177,7 +184,6 @@ export default function ChatShow({ conversationId, userId, conversations }) {
             </div>
 
             <form onSubmit={sendMessage} className="chat-form">
-                
                 {/* ===== Phần xem trước hình ảnh trước khi gửi ===== */}
                 {attachments.length > 0 && (
                     <div className="preview-container">

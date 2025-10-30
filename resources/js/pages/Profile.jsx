@@ -268,7 +268,7 @@ const Profile = () => {
             {activeTab === 'properties' && (
               <div className="properties-grid">
                 {properties.map(property => (
-                  <div key={property.id} className="property-card">
+                  <div key={property.id} className="property-card-profile">
                     <div className="property-image">
                       <img src={property.image} alt={property.title} />
                       <span className={`property-status ${property.status === 'Đã bán' ? 'sold' : ''}`}>
@@ -277,8 +277,8 @@ const Profile = () => {
                     </div>
                     <div className="property-details">
                       <h3>{property.title}</h3>
-                      <p className="property-price">{property.price} VNĐ</p>
-                      <p className="property-location">
+                      <p className="property-price1">{property.price} VNĐ</p>
+                      <p className="property-location-profile">
                         <i className="fas fa-map-marker-alt"></i>
                         {property.location}
                       </p>

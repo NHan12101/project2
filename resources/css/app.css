@@ -32,6 +32,9 @@ html.dark {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 0, 0, 0.76) rgba(255, 255, 255, 0);
 }
 
 html {
@@ -55,9 +58,9 @@ a {
 }
 
 .main-contain {
-    width: 1440px;
-    max-width: calc(100% - 48px);
-    margin: 0 auto;
+  width: 1440px;
+  max-width: calc(100% - 48px);
+  margin: 0 auto;
 }
 
 .header_title {

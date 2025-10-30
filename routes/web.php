@@ -111,9 +111,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/messages/send', [ChatController::class, 'sendMessage']);
     Route::post('/messages/read', [ChatController::class, 'markAsRead']);
     Route::post('/conversations/start', [ChatController::class, 'startConversation']);
+    Route::get('/conversations/{id}', [ChatController::class, 'show']);
 });
 
-
+// ========= chat ai ===============
 Route::get('/chat', function () {
     return Inertia::render('Chat'); // Đây là React page bạn đang code
 });

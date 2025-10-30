@@ -49,10 +49,10 @@
 }
 
 .property-title {
-    height: 50px;
+    height: 46px;
     font-size: 2.2rem;
     font-weight: 600;
-    margin: 4px 0 12px;
+    margin: 4px 0 16px;
     color: var(--card-text);
     overflow: hidden;
     -webkit-line-clamp: 2;

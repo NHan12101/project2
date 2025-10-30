@@ -7,7 +7,6 @@
     color: var(--text-color);
     width: calc(100% - 60px);
     height: 88vh;
-
 }
 
 .conversation-list {
@@ -16,9 +15,8 @@
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: #999 transparent;
-    padding: 8px;
+    padding: 0 8px 0;
     /* background: var(--bg-chat); */
-
 }
 
 .conversation-list__title {

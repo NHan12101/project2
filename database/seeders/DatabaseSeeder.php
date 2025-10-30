@@ -14,8 +14,6 @@ class DatabaseSeeder extends Seeder
             PaymentSeeder::class,
             PersonalAccessTokenSeeder::class,
             PropertySeeder::class,
-            // ConversationSeeder::class,
-            // MessageSeeder::class,
         ]);
     }
 }

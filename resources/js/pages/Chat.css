@@ -1,0 +1,133 @@
+.chat-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    z-index: 999;
+    border: none;
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    cursor: pointer;
+    width: 80px;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.chat-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    width: 420px;
+    height: 620px;
+    background: var(--bg-color);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-color);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+
+.chat-header {
+    padding: 12px 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.1px solid #333;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.24s;
+
+    &:hover {
+        transform: scale(1.2);
+    }
+}
+
+.chat-body {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: var(--bg-chat);
+}
+
+.chat-msg {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 18px;
+    max-width: 70%;
+}
+
+.chat-msg.user {
+    background: #ff6464;
+    color: white;
+    align-self: flex-end;
+    text-align: left;
+    margin-left: auto;
+    word-wrap: break-word;
+}
+
+.chat-msg.assistant {
+    background: #e5e7eb;
+    color: black;
+    line-height: normal;
+    align-self: flex-start;
+}
+
+.chat-thinking {
+    color: var(--text-color);
+    font-style: italic;
+}
+
+.chat-form-ai {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #333;
+    background: var(--bg-color);
+}
+
+.chat-form-ai input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.chat-form-ai button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #eb2525;
+    border: none;
+    cursor: pointer;
+    transition: 0.012s;
+    background: transparent;
+}
+
+.chat-form-ai button span {
+    &:hover {
+        color: rgba(255, 0, 0, 0.782);
+    }
+}
