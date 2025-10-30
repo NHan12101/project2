@@ -46,6 +46,11 @@ Route::get('/blogsdetail', function () {
 })->name('blogsdetail');
 
 
+//=== TRANG BLOGS====
+Route::get('/profile', function () {
+    return Inertia::render('Profile');  
+});
+
 // ===== GOOGLE LOGIN =====
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
@@ -106,4 +111,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/messages/send', [ChatController::class, 'sendMessage']);
     Route::post('/messages/read', [ChatController::class, 'markAsRead']);
     Route::post('/conversations/start', [ChatController::class, 'startConversation']);
+});
+
+
+Route::get('/chat', function () {
+    return Inertia::render('Chat'); // Đây là React page bạn đang code
 });
