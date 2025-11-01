@@ -13,9 +13,6 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             PaymentSeeder::class,
             PersonalAccessTokenSeeder::class,
-            PropertySeeder::class,
-
-            LocationSeeder::class,
             PostSeeder::class,
         ]);
     }

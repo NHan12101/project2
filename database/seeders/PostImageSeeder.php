@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\HomeDetail;
-use App\Models\PropertyImage;
+use App\Models\PostImage;
 
-class PropertyImageSeeder extends Seeder
+class PostImageSeeder extends Seeder
 {
     public function run(): void
     {
@@ -14,8 +14,8 @@ class PropertyImageSeeder extends Seeder
 
         foreach (HomeDetail::all() as $home) {
             for ($i = 0; $i < rand(1, 3); $i++) {
-                PropertyImage::create([
-                    'property_id' => $home->id,
+                PostImage::create([
+                    'post_id' => $home->id,
                     'image_path'  => $faker->imageUrl(640, 480, 'house', true),
                 ]);
             }

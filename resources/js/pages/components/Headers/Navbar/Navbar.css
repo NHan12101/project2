@@ -204,6 +204,7 @@
 }
 
 .btn.nav__btn-login {
+    border: none;
     &:hover {
         text-shadow: 1px 1px 14px var(--text-color);
         transform: scale(1.06);

@@ -20,7 +20,7 @@ export default function Card() {
     console.log(properties)
 
     useEffect(() => {
-        fetch('/api/properties')
+        fetch('/posts')
             .then((res) => res.json())
             .then((data) => setProperties(data))
             .catch((err) => console.error('Lỗi tải dữ liệu:', err));
@@ -81,13 +81,13 @@ export default function Card() {
                 {properties.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);
                     const currentIndex = currentImageIndex[item.id] || 0;
-                    const imageSrc = `http://localhost:8000/${item.images[currentIndex].image_path}`;
+                    const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
 
                     return (
                         <div
                             key={item.id}
                             className="property-card"
-                            onClick={() => router.get(`/property-detail/`)} //${item.id}
+                            onClick={() => router.get(`/property-detail/${item.id}`)}
                         >
                             {item.is_vip ? (
                                 <span className="vip-badge">VIP</span>
@@ -171,17 +171,17 @@ export default function Card() {
                                 <p className="property-meta">
                                     Phòng ngủ: <b>{item.bedrooms}</b>
                                     &nbsp;|&nbsp; Diện tích:
-                                    <b>{item.area}m²</b>
+                                    <b> {item.area}m²</b>
                                 </p>
                                 <p className="property-price">{item.price}</p>
                                 <p className="property-location">
                                     <MapPin className="w-6 h-6" />
-                                    <span>{item.location}</span>
+                                    <span>{item.location.City}</span>
                                 </p>
 
                                 <div className="property-heart">
                                     <p className="property-posted">
-                                        {new Date().toLocaleDateString()}
+                                        Đăng {new Date().toLocaleDateString()}
                                     </p>
                                     <button
                                         onClick={(e) => {

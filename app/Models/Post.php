@@ -19,6 +19,7 @@ class Post extends Model
         'bathrooms',
         'livingrooms',
         'kitchens',
+        'is_vip',
         'status',
         'type',
         'user_id',
@@ -42,5 +43,10 @@ class Post extends Model
     public function location()
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PostImage::class);
     }
 }

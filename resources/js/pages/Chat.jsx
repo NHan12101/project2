@@ -10,9 +10,11 @@ export default function Chat() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const scrollRef = useRef(null);
+    const [isOpenChat, setIsOpenChat] = useState(false);
 
     const sendMessage = async (e) => {
         e.preventDefault();
+        setIsOpenChat(true);
         if (!input.trim()) return;
 
         const newMessages = [...messages, { role: 'user', content: input }];
@@ -21,7 +23,7 @@ export default function Chat() {
         setLoading(true);
 
         try {
-            const res = await axios.post('/api/chat', {
+            const res = await axios.post('/chat', {
                 messages: newMessages,
             });
             const reply = res.data.content;
@@ -58,23 +60,37 @@ export default function Chat() {
                     </div>
 
                     <div className="chat-body">
-                        {messages.map((msg, i) => (
+                        {isOpenChat ? (
+                            <>
+                                {messages.map((msg, i) => (
+                                    <div
+                                        key={i}
+                                        className={`chat-msg ${msg.role === 'user' ? 'user' : 'assistant'}`}
+                                    >
+                                        <strong style={{ fontWeight: 'bold' }}>
+                                            {msg.role === 'user' ? '' : 'AI:'}
+                                        </strong>{' '}
+                                        {msg.content}
+                                    </div>
+                                ))}
+                                {loading && (
+                                    <div className="chat-thinking">
+                                        Đang suy nghĩ...
+                                    </div>
+                                )}
+                                <div ref={scrollRef}></div>
+                            </>
+                        ) : (
                             <div
-                                key={i}
-                                className={`chat-msg ${msg.role === 'user' ? 'user' : 'assistant'}`}
+                                style={{
+                                    display: 'grid',
+                                    placeItems: 'center',
+                                    height: '100%',
+                                }}
                             >
-                                <strong>
-                                    {msg.role === 'user' ? '' : 'AI:'}
-                                </strong>{' '}
-                                {msg.content}
-                            </div>
-                        ))}
-                        {loading && (
-                            <div className="chat-thinking">
-                                Đang suy nghĩ...
+                                ✋ Bạn muốn mình hỗ trợ gì này 🫡🫡
                             </div>
                         )}
-                        <div ref={scrollRef}></div>
                     </div>
 
                     <form onSubmit={sendMessage} className="chat-form-ai">
@@ -94,12 +110,14 @@ export default function Chat() {
                     </form>
                 </div>
             ) : (
-                    <img
-                        src={chatbot}
-                        alt="chat-ai"
-                        className="chat-toggle"
-                        onClick={() => setOpen(!open)}
-                    />
+                <img
+                    src={chatbot}
+                    alt="chat-ai"
+                    className="chat-toggle"
+                    onClick={() => {
+                        setOpen(!open);
+                    }}
+                />
             )}
         </>
     );

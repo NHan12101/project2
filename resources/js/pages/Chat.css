@@ -20,7 +20,7 @@
     }
 
     50% {
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
 }
 
@@ -29,8 +29,8 @@
     bottom: 20px;
     right: 20px;
     z-index: 102;
-    width: 420px;
-    height: 620px;
+    width: 364px;
+    height: 520px;
     background: var(--bg-color);
     border-radius: 16px;
     overflow: hidden;
@@ -64,6 +64,8 @@
 }
 
 .chat-body {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     padding: 12px;
     overflow-y: auto;

@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController as ChatBotAiController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\PostController;
 use App\Models\User;
 
 // ===== TRANG MẶC ĐỊNH =====
@@ -91,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // })->name('chatbox.chatshow');
 });
 
+Route::get('/posts', [PostController::class, 'index']);
+
+
 // ========== PROFILE ROUTES ==========
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -118,3 +123,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/chat', function () {
     return Inertia::render('Chat'); // Đây là React page bạn đang code
 });
+Route::post('/chat', [ChatBotAiController::class, 'chat']);
+
+
+Route::get('/property-detail/{id}', [PostController::class, 'show']);

@@ -12,3 +12,4 @@ class LocationSeeder extends Seeder
         Location::factory(10)->create(); // tạo 10 địa điểm giả
     }
 }
+  

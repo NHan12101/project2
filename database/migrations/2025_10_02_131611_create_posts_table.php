@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->decimal('price', 18, 2);
+            $table->unsignedBigInteger('price');
             $table->string('address');
             $table->decimal('area', 10, 2);
             $table->integer('bedrooms');
             $table->integer('bathrooms');
             $table->integer('livingrooms');
             $table->integer('kitchens');
+            $table->boolean('is_vip')->default(false);
             $table->enum('status', ['hidden', 'visible'])->default('visible');
             $table->enum('type', ['rent', 'sale']);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

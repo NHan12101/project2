@@ -14,13 +14,14 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph(5),
-            'price' => $this->faker->randomFloat(2, 50000000, 5000000000), // 50tr–5tỷ
+            'price' => $this->faker->numberBetween(500000000, 50000000000),            // 500tr–50tỷ
             'address' => $this->faker->address(),
             'area' => $this->faker->randomFloat(2, 30, 500),
             'bedrooms' => $this->faker->numberBetween(1, 6),
             'bathrooms' => $this->faker->numberBetween(1, 4),
             'livingrooms' => $this->faker->numberBetween(1, 3),
             'kitchens' => $this->faker->numberBetween(1, 2),
+            'is_Vip' => fake()->boolean(30),
             'status' => $this->faker->randomElement(['hidden', 'visible']),
             'type' => $this->faker->randomElement(['rent', 'sale']),
             'user_id' => User::inRandomOrder()->first()->id,
