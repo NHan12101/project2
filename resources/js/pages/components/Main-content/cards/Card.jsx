@@ -17,6 +17,8 @@ export default function Card() {
     const [currentImageIndex, setCurrentImageIndex] = useState({});
     const [direction, setDirection] = useState(0);
 
+    console.log(properties)
+
     useEffect(() => {
         fetch('/api/properties')
             .then((res) => res.json())
@@ -179,7 +181,7 @@ export default function Card() {
 
                                 <div className="property-heart">
                                     <p className="property-posted">
-                                        {item.posted_at}
+                                        {new Date().toLocaleDateString()}
                                     </p>
                                     <button
                                         onClick={(e) => {

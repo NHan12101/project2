@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import echo from '../../utils/echo.js';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
-import './ChatIndex.css';
+import './ChatBox.css';
 import ChatShow from './ChatShow.jsx';
 
 export default function ChatIndex({ userId }) {

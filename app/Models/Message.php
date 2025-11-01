@@ -20,7 +20,7 @@ class Message extends Model
     protected $casts = [
         'attachments' => 'array',
         'is_read' => 'boolean',
-    ];
+    ]; 
 
     public function conversation()
     {

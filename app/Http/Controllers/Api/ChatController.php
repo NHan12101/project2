@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 class ChatController extends Controller
 {
     /**
-     * 🔹 Danh sách các cuộc trò chuyện
+     * Danh sách các cuộc trò chuyện
      */
     public function index(Request $request)
     {
@@ -29,7 +29,7 @@ class ChatController extends Controller
     }
 
     /**
-     * 🔹 Lấy toàn bộ tin nhắn trong cuộc trò chuyện
+     * Lấy toàn bộ tin nhắn trong cuộc trò chuyện
      */
     public function messages(Request $request, $conversationId)
     {
@@ -63,7 +63,7 @@ class ChatController extends Controller
     }
 
     /**
-     * 🔹 Gửi tin nhắn (văn bản + ảnh)
+     * Gửi tin nhắn (văn bản + ảnh)
      */
     public function sendMessage(Request $request)
     {
@@ -107,7 +107,7 @@ class ChatController extends Controller
         $message->load('sender');
 
         /**
-         * ✅ Gửi realtime event
+         * Gửi realtime event
          * - Dùng event() thay vì broadcast()->toOthers()
          * - Vì khi test local, socket ID không đồng bộ giữa 2 tab/user
          */
@@ -117,7 +117,7 @@ class ChatController extends Controller
     }
 
     /**
-     * 🔹 Đánh dấu đã đọc
+     * Đánh dấu đã đọc
      */
     public function markAsRead(Request $request)
     {
@@ -135,7 +135,7 @@ class ChatController extends Controller
     }
 
     /**
-     * 🔹 Tạo hoặc lấy cuộc trò chuyện giữa 2 người
+     * Tạo hoặc lấy cuộc trò chuyện giữa 2 người
      */
     public function startConversation(Request $request)
     {
@@ -169,7 +169,7 @@ class ChatController extends Controller
     }
 
     /**
-     * 🔹 Lấy thông tin 1 cuộc trò chuyện (dành cho realtime)
+     * Lấy thông tin 1 cuộc trò chuyện (dành cho realtime)
      */
     public function show(Request $request, $id)
     {

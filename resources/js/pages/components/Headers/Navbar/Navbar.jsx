@@ -10,6 +10,11 @@ import './Navbar.css';
 
 export default function Navbar() {
     const [isLogin, setIsLogin] = useState(false);
+    const { auth } = usePage().props;
+    useEffect(() => {
+        setIsLogin(!!auth?.user);
+    }, [auth]);
+    
     const [open, setOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -31,12 +36,6 @@ export default function Navbar() {
         window.toggleTheme(); // gọi hàm trong blade
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
-    
-    const { props } = usePage();
-    const auth = props.auth;
-    useEffect(() => {
-        setIsLogin(!!auth?.user);
-    }, [auth]);
 
     return (
         <nav

@@ -26,7 +26,7 @@ class Conversation extends Model
         return $this->hasMany(Message::class);
     }
 
-    // 🔹 Lấy người còn lại trong cuộc trò chuyện
+    // Lấy người còn lại trong cuộc trò chuyện
     public function getOtherUser($currentUserId)
     {
         return $this->user_one_id === $currentUserId

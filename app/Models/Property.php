@@ -15,8 +15,8 @@ class Property extends Model
         'bedrooms',
         'area',
         'location',
-        'posted_at', // ✅ sửa từ postedAt → posted_at
-        'is_vip',    // ✅ sửa từ isVip → is_vip
+        'posted_at',
+        'is_vip',
     ];
 
     public function images()

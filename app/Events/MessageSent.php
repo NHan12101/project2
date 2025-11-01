@@ -16,25 +16,25 @@ class MessageSent implements ShouldBroadcast
 
     public function __construct(Message $message)
     {
-        // ✅ Nạp thêm thông tin người gửi để client hiển thị luôn tên, avatar,...
+        // Nạp thêm thông tin người gửi để client hiển thị luôn tên, avatar,...
         $this->message = $message->load('sender');
     }
 
     /**
-     * 🔹 Kênh phát sóng (public hoặc private)
+     * Kênh phát sóng (public hoặc private)
      * -> Nếu dùng private channel (bảo mật hơn), thì dùng "PrivateChannel"
      */
     public function broadcastOn()
     {
         return [
             new Channel('chat.' . $this->message->conversation_id),
-            new Channel('chat.global'), // 👈 thêm kênh toàn cục
+            new Channel('chat.global'), // thêm kênh toàn cục
         ];
-        // ❗ Nếu bạn dùng private channel: return new PrivateChannel('chat.' . $this->message->conversation_id);
+        // Nếu bạn dùng private channel: return new PrivateChannel('chat.' . $this->message->conversation_id);
     }
 
     /**
-     * 🔹 Tên sự kiện mà frontend lắng nghe
+     * Tên sự kiện mà frontend lắng nghe
      */
     public function broadcastAs()
     {
@@ -42,7 +42,7 @@ class MessageSent implements ShouldBroadcast
     }
 
     /**
-     * 🔹 Dữ liệu gửi sang client
+     * Dữ liệu gửi sang client
      */
     public function broadcastWith()
     {
