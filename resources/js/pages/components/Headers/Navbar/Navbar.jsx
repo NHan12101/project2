@@ -47,7 +47,7 @@ export default function Navbar() {
                 {theme === 'light' ? 'Dark' : 'Light'}
             </button>
             <div className="nav__item">
-                <a href="./">
+                <a href="/home">
                     <img src={logo} alt="Logo" className="nav__item--logo" />
                 </a>
 
@@ -79,7 +79,7 @@ export default function Navbar() {
                                 onClick={() => setOpen((pre) => !pre)}
                             >
                                 <img
-                                    src={auth.user.avatar_image_url}
+                                    src={`/${auth.user.avatar_image_url ?? auth.user.avatar ?? 'images/ava2.jpg'}`}
                                     alt="avatar"
                                     className="nav__info--avatar"
                                 />

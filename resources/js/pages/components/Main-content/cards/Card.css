@@ -1,5 +1,9 @@
-.property-grid {
+.card__heading--title {
     margin-top: 120px;
+}
+
+.property-grid {
+    margin-top: 40px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 35px;

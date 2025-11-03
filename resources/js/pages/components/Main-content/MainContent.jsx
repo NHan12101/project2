@@ -1,6 +1,5 @@
 import { Building2, Home, House, LayoutGrid } from 'lucide-react';
 import momo from '../../../../../public/images/momo.svg';
-import Chat from '../../Chat.jsx';
 import './MainContent.css';
 import BlogList from './blogs/BlogList.jsx';
 import Card from './cards/Card.jsx';
@@ -88,8 +87,6 @@ function MainContent() {
                     </div>
                 </div>
             </section>
-
-            <Chat />
 
             <HomeListing />
 

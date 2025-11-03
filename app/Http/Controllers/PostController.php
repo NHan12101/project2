@@ -11,8 +11,15 @@ class PostController extends Controller
     public function show($id)
     {
         $posts = Post::with('images', 'location')->findOrFail($id);
+        $related = Post::with('images', 'location')
+            ->where('id', '!=', $id)
+            ->take(6)
+            ->get();
 
-        return Inertia::render('PropertyDetail', ['posts' => $posts]);
+        return Inertia::render('PropertyDetail', [
+            'post' => $posts,
+            'relatedPosts' => $related,
+        ]);
     }
 
     public function index()

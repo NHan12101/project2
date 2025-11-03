@@ -10,8 +10,8 @@ import { MapPin } from 'lucide-react';
 import { useState } from 'react';
 import './Card.css';
 
-export default function Card() {
-    const { posts } = usePage().props;
+export default function Card({post}) {
+    const data = post || usePage().props.posts || [];
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
@@ -68,8 +68,10 @@ export default function Card() {
 
     return (
         <div className="main-contain">
+            <h1 className="header_title card__heading--title">Bất động sản dành cho bạn</h1>
+
             <div className="property-grid">
-                {posts.slice(0, visibleCount).map((item) => {
+                {data.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);
                     const currentIndex = currentImageIndex[item.id] || 0;
                     const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
@@ -206,7 +208,7 @@ export default function Card() {
                     );
                 })}
             </div>
-            {posts.length > 6 && (
+            {data.length > 6 && (
                 <div className="show-more-container">
                     {visibleCount + 6 <= 12 ? (
                         <button

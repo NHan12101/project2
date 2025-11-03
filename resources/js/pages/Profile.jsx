@@ -34,7 +34,7 @@ export default function Profile({ user }) {
                                     ? `/${user.avatar_image_url}`
                                     : user.avatar
                                       ? user.avatar
-                                      : '/images/default-avatar.jpg'
+                                      : '/images/ava2.jpg'
                             }
                             alt={user.name}
                             className="profile-avatar"

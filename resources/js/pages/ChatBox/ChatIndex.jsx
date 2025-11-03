@@ -4,10 +4,10 @@ import echo from '../../utils/echo.js';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import './ChatBox.css';
 import ChatShow from './ChatShow.jsx';
+import { Head } from '@inertiajs/react';
 
 export default function ChatIndex({ userId }) {
     const [conversations, setConversations] = useState([]);
-console.log(conversations)
     const [selectedConversation, setSelectedConversation] = useState(null);
 
     useEffect(() => {
@@ -62,6 +62,7 @@ console.log(conversations)
 
     return (
         <>
+        <Head title= {'StayHub | Chat'}/>
             <Navbar />
             <div className="chat-container">
                 <div className="conversation-list">
@@ -78,7 +79,6 @@ console.log(conversations)
                                     conv.user_one_id === userId
                                         ? conv.user_two
                                         : conv.user_one;
-                                        {console.log(partner)}
                                 return (
                                     <div
                                         key={conv.id}
@@ -93,7 +93,7 @@ console.log(conversations)
                                     >
                                         <div className="conversation-list__avatart">
                                             <img
-                                                src={partner.avatar_image_url}
+                                                src={partner.avatar_image_url ?? partner.avatar ?? 'images/ava2.jpg'}
                                                 alt={partner.name}
                                                 style={{ objectFit: 'cover' }}
                                             />
