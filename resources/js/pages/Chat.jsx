@@ -23,7 +23,7 @@ export default function Chat() {
         setLoading(true);
 
         try {
-            const res = await axios.post('/chat', {
+            const res = await axios.post('/api/chat', {
                 messages: newMessages,
             });
             const reply = res.data.content;

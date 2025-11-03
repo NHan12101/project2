@@ -4,27 +4,18 @@ import {
     faHeart as faHeartSolid,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './Card.css';
 
 export default function Card() {
-    const [properties, setProperties] = useState([]);
+    const { posts } = usePage().props;
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
     const [direction, setDirection] = useState(0);
-
-    console.log(properties)
-
-    useEffect(() => {
-        fetch('/posts')
-            .then((res) => res.json())
-            .then((data) => setProperties(data))
-            .catch((err) => console.error('Lỗi tải dữ liệu:', err));
-    }, []);
 
     function toggleLike(id) {
         setLikedItems((prev) =>
@@ -78,7 +69,7 @@ export default function Card() {
     return (
         <div className="main-contain">
             <div className="property-grid">
-                {properties.slice(0, visibleCount).map((item) => {
+                {posts.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);
                     const currentIndex = currentImageIndex[item.id] || 0;
                     const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
@@ -87,7 +78,9 @@ export default function Card() {
                         <div
                             key={item.id}
                             className="property-card"
-                            onClick={() => router.get(`/property-detail/${item.id}`)}
+                            onClick={() =>
+                                router.get(`/property-detail/${item.id}`)
+                            }
                         >
                             {item.is_vip ? (
                                 <span className="vip-badge">VIP</span>
@@ -213,7 +206,7 @@ export default function Card() {
                     );
                 })}
             </div>
-            {properties.length > 6 && (
+            {posts.length > 6 && (
                 <div className="show-more-container">
                     {visibleCount + 6 <= 12 ? (
                         <button

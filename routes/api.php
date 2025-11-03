@@ -1,11 +1,11 @@
 <?php
 
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\Api\PropertyController;
-use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Api\ChatController;
 
-// Route::middleware('api')->group(function () {
-//     Route::get('/properties', [PropertyController::class, 'index']);
-// });
-
-// Route::post('/chat', [ChatController::class, 'chat']);
+// ========= CHAT BOT AI ===============
+Route::get('/chat', function () {
+    return Inertia::render('Chat');
+});
+Route::post('/chat', [ChatController::class, 'chat']);

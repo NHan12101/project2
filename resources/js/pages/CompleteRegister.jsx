@@ -71,10 +71,11 @@ export default function CompleteRegister() {
                                 border: 'none',
                                 // outline: '1px solid var(--text-color)',
                                 borderRadius: '26px',
-                                padding: '8px',
+                                padding: '16px',
                                 marginBottom: '28px',
                                 color: 'var(--text-color)',
                                 boxShadow: '2px 2px 12px pink',
+                                width: '90%'
                             }}
                         />
                     </div>
@@ -92,10 +93,11 @@ export default function CompleteRegister() {
                                 border: 'none',
                                 // outline: '1px solid var(--text-color)',
                                 borderRadius: '26px',
-                                padding: '8px',
+                                padding: '16px',
                                 marginBottom: '16px',
                                 color: 'var(--text-color)',
                                 boxShadow: '2px 2px 12px pink',
+                                width: '90%'
                             }}
                         />
                     </div>

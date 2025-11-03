@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { MapPin } from 'lucide-react';
+import classes from './PropertyDetail.module.css'
 
 export default function PropertyDetail({ posts }) {
     return (
