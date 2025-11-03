@@ -16,6 +16,10 @@ class User extends Authenticatable //implements MustVerifyEmail
         'email',
         'password',
         'google_id',
+        'phone',
+        'avatar_image_url',
+        'avatar',
+        'notification',
     ];
 
     protected $hidden = [
@@ -26,4 +30,20 @@ class User extends Authenticatable //implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['avatar_url'];
+
+    // ✅ Accessor xử lý tự động ảnh đại diện
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar_image_url) {
+            return asset($this->avatar_image_url);
+        }
+
+        if ($this->avatar) {
+            return $this->avatar;
+        }
+
+        return asset('images/default-avatar.jpg');
+    }
 }

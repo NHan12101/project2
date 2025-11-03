@@ -8,6 +8,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -41,8 +42,9 @@ Route::get('/blogsdetail', function () {
 })->name('blogsdetail');
 
 //=== TRANG PROFILE ====
-Route::get('/profile', function () {
-    return Inertia::render('Profile');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [UserController::class, 'show'])->name('profile.show');
+    Route::post('/profile/update', [UserController::class, 'storeOrUpdate'])->name('profile.update');
 });
 
 // ===== GOOGLE LOGIN =====

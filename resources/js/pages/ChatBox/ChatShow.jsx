@@ -102,7 +102,7 @@ export default function ChatShow({ conversationId, userId, conversations }) {
                 {partner ? (
                     <div className="chat-user-header">
                         <img
-                            src={partner.avatar}
+                            src={partner.avatar_image_url}
                             alt={partner.name}
                             className="conversation-list__avatart"
                             style={{

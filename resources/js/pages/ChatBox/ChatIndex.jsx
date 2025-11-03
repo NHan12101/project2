@@ -7,6 +7,7 @@ import ChatShow from './ChatShow.jsx';
 
 export default function ChatIndex({ userId }) {
     const [conversations, setConversations] = useState([]);
+console.log(conversations)
     const [selectedConversation, setSelectedConversation] = useState(null);
 
     useEffect(() => {
@@ -77,6 +78,7 @@ export default function ChatIndex({ userId }) {
                                     conv.user_one_id === userId
                                         ? conv.user_two
                                         : conv.user_one;
+                                        {console.log(partner)}
                                 return (
                                     <div
                                         key={conv.id}
@@ -91,7 +93,7 @@ export default function ChatIndex({ userId }) {
                                     >
                                         <div className="conversation-list__avatart">
                                             <img
-                                                src={partner.avatar}
+                                                src={partner.avatar_image_url}
                                                 alt={partner.name}
                                                 style={{ objectFit: 'cover' }}
                                             />

@@ -76,7 +76,7 @@ class GoogleController extends Controller
         $user = User::create([
             'name' => $googleUser['name'],
             'email' => $googleUser['email'],
-            'avatar_image_url' => $googleUser['avatar'],
+            'avatar' => $googleUser['avatar'],
             'password' => bcrypt($request->password),
         ]);
 

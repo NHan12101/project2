@@ -4,17 +4,18 @@ import { router, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { FaDoorOpen } from 'react-icons/fa';
 import logo from '../../../../../../public/images/StayHub.svg';
-import avatar from '../../../../../../public/images/ava2.jpg';
 import Notification from '../Notification/Notification.jsx';
 import './Navbar.css';
 
 export default function Navbar() {
     const [isLogin, setIsLogin] = useState(false);
     const { auth } = usePage().props;
+    console.log(auth);
+
     useEffect(() => {
         setIsLogin(!!auth?.user);
     }, [auth]);
-    
+
     const [open, setOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -78,7 +79,7 @@ export default function Navbar() {
                                 onClick={() => setOpen((pre) => !pre)}
                             >
                                 <img
-                                    src={avatar}
+                                    src={auth.user.avatar_image_url}
                                     alt="avatar"
                                     className="nav__info--avatar"
                                 />
@@ -89,7 +90,12 @@ export default function Navbar() {
                                 />
                                 {open && (
                                     <div className="dropdown-menu">
-                                        <p className="dropdown-menu--desc">
+                                        <p
+                                            className="dropdown-menu--desc"
+                                            onClick={() =>
+                                                router.get('/profile')
+                                            }
+                                        >
                                             Hồ sơ
                                         </p>
                                         <p className="dropdown-menu--desc">
