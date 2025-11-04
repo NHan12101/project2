@@ -10,7 +10,6 @@ import './Navbar.css';
 export default function Navbar() {
     const [isLogin, setIsLogin] = useState(false);
     const { auth } = usePage().props;
-    console.log(auth);
 
     useEffect(() => {
         setIsLogin(!!auth?.user);

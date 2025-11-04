@@ -3,7 +3,6 @@ import { useState } from 'react';
 import './Profile.css';
 
 export default function Profile({ user, properties }) {
-    console.log(properties);
     const [activeTab, setActiveTab] = useState('properties');
     const { data, setData, post, processing, errors } = useForm({
         name: user?.name || '',

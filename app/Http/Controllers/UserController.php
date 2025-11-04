@@ -41,9 +41,9 @@ class UserController extends Controller
         // Nếu người dùng upload ảnh mới
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             // Xóa ảnh cũ (nếu có)
-            if ($user->avatar_image_url && file_exists(public_path($user->avatar_image_url))) {
-                unlink(public_path($user->avatar_image_url));
-            }
+            // if ($user->avatar_image_url && file_exists(public_path($user->avatar_image_url))) {
+            //     unlink(public_path($user->avatar_image_url));
+            // }
 
             // Lưu ảnh mới
             $path = $request->file('avatar')->store('avatars', 'public');
