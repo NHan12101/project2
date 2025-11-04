@@ -72,19 +72,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('chatbox.chatindex');
 });
 
-// ========== PROFILE ROUTES ==========
-Route::middleware(['auth', 'verified'])->group(function () {
-
-    // Trang hồ sơ người dùng
-    Route::get('/profile/{id}', function ($id) {
-        $user = User::findOrFail($id);
-        return Inertia::render('Profile/Show', [
-            'user' => $user,
-            'currentUserId' => Auth::id(),
-        ]);
-    })->name('profile.show');
-});
-
 // ========== Gọi API CỦA MESSAGES ==========
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/conversations', [ChatController::class, 'index']);

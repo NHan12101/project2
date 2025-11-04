@@ -15,8 +15,11 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
+        $properties = $user->posts()->with('images', 'location')->get();
+
         return Inertia::render('Profile', [
             'user' => $user,
+            'properties' => $properties,
         ]);
     }
 

@@ -2,6 +2,8 @@ import axios from 'axios';
 import { router } from '@inertiajs/react';
 
 export default function ProfileShow({ user, currentUserId }) {
+    console.log(user)
+    console.log(currentUserId)
     const handleStartChat = async () => {
         try {
             const res = await axios.post('/conversations/start', {

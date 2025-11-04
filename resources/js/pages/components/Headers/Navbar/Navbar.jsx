@@ -79,7 +79,7 @@ export default function Navbar() {
                                 onClick={() => setOpen((pre) => !pre)}
                             >
                                 <img
-                                    src={`/${auth.user.avatar_image_url ?? auth.user.avatar ?? 'images/ava2.jpg'}`}
+                                    src={auth.user.avatar ?? `/${auth.user.avatar_image_url ?? 'images/ava2.jpg'}`}
                                     alt="avatar"
                                     className="nav__info--avatar"
                                 />

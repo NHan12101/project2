@@ -2,7 +2,8 @@ import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import './Profile.css';
 
-export default function Profile({ user }) {
+export default function Profile({ user, properties }) {
+    console.log(properties);
     const [activeTab, setActiveTab] = useState('properties');
     const { data, setData, post, processing, errors } = useForm({
         name: user?.name || '',
@@ -235,12 +236,42 @@ export default function Profile({ user }) {
                     </div>
 
                     <div className="tab-content">
-                        {activeTab === 'properties' && (
-                            <div className="empty-state">
-                                <i className="fas fa-home"></i>
-                                <p>Chưa có bất động sản nào</p>
-                            </div>
-                        )}
+                        {activeTab === 'properties' &&
+                            (properties.length > 0 ? (
+                                <div className="properties-grid">
+                                    {properties.map((post) => (
+                                    
+                                        <div
+                                            key={post.id}
+                                            className="property-card"
+                                        >
+                                            {console.log(post)}
+                                            <img
+                                                src={
+                                                    post.images?.[0]?.image_path
+                                                        ? `/${post.images[0].image_path}`
+                                                        : '/images/default-house.jpg'
+                                                }
+                                                alt={post.title}
+                                                className="property-thumb"
+                                            />
+                                            <div className="property-info">
+                                                <h3>{post.title}</h3>
+                                                <p>{post.address}</p>
+                                                <span className="price">
+                                                    {post.price.toLocaleString()}{' '}
+                                                    VNĐ
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="empty-state">
+                                    <i className="fas fa-home"></i>
+                                    <p>Chưa có bất động sản nào</p>
+                                </div>
+                            ))}
                         {activeTab === 'favorites' && (
                             <div className="empty-state">
                                 <i className="fas fa-heart"></i>

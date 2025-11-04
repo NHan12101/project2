@@ -12,6 +12,7 @@ import './Card.css';
 
 export default function Card({post}) {
     const data = post || usePage().props.posts || [];
+    console.log(data)
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});

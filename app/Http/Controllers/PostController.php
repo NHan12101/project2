@@ -10,7 +10,9 @@ class PostController extends Controller
 {
     public function show($id)
     {
-        $posts = Post::with('images', 'location')->findOrFail($id);
+        // 🔹 Thêm 'user' vào with() để load thông tin người đăng bài
+        $posts = Post::with('images', 'location', 'user')->findOrFail($id);
+
         $related = Post::with('images', 'location')
             ->where('id', '!=', $id)
             ->take(6)
@@ -19,8 +21,12 @@ class PostController extends Controller
         return Inertia::render('PropertyDetail', [
             'post' => $posts,
             'relatedPosts' => $related,
+            'auth' => [
+                'user' => Auth::user(),
+            ],
         ]);
     }
+
 
     public function index()
     {
