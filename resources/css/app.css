@@ -61,6 +61,12 @@ a {
   width: 1440px;
   max-width: calc(100% - 48px);
   margin: 0 auto;
+
+  /* width: 100%;
+  max-width: 1740px;
+  min-width: 1440px;
+  margin: 0 auto;
+  padding: 0 30px; */
 }
 
 .header_title {

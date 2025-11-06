@@ -12,6 +12,7 @@ import './Card.css';
 
 export default function Card({post}) {
     const data = post || usePage().props.posts || [];
+    // console.log(data)
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
@@ -68,8 +69,6 @@ export default function Card({post}) {
 
     return (
         <div className="main-contain">
-            <h1 className="header_title card__heading--title">Bất động sản dành cho bạn</h1>
-
             <div className="property-grid">
                 {data.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);

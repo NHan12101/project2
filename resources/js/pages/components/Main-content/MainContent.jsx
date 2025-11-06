@@ -28,6 +28,9 @@ function MainContent() {
                             </div>
                         ))}
                     </div>
+                    <h1 className="header_title card__heading--title">
+                        Bất động sản dành cho bạn
+                    </h1>
                 </div>
             </section>
 

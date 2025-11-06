@@ -10,7 +10,7 @@ class PostController extends Controller
 {
     public function show($id)
     {
-        // 🔹 Thêm 'user' vào with() để load thông tin người đăng bài
+        // Thêm 'user' vào with() để load thông tin người đăng bài
         $posts = Post::with('images', 'location', 'user')->findOrFail($id);
 
         $related = Post::with('images', 'location')

@@ -148,8 +148,8 @@ export default function ChatShow({ conversationId, userId, conversations }) {
                             }`}
                         >
                             {msg.message && (
-                                <div style={{ fontSize: '1.8rem', }}>
-                                    <p style={{textAlign: 'left'}}>{msg.message}</p>
+                                <div style={{ fontSize: '1.7rem', }}>
+                                    <p style={{textAlign: 'left', lineHeight: '1.14'}}>{msg.message}</p>
                                 </div>
                             )}
                             {msg.attachments?.length > 0 && (

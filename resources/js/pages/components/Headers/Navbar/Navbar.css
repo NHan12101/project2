@@ -9,9 +9,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 14px;
     width: 1440px;
     max-width: calc(100% - 48px);
+
+    /* padding: 14px 30px;
+    width: 100%;
+    max-width: 1740px;
+    min-width: 1440px;   */
+
     margin: 0 auto;
 }
 

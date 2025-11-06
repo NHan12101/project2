@@ -1,4 +1,4 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import avatar from '../../../public/images/Phucchill.png';
 import location_related from '../../../public/images/Rectangle.png';
@@ -175,8 +175,11 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <h1 className="header_title card__heading--title">
+                    Bất động sản dành cho bạn
+                </h1>
+            </div>
             <Card post={relatedPosts} />
             <Footer />
         </>

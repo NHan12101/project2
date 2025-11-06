@@ -19,7 +19,7 @@ class PostSeeder extends Seeder
             return;
         }
 
-        // 🔹 Tạo 16 bài viết mẫu
+        // Tạo 16 bài viết mẫu
         Post::factory(16)->create()->each(function ($post) {
             $post->user_id = User::inRandomOrder()->first()->id;
             $post->category_id = Category::inRandomOrder()->first()->id;
@@ -41,6 +41,6 @@ class PostSeeder extends Seeder
             }
         });
 
-        $this->command->info('✅ Đã tạo 16 bài viết mẫu thành công!');
+        $this->command->info('Đã tạo 16 bài viết mẫu thành công!');
     }
 }
