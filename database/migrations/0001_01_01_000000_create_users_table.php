@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->rememberToken();
             $table->timestamps();
 
-            // 👇 Thêm 2 trường cho đăng nhập bằng Google
+            // Thêm 2 trường cho đăng nhập bằng Google
             $table->string('google_id')->nullable()->unique();
             $table->string('avatar')->nullable();
         });

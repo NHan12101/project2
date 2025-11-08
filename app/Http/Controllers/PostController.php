@@ -18,7 +18,7 @@ class PostController extends Controller
             ->take(6)
             ->get();
 
-        return Inertia::render('PropertyDetail', [
+        return Inertia::render('PropertyDetail/PropertyDetail', [
             'post' => $posts,
             'relatedPosts' => $related,
             'auth' => [

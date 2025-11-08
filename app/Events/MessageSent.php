@@ -30,7 +30,7 @@ class MessageSent implements ShouldBroadcast
             new Channel('chat.' . $this->message->conversation_id),
             new Channel('chat.global'), // thêm kênh toàn cục
         ];
-        // Nếu bạn dùng private channel: return new PrivateChannel('chat.' . $this->message->conversation_id);
+        // Nếu dùng private channel: return new PrivateChannel('chat.' . $this->message->conversation_id);
     }
 
     /**

@@ -38,6 +38,17 @@
     flex-direction: column;
     color: var(--text-color);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.4);
+    animation: fadeIn 0.26s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 

@@ -1,7 +1,6 @@
 <?php
 
 use Inertia\Inertia;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
@@ -20,12 +19,6 @@ Route::get('/home', [PostController::class, 'index'])->name('home');
 
 // ===== PROPERTY DETAIL =====
 Route::get('/property-detail/{id}', [PostController::class, 'show']);
-
-// ===== TRANG ĐĂNG KÝ / ĐĂNG NHẬP =====
-// ⚠️ Quan trọng: thêm GET routes để hiển thị giao diện đăng nhập/đăng ký
-Route::get('/login', fn() => Inertia::render('Login'))->name('login');
-Route::get('/register', fn() => Inertia::render('Register'))->name('register');
-
 
 // ===== XỬ LÝ FORM ĐĂNG KÝ / ĐĂNG NHẬP / ĐĂNG XUẤT =====
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');

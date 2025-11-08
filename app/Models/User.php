@@ -33,9 +33,7 @@ class User extends Authenticatable
 
     protected $appends = ['avatar_url'];
 
-    /**
-     * Gán ảnh mặc định cho user không có avatar khi được tạo mới
-     */
+    // Gán ảnh mặc định cho user không có avatar khi được tạo mới
     protected static function boot()
     {
         parent::boot();
@@ -47,9 +45,7 @@ class User extends Authenticatable
         });
     }
 
-    /**
-     * Accessor trả về URL ảnh đại diện phù hợp
-     */
+    // Accessor trả về URL ảnh đại diện phù hợp
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar_image_url) {
@@ -63,9 +59,8 @@ class User extends Authenticatable
         return asset('images/default-avatar.jpg');
     }
 
-    /**
-     * Quan hệ: 1 user có nhiều bài đăng
-     */
+
+    // Quan hệ: 1 user có nhiều bài đăng
     public function posts()
     {
         return $this->hasMany(Post::class);

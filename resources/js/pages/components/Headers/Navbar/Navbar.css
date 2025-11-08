@@ -1,6 +1,5 @@
 .nav {
     position: sticky;
-    width: 99vw;
     top: 0px;
     z-index: 999;
 }
@@ -226,4 +225,29 @@
         background: var(--text-color);
         color: var(--bg-color);
     }
+}
+
+
+/* ================== auth form ================== */
+.auth-form {
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  animation: fadeIn 0.32s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

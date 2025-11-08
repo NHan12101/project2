@@ -4,19 +4,20 @@ import { router, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { FaDoorOpen } from 'react-icons/fa';
 import logo from '../../../../../../public/images/StayHub.svg';
+import AuthForm from '../../../Auth/AuthForm.jsx';
 import Notification from '../Notification/Notification.jsx';
 import './Navbar.css';
 
 export default function Navbar() {
     const [isLogin, setIsLogin] = useState(false);
     const { auth } = usePage().props;
+    const [open, setOpen] = useState(false);
+    const [showAuth, setShowAuth] = useState(false);
+    const menuRef = useRef(null);
 
     useEffect(() => {
         setIsLogin(!!auth?.user);
     }, [auth]);
-
-    const [open, setOpen] = useState(false);
-    const menuRef = useRef(null);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -148,20 +149,20 @@ export default function Navbar() {
                 ) : (
                     <div className="nav__btn">
                         <button
-                            className="btn nav__btn-login"
-                            onClick={() => router.visit('/login')}
-                        >
-                            Đăng nhập
-                        </button>
-                        <button
                             className="btn nav__btn-register"
-                            onClick={() => router.visit('/register')}
+                            onClick={() => setShowAuth(true)}
                         >
-                            Đăng ký
+                            Bắt đầu
                         </button>
                     </div>
                 )}
             </div>
+
+            {showAuth && (
+                <div className="auth-form" onClick={() => setShowAuth(false)}>
+                    <AuthForm onClose={() => setShowAuth(false)} />
+                </div>
+            )}
         </nav>
     );
 }

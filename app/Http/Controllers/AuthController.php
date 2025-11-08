@@ -17,8 +17,11 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        // Làm sạch dữ liệu đầu vào (chặn icon hoặc HTML)
+        $cleanEmail = strip_tags($validated['email']);
+
         $user = User::create([
-            'email' => $validated['email'],
+            'email' => $cleanEmail,
             'password' => bcrypt($validated['password']),
         ]);
 
@@ -43,7 +46,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Sai thông tin đăng nhập!',
+            'email' => 'Mật khẩu hoặc Email không đúng!',
         ]);
     }
 
