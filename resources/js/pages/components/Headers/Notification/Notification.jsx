@@ -1,9 +1,9 @@
-import { faBell, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import './Notification.css';
 
-function NotificationList({ closeSidebar, isOpen }) {
+function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth}) {
     return (
         <>
             <div
@@ -18,18 +18,32 @@ function NotificationList({ closeSidebar, isOpen }) {
                         <FontAwesomeIcon icon={faTimes} />
                     </button>
                 </div>
-
-                <div className="sidebar-content">
-                    <div className="notify-item">📩 Bạn có 1 tin nhắn mới</div>
-                    <div className="notify-item">🏠 Bài đăng của bạn được duyệt</div>
-                    <div className="notify-item">🔔 Cập nhật hệ thống lúc 12:00</div>
-                </div>
+                {isLogin ? (
+                    <div className="sidebar-content">
+                        <div className="notify-item">
+                            <span>Bạn có 1 tin nhắn mới</span>
+                        </div>
+                        <div className="notify-item">
+                            <span>Bài đăng của bạn được duyệt</span>
+                        </div>
+                        <div className="notify-item">
+                            <span>Cập nhật hệ thống lúc 12:00</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="sidebar--notlogin">
+                        <p>Vui lòng đăng nhập để xem thông báo!</p>
+                        <button onClick={setShowAuth}>
+                            Đăng ký / Đăng nhập
+                        </button>
+                    </div>
+                )}
             </div>
         </>
     );
 }
 
-export default function Notification() {
+export default function Notification({ isLogin, setShowAuth }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => setIsOpen(!isOpen);
@@ -37,11 +51,16 @@ export default function Notification() {
     return (
         <>
             <button className="bell-btn" onClick={toggleSidebar}>
-                <FontAwesomeIcon icon={faBell} className="bell-icon" />
-                <span className="bell-count">16</span>
+                <img src="/icons/bell.svg" alt="bell" />
+                <span className="bell-count">7</span>
             </button>
 
-            <NotificationList isOpen={isOpen} closeSidebar={() => setIsOpen(false)} />
+            <NotificationList
+                setShowAuth={setShowAuth}
+                isLogin={isLogin}
+                isOpen={isOpen}
+                closeSidebar={() => setIsOpen(false)}
+            />
         </>
     );
 }

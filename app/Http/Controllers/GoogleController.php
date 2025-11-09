@@ -23,7 +23,7 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->stateless()->user();
         }
 
-        // 🔍 Kiểm tra user tồn tại
+        // Kiểm tra user tồn tại
         $user = User::where('email', $googleUser->getEmail())->first();
 
         if ($user) {
@@ -31,7 +31,7 @@ class GoogleController extends Controller
             return redirect('/home');
         }
 
-        // ⚙️ Nếu chưa có → lưu session tạm để người dùng nhập mật khẩu bổ sung
+        // Nếu chưa có → lưu session tạm để người dùng nhập mật khẩu bổ sung
         session([
             'google_user' => [
                 'name' => $googleUser->getName(),
@@ -43,7 +43,7 @@ class GoogleController extends Controller
         return redirect()->route('complete.register');
     }
 
-    // 🔒 Trang nhập mật khẩu sau khi đăng ký bằng Google
+    // Trang nhập mật khẩu sau khi đăng ký bằng Google
     public function showCompleteRegister()
     {
         $googleUser = session('google_user');
@@ -56,7 +56,7 @@ class GoogleController extends Controller
         ]);
     }
 
-    // 📝 Xử lý lưu mật khẩu mới
+    // Xử lý lưu mật khẩu mới
     public function completeRegister(Request $request)
     {
         $request->validate([
@@ -80,7 +80,7 @@ class GoogleController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        // 🧹 Xóa session tạm
+        // Xóa session tạm
         session()->forget('google_user');
         Auth::login($user);
 

@@ -48,7 +48,7 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name
 Route::get('/complete-register', fn() => Inertia::render('CompleteRegister'))->name('complete.register');
 Route::post('/complete-register', [GoogleController::class, 'completeRegister']);
 
-// ✅ Email xác minh
+// Email xác minh
 // Auth::routes(['verify' => true]);
 
 // Trang yêu cầu xác minh email

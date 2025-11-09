@@ -13,13 +13,12 @@ export default function Header() {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrent((prev) => (prev + 1) % banners.length);
-        }, 5000);
+        }, 10000);
         return () => clearInterval(interval);
     }, []);
 
     return (
         <header className="header">
-            <div className="main-contain">
                 <div className="header__banner">
                     <div
                         className="banner__wrapper"
@@ -45,7 +44,6 @@ export default function Header() {
                         ))}
                     </div>
                 </div>
-            </div>
         </header>
     );
 }
