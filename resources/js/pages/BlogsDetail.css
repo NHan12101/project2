@@ -160,11 +160,11 @@
           border-color: #764ba2;
           color: white;
         }
-        .sidebar {
+        /* .sidebar {
           display: flex;
           flex-direction: column;
           gap: 2rem;
-        }
+        } */
         .sidebar-card {
           background: white;
           border-radius: 1rem;

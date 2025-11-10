@@ -9,10 +9,12 @@ import Dropdown from './Dropdown.jsx';
 import './Navbar.css';
 
 export default function Navbar() {
-    const { auth } = usePage().props;
+    const { props, url } = usePage();
+    const { auth } = props;
     const [isLogin, setIsLogin] = useState(false);
     const [open, setOpen] = useState(false);
     const [showAuth, setShowAuth] = useState(false);
+    const [show, setShow] = useState(false);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -38,16 +40,32 @@ export default function Navbar() {
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
 
+    useEffect(() => {
+        if (url === '/home') {
+            const handleScroll = () => {
+                console.log(window.scrollY)
+                setShow(window.scrollY > 690);
+            };
+
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+        }
+    }, [url]);
+
     return (
         <nav
             className="nav"
-            style={{ background: theme === 'dark' ? '#0a0a0ada' : '#fffffff4' }}
+            style={{
+                background:
+                    theme === 'dark' ? '#0a0a0ada' : show ? '#fff' : undefined,
+                position: show ? 'sticky' : 'relative',
+            }}
         >
-            <button onClick={toggleTheme} style={{ display: '' }}>
+            {/* <button onClick={toggleTheme} style={{ display: '' }}>
                 {theme === 'light' ? 'Dark' : 'Light'}
-            </button>
+            </button> */}
             <div className="nav__item">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 60 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 46}}>
                     <a href="/home">
                         <img
                             src={logo}
@@ -55,7 +73,9 @@ export default function Navbar() {
                             className="nav__item--logo"
                         />
                     </a>
-                    <ul className="nav__item--list">
+                    <ul
+                        className={`${show ? 'nav__item--list-scroll' : 'nav__item--list'}`}
+                    >
                         <li>
                             <a href="" className="active">
                                 Trang chủ
@@ -76,7 +96,12 @@ export default function Navbar() {
                     </ul>
                 </div>
 
-                <div className="container-search__box">
+                <div
+                    className="container-search__box"
+                    style={{
+                        display: show ? 'flex' : 'none',
+                    }}
+                >
                     <div className="container-search__box--iconsearch">
                         <div className="aw__cf5h6c0">
                             <img src="/icons/icon-search.svg" alt="search" />

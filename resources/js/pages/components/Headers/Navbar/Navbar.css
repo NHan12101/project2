@@ -1,5 +1,4 @@
 .nav {
-    position: sticky;
     top: 0px;
     z-index: 999;
 }
@@ -33,7 +32,8 @@
 
 .nav__item--list li a {
     position: relative;
-    color: #a3a3a3;
+    color: #fa371998;
+    font-weight: 600;
     transition: 0.25s;
 
     &::after {
@@ -51,7 +51,7 @@
 
 .nav__item--list li a:hover,
 .nav__item--list li a.active {
-    color: var(--text-color);
+    color: #fff;
     text-shadow: 1px 1px 12px var(--text-color);
     transform: scale(1.1);
 }
@@ -61,14 +61,50 @@
     width: 100%;
 }
 
+
+.nav__item--list-scroll {
+    display: flex;
+    column-gap: 22px;
+    letter-spacing: 0.4px;
+}
+
+.nav__item--list-scroll li a {
+    position: relative;
+    color: #b1b1b1;
+    font-weight: 600;
+    transition: 0.25s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -5.2px;
+        left: 0;
+        width: 0;
+        height: 2.1px;
+        background: rgb(255, 0, 0);
+        transition: width 0.3s ease;
+    }
+
+}
+
+.nav__item--list-scroll li a:hover,
+.nav__item--list-scroll li a.active {
+    color: #fa3719;
+    transform: scale(1.1);
+}
+
+.nav__item--list-scroll li a:hover::after,
+.nav__item--list-scroll li a.active::after {
+    width: 100%;
+}
+
 /* ================ search box ============== */
 
 .container-search__box {
-    display: flex;
     background-color: #F4F4F4;
     height: 40px;
     width: 670px;
-    border-radius: 999px;
+    border-radius: 999px
 }
 
 .container-search__box--iconsearch {
@@ -121,7 +157,7 @@
     cursor: pointer;
     transition: background 0.25s;
 
-    &:hover{
+    &:hover {
         background: #f62e0fc9;
     }
 }
@@ -162,7 +198,7 @@
 
 .nav__btn-story--manager {
     color: var(--text-color);
-    background: none;
+    background: #fff;
     border: 1px solid #E8E8E8;
     border-radius: 9999px;
     padding: 0px 12px;
@@ -170,7 +206,7 @@
     height: 40px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    transition: background 0.25s ease-in-out;
 
     &:hover {
         background: #f4f4f4;
@@ -182,6 +218,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
+    background: #fff;
     border: 1px solid #E8E8E8;
     border-radius: 999px;
     padding: 4px 8px 4px 4px;
@@ -200,8 +237,8 @@
     width: 78px;
     background: none;
     border: none;
-    cursor: pointer;
     color: var(--text-color);
+    cursor: pointer;
 }
 
 .nav__info--avatar {

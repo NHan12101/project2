@@ -54,7 +54,6 @@
   width: 396px;
   height: 100%;
   background: var(--bg-color);
-  box-shadow: -2px 0 8px rgba(94, 94, 94, 0.32);
   transform: translateX(100%);
   transition: transform 0.3s ease;
   z-index: 50;
