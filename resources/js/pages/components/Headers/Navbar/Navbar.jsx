@@ -1,7 +1,8 @@
+import useDropdown from '@/hooks/useDropdown.js';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { router, usePage } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../../../../../../public/images/StayHub.svg';
 import AuthForm from '../../../Auth/AuthForm.jsx';
 import Notification from '../Notification/Notification.jsx';
@@ -12,25 +13,25 @@ export default function Navbar() {
     const { props, url } = usePage();
     const { auth } = props;
     const [isLogin, setIsLogin] = useState(false);
-    const [open, setOpen] = useState(false);
+    const { menuRef, open, setOpen } = useDropdown();
     const [showAuth, setShowAuth] = useState(false);
     const [show, setShow] = useState(false);
-    const menuRef = useRef(null);
 
     useEffect(() => {
         setIsLogin(!!auth?.user);
     }, [auth]);
 
     useEffect(() => {
-        function handleClickOutside(event) {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setOpen(false);
-            }
+        if (url === '/home') {
+            const handleScroll = () => {
+                console.log(window.scrollY);
+                setShow(window.scrollY > 690);
+            };
+
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
         }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [url]);
 
     const [theme, setTheme] = useState(
         document.documentElement.classList.contains('dark') ? 'dark' : 'light',
@@ -39,18 +40,6 @@ export default function Navbar() {
         window.toggleTheme(); // gọi hàm trong blade
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
-
-    useEffect(() => {
-        if (url === '/home') {
-            const handleScroll = () => {
-                console.log(window.scrollY)
-                setShow(window.scrollY > 690);
-            };
-
-            window.addEventListener('scroll', handleScroll);
-            return () => window.removeEventListener('scroll', handleScroll);
-        }
-    }, [url]);
 
     return (
         <nav
@@ -61,11 +50,11 @@ export default function Navbar() {
                 position: show ? 'sticky' : 'relative',
             }}
         >
-            {/* <button onClick={toggleTheme} style={{ display: '' }}>
+            {/* <button onClick={toggleTheme}>
                 {theme === 'light' ? 'Dark' : 'Light'}
             </button> */}
             <div className="nav__item">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 46}}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 46 }}>
                     <a href="/home">
                         <img
                             src={logo}
@@ -108,8 +97,8 @@ export default function Navbar() {
                         </div>
                     </div>
                     <input
-                        autocomplete="off"
-                        class="container-search__box--input"
+                        autoComplete="off"
+                        className="container-search__box--input"
                         placeholder="Tìm bất động sản..."
                         // value=""
                     />
@@ -191,7 +180,10 @@ export default function Navbar() {
                                 <Dropdown
                                     isLogin={isLogin}
                                     auth={auth}
-                                    onChange={() => setShowAuth(true)}
+                                    onLogin={() => {
+                                        setShowAuth(true);
+                                        setOpen(false);
+                                    }}
                                     setOpen={() => setOpen(false)}
                                 />
                             )}

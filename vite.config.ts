@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [
     laravel({
-      input: ['resources/js/app.jsx'], // ⚠️ CHỈ app.jsx — không còn .tsx
+      input: ['resources/js/app.jsx'],
       refresh: true,
     }),
     react(),

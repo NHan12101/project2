@@ -1,7 +1,7 @@
 import './Dropdown.css';
 import DropdownSection from './DropdownSection';
 
-export default function Dropdown({ isLogin, auth, onChange, setOpen }) {
+export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
     const menuData = [
         {
             title: 'Tiện ích',
@@ -78,7 +78,14 @@ export default function Dropdown({ isLogin, auth, onChange, setOpen }) {
                         <a
                             href="/profile"
                             style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                                 position: 'relative',
+                                height: 80,
+                                width: 80,
+                                borderRadius: '50%',
+                                outline: '2px solid #ececec',
                             }}
                         >
                             <img
@@ -131,7 +138,7 @@ export default function Dropdown({ isLogin, auth, onChange, setOpen }) {
                     </div>
                     <div
                         className="dropdown-menu__none--btn"
-                        onClick={onChange}
+                        onClick={onLogin}
                     >
                         Đăng nhập
                     </div>

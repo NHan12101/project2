@@ -116,7 +116,7 @@
     width: calc(100% - 64px);
     padding-right: 4px;
     height: 48px;
-    text-indent: 12px;
+    text-indent: 16px;
     border: none;
     position: relative;
     padding: 0px;
@@ -127,6 +127,7 @@
 }
 
 .search-bar__02--button {
+    position: relative;
     display: flex;
     gap: 12px;
 }
@@ -141,6 +142,11 @@
     color: #222222;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.25s;
+
+    &:hover {
+        background: #ededed;
+    }
 }
 
 .select-region {

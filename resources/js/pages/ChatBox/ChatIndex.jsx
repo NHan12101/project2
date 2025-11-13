@@ -1,10 +1,10 @@
+import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import echo from '../../utils/echo.js';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import './ChatBox.css';
 import ChatShow from './ChatShow.jsx';
-import { Head } from '@inertiajs/react';
 
 export default function ChatIndex({ userId }) {
     const [conversations, setConversations] = useState([]);
@@ -14,7 +14,7 @@ export default function ChatIndex({ userId }) {
         axios.get(`/conversations?user_id=${userId}`).then((res) => {
             setConversations(res.data);
 
-            // 🔹 Kiểm tra query ?open=
+            // Kiểm tra query ?open=
             const params = new URLSearchParams(window.location.search);
             const openId = params.get('open');
             if (openId) {
@@ -62,7 +62,7 @@ export default function ChatIndex({ userId }) {
 
     return (
         <>
-        <Head title= {'StayHub | Chat'}/>
+            <Head title={'StayHub | Chat'} />
             <Navbar />
             <div className="chat-container">
                 <div className="conversation-list">
@@ -93,7 +93,11 @@ export default function ChatIndex({ userId }) {
                                     >
                                         <div className="conversation-list__avatart">
                                             <img
-                                                src={partner.avatar_image_url ?? partner.avatar ?? 'images/ava2.jpg'}
+                                                src={
+                                                    partner.avatar_image_url ??
+                                                    partner.avatar ??
+                                                    'images/ava2.jpg'
+                                                }
                                                 alt={partner.name}
                                                 style={{ objectFit: 'cover' }}
                                             />
@@ -123,7 +127,9 @@ export default function ChatIndex({ userId }) {
                 ) : (
                     <div className="conversation-content">
                         <p style={{ fontSize: '2.2rem', fontWeight: '600' }}>
-                            👉 Chọn một cuộc trò chuyện để bắt đầu
+                            {conversations.length === 0
+                                ? 'Bạn không có cuộc trò chuyện nào'
+                                : '👉 Chọn một cuộc trò chuyện để bắt đầu'}
                         </p>
                     </div>
                 )}

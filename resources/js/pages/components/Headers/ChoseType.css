@@ -1,0 +1,134 @@
+.chose-type__container {
+    position: absolute;
+    top: 58px;
+    right: -48px;
+    /* height: 330px; */
+    width: 326px;
+    border-radius: 12px;
+    box-shadow: 0 4px 32px 0 rgba(34, 34, 34, 0.25);
+    background: #fff;
+}
+
+.chose-type__heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #f4f4f4;
+    color: #222;
+    font-weight: 600;
+}
+
+.chose-type__content {
+    padding: 12px;
+}
+
+.chose-type__box {
+    height: 180px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.chose-type__box--section {
+    padding: 8px 16px;
+    background-color: #fff;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 8px;
+
+        &:hover {
+        background: #f4f4f4;
+    }
+}
+
+.box-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.box-section__title {
+    display: flex;
+    align-items: center;
+    white-space: 'nowrap';
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 24px;
+    width: 100%;
+    color: #222;
+    font-size: 1.54rem;
+}
+
+
+.box-section__checkbox {
+    position: relative;
+    display: inline-flex;
+    width: 20px;
+}
+
+.box-section__lable {
+    display: inline-block;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.radio__span {
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: red;
+    border: 2px solid red;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    pointer-events: none;
+}
+
+.radio__span--svg {
+    color: #fff;
+}
+
+.box-section__lable>input:not(:checked)+.radio__span {
+    background: #fff;
+    border: 2px solid #dadada;
+}
+
+.box-section__lable>input:not(:checked)+.radio__span svg {
+    display: none;
+}
+
+
+/* ============ select region =========== */
+
+.select-region__container {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    /* height: 330px; */
+    width: 326px;
+    border-radius: 12px;
+    box-shadow: 0 4px 32px 0 rgba(34, 34, 34, 0.25);
+    background: #fff;
+}
+
+.select-region__heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #f4f4f4;
+    color: #222;
+    font-weight: 600;
+}
+
+.select-region__content {
+    padding: 12px;
+}
+
+.select-region__content--selceted {
+
+}
