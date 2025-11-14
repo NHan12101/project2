@@ -74,3 +74,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/conversations/start', [ChatController::class, 'startConversation']);
     Route::get('/conversations/{id}', [ChatController::class, 'show']);
 });
+
+// ========== TẠO BÀI POST ================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+});

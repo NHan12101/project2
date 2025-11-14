@@ -24,7 +24,8 @@ class Post extends Model
         'type',
         'user_id',
         'category_id',
-        'location_id',
+        'city_id',
+        'ward_id',
     ];
 
     // Quan hệ: mỗi bài viết thuộc về 1 người dùng
@@ -40,11 +41,17 @@ class Post extends Model
     }
 
     // Quan hệ: mỗi bài viết thuộc về 1 địa điểm
-    public function location()
+    public function city()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(City::class);
     }
 
+    public function ward()
+    {
+        return $this->belongsTo(Ward::class);
+    }
+
+    // Quan hệ: mỗi bài viết có nhiều hình ảnh
     public function images()
     {
         return $this->hasMany(PostImage::class);

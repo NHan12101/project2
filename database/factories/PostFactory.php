@@ -4,7 +4,9 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Category;
-use App\Models\Location;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Ward;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostFactory extends Factory
@@ -14,7 +16,7 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph(5),
-            'price' => $this->faker->numberBetween(500000000, 50000000000),            // 500tr–50tỷ
+            'price' => $this->faker->numberBetween(500000000, 50000000000), // 500tr–50tỷ
             'address' => $this->faker->address(),
             'area' => $this->faker->randomFloat(2, 30, 500),
             'bedrooms' => $this->faker->numberBetween(1, 6),
@@ -26,7 +28,9 @@ class PostFactory extends Factory
             'type' => $this->faker->randomElement(['rent', 'sale']),
             'user_id' => User::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
-            'location_id' => Location::inRandomOrder()->first()->id,
+            'city_id' => City::inRandomOrder()->value('id'),
+            'ward_id' => Ward::inRandomOrder()->value('id'),
+
         ];
     }
 }

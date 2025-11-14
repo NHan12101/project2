@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Location;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,7 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
-            LocationSeeder::class,
+            CitySeeder::class,
+            WardSeeder::class,
             PaymentSeeder::class,
             PersonalAccessTokenSeeder::class,
             PostSeeder::class,

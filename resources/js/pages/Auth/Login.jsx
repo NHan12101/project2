@@ -36,7 +36,6 @@ export default function Login({ onClose }) {
                 <h1 className={style['form-container__header']}>Login</h1>
                 <input
                     className={style['input__auth-form']}
-                    type="email"
                     placeholder="Email"
                     value={loginData.email}
                     onChange={(e) => setLoginData('email', e.target.value)}

@@ -26,8 +26,9 @@ return new class extends Migration
             $table->enum('status', ['hidden', 'visible'])->default('visible');
             $table->enum('type', ['rent', 'sale']);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');// Thay đổi cascade thành set null
-            $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Thay đổi cascade thành set null
+            $table->foreignId('city_id')->constrained();
+            $table->foreignId('ward_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

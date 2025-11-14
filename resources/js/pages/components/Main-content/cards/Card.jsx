@@ -12,7 +12,7 @@ import './Card.css';
 
 export default function Card({post}) {
     const data = post || usePage().props.posts || [];
-    // console.log(data)
+    console.log(data)
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
@@ -170,7 +170,7 @@ export default function Card({post}) {
                                 <p className="property-price">{item.price}</p>
                                 <p className="property-location">
                                     <MapPin className="w-6 h-6" />
-                                    <span>{item.location.City}</span>
+                                    <span>{item.city.name}</span>
                                 </p>
 
                                 <div className="property-heart">

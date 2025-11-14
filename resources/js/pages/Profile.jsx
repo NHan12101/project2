@@ -6,8 +6,8 @@ import Navbar from './components/Headers/Navbar/Navbar.jsx';
 import Card from './components/Main-content/cards/Card.jsx';
 
 export default function Profile({ user, properties }) {
-    console.log(user);
-    console.log(properties);
+    // console.log(user);
+    // console.log(properties);
 
     const [activeTab, setActiveTab] = useState('properties');
     const { data, setData, post, processing, errors } = useForm({

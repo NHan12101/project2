@@ -20,6 +20,7 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
             // Một số phiên Google không có state → fallback sang stateless
+            return redirect()->route('home');
             $googleUser = Socialite::driver('google')->stateless()->user();
         }
 

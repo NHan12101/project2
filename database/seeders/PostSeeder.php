@@ -2,45 +2,56 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Post;
-use App\Models\User;
 use App\Models\Category;
-use App\Models\Location;
+use App\Models\Post;
 use App\Models\PostImage;
+use App\Models\User;
+use App\Models\Ward;
+use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
     public function run(): void
     {
-        // 🔹 Đảm bảo có dữ liệu trước khi tạo bài viết
-        if (User::count() === 0 || Category::count() === 0 || Location::count() === 0) {
-            $this->command->warn('⚠️ Cần seed users, categories, và locations trước!');
+        if (!User::exists()) {
+            $this->command->warn('Chưa có User!');
+            return;
+        }
+        if (!Category::exists()) {
+            $this->command->warn('Chưa có Category!');
+            return;
+        }
+        if (!Ward::exists()) {
+            $this->command->error('Chưa có Ward! Hãy chạy CitySeeder và WardSeeder trước!');
             return;
         }
 
-        // Tạo 16 bài viết mẫu
-        Post::factory(16)->create()->each(function ($post) {
-            $post->user_id = User::inRandomOrder()->first()->id;
-            $post->category_id = Category::inRandomOrder()->first()->id;
-            $post->location_id = Location::inRandomOrder()->first()->id;
-            $post->save();
-        });
+        $images = [
+            'images/home1.png',
+            'images/home2.png',
+            'images/home3.png',
+        ];
 
-        Post::factory()->create()->each(function ($post) {
-            $images = [
-                'images/home1.png',
-                'images/home2.png',
-                'images/home3.png',
-            ];
+        Post::factory(80)->create()->each(function ($post) use ($images) {
+
+            $ward = Ward::inRandomOrder()->first();   // Lấy ward ngẫu nhiên
+
+            $post->update([
+                'user_id'     => User::inRandomOrder()->first()->id,
+                'category_id' => Category::inRandomOrder()->first()->id,
+                'city_id' => $ward->city_id,
+                'ward_id' => $ward->id,
+            ]);
+
             foreach ($images as $img) {
                 PostImage::create([
-                    'post_id' => $post->id,
+                    'post_id'    => $post->id,
                     'image_path' => $img,
                 ]);
             }
         });
 
-        $this->command->info('Đã tạo 16 bài viết mẫu thành công!');
+
+        $this->command->info('Đã tạo xong bài viết!');
     }
 }
