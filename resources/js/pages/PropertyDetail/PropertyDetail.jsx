@@ -9,6 +9,7 @@ import classes from './PropertyDetail.module.css';
 
 export default function PropertyDetail({ post, relatedPosts, auth }) {
     const currentUserId = auth?.user?.id;
+    console.log(post)
 
     const handleStartChat = async () => {
         try {
@@ -35,7 +36,7 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
 
                 <div className={classes['images__detail']}>
                     <div className={classes['image__gallery--left']}>
-                        <img src={`/${post.images[1].image_path}`} alt="" />
+                        <img src={`/${post?.images[1]?.image_path}`} alt="" />
                     </div>
                     <div className={classes['image__gallery--right']}>
                         {post.images && post.images.length > 0 && (

@@ -1,5 +1,4 @@
 import { Building2, Home, House, LayoutGrid } from 'lucide-react';
-import momo from '../../../../../public/images/momo.svg';
 import './MainContent.css';
 import BlogList from './blogs/BlogList.jsx';
 import Card from './cards/Card.jsx';
@@ -49,7 +48,7 @@ function MainContent() {
                                 hành trình tìm kiếm ngôi nhà mơ ước.
                             </p>
                             <img
-                                src={momo}
+                                src="/images/momo.svg"
                                 alt="Momo"
                                 className="partner__content--icon"
                             />

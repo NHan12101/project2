@@ -108,8 +108,6 @@ export default function CompleteRegister() {
                         style={{
                             border: 'none',
                             outline: 'none',
-                            background: 'none',
-                            // height: '32px',
                             width: '120px',
                             background: '#8667e1',
                             padding: '12px',
