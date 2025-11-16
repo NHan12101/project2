@@ -52,6 +52,6 @@ class PostSeeder extends Seeder
         });
 
 
-        $this->command->info('Đã tạo xong bài viết!');
+        $this->command->info('  Done!!');
     }
 }

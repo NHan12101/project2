@@ -13,16 +13,10 @@ return new class extends Migration
     {
         Schema::create('wards', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
 
-            // ← ĐÚNG: Phường/Xã thuộc về Thành phố (cities)
-            $table->foreignId('city_id')
-                ->constrained('cities')
-                ->onDelete('cascade');
-
-            // Tránh trùng tên phường trong cùng 1 thành phố
-            $table->unique(['name', 'city_id']);
-
+            $table->string('ward_name')->index();  // tìm kiếm nhanh
+            $table->string('ward_code');
+            $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
             $table->timestamps();
         });
     }

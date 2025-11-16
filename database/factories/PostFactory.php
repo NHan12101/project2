@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\City;
-use App\Models\District;
 use App\Models\Ward;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +29,6 @@ class PostFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'city_id' => City::inRandomOrder()->value('id'),
             'ward_id' => Ward::inRandomOrder()->value('id'),
-
         ];
     }
 }

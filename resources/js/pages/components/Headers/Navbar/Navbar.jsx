@@ -23,7 +23,7 @@ export default function Navbar() {
 
     useEffect(() => {
         if (url === '/home') {
-            const handleScroll = () => {
+            function handleScroll() {
                 console.log(window.scrollY);
                 setShow(window.scrollY > 690);
             };
@@ -53,7 +53,15 @@ export default function Navbar() {
             {/* <button onClick={toggleTheme}>
                 {theme === 'light' ? 'Dark' : 'Light'}
             </button> */}
-            <div className="nav__item">
+
+            <div
+                className="nav__item"
+                style={{
+                    boxShadow: show
+                        ? '0px 1px 16px rgba(0, 0, 0, 0.12)'
+                        : 'none',
+                }}
+            >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 46 }}>
                     <a href="/home">
                         <img

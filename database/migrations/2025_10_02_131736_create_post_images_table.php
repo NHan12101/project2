@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('post_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->string('image_path');  // ví dụ: images/home1.png
+            $table->string('image_path');
             $table->timestamps();
         });
     }
