@@ -1,29 +1,11 @@
 import './ChoseType.css';
 
-export default function ChooseTypeBDS({
-    menuRef,
-    setClose,
-    setSelectedTitle,
-    selected,
-    setSelected,
-}) {
+export default function ChooseTypeBDS({ menuRef, setClose, setSelectedTitle, selected, setSelected }) {
     const myChoose = [
-        {
-            id: 1,
-            title: 'Tất cả bất động sản',
-        },
-        {
-            id: 2,
-            title: 'Căn hộ / Chung cư',
-        },
-        {
-            id: 3,
-            title: 'Nhà đất', 
-        },
-        {
-            id: 4,
-            title: 'Mặt bằng kinh doanh',
-        },
+        { id: 1, title: 'Tất cả bất động sản' },
+        { id: 2, title: 'Căn hộ / Chung cư' },
+        { id: 3, title: 'Nhà đất' },
+        { id: 4, title: 'Mặt bằng kinh doanh' },
     ];
 
     function handleSelect(choose) {

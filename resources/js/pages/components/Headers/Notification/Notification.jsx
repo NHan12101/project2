@@ -3,13 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import './Notification.css';
 
-function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth}) {
+function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth }) {
     return (
         <>
-            <div
-                className={`overlay ${isOpen ? 'show' : ''}`}
-                onClick={closeSidebar}
-            ></div>
+            <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={closeSidebar}></div>
 
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">

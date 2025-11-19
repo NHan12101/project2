@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
@@ -10,41 +11,38 @@ class ChatController extends Controller
 {
     public function chat(Request $request)
     {
+        $userMessages = $request->input('messages', []);
+        // Lấy post từ DB → convert thành text
+        $posts = Post::orderBy('created_at', 'desc')
+            ->take(5)
+            ->get(['title', 'price', 'address'])
+            ->map(fn($p) => "{$p->title}, giá {$p->price}đ, tại {$p->address}")
+            ->implode("\n");
 
-        // ✅ Thêm "System Prompt" để hướng dẫn chatbot
         $systemPrompt = [
             'role' => 'system',
             'content' => "
-            Bạn là trợ lý ảo tên là LandSMate, hoạt động trên website bất động sản.
-            Nhiệm vụ của bạn:
-            - Hỗ trợ người dùng tìm nhà thuê, mua bán đất hoặc hướng dẫn đăng tin.
-            - Trả lời đặc biệt ngắn gọn, đúng trọng tâm, thân thiện, dễ hiểu, ưu tiên tiếng Việt.
-            - Khi người dùng hỏi về quy trình hoặc chính sách, hãy giải thích rõ ràng và gợi ý thao tác trên website.
-            - Không cung cấp lời khuyên đầu tư, giá cụ thể, hoặc thông tin ngoài trang web.
-            - Nếu người dùng hỏi ngoài lĩnh vực bất động sản, hãy lịch sự từ chối và hướng họ quay lại chủ đề chính.
+                Bạn là LandMate – trợ lý bất động sản.
+                Đây là 5 tin đăng mới nhất trên website:
+                $posts
+                Khi trả lời:
+                - Nếu người dùng hỏi về phòng hoặc giá, hãy ưu tiên dùng dữ liệu bên trên.
+                - Trả lời ngắn, tiếng Việt, không suy đoán.
             "
         ];
-
-        $userMessages = $request->input('messages', []);
-
-        // ✅ Ghép system prompt + hội thoại người dùng
         $messages = array_merge([$systemPrompt], $userMessages);
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . env('GROQ_API_KEY'),
             'Content-Type'  => 'application/json',
-        ])->post('https://api.groq.com/openai/v1/chat/completions', [
-            'model' => 'llama-3.3-70b-versatile',
-            'messages' => $messages,
-            'temperature' => 0.6,
+        ])->post("https://api.groq.com/openai/v1/chat/completions", [
+            "model" => "llama-3.3-70b-versatile",
+            "messages" => $messages,
+            "temperature" => 0.5
         ]);
 
-        $data = $response->json();
-        $content = $data['choices'][0]['message']['content'] ?? '[Không có phản hồi]';
-
         return response()->json([
-            'content' => $content,
-            'raw' => $data,
+            "content" => $response->json("choices.0.message.content")
         ]);
     }
 }

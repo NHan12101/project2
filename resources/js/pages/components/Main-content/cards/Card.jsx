@@ -12,7 +12,7 @@ import './Card.css';
 
 export default function Card({post}) {
     const data = post || usePage().props.posts || [];
-    console.log(data)
+    // console.log(data)
     const [likedItems, setLikedItems] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
@@ -73,7 +73,9 @@ export default function Card({post}) {
                 {data.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);
                     const currentIndex = currentImageIndex[item.id] || 0;
-                    const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
+                    // const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
+                    const imageSrc = `/storage/${item?.images[currentIndex]?.image_path}`;
+
 
                     return (
                         <div

@@ -27,9 +27,12 @@ class PostSeeder extends Seeder
         }
 
         $images = [
-            'images/home1.png',
-            'images/home2.png',
-            'images/home3.png',
+            'posts/home1.png',
+            'posts/home2.png',
+            'posts/home3.png',
+            'posts/home4.png',
+            'posts/home5.png',
+            'posts/home6.png',
         ];
 
         Post::factory(80)->create()->each(function ($post) use ($images) {

@@ -29,6 +29,10 @@
     scrollbar-width: none;
 }
 
+.select-region__box {
+    height: 242px;
+}
+
 .chose-type__box--section {
     padding: 8px 16px;
     background-color: #fff;
@@ -36,7 +40,7 @@
     cursor: pointer;
     border-radius: 8px;
 
-        &:hover {
+    &:hover {
         background: #f4f4f4;
     }
 }
@@ -109,7 +113,7 @@
     top: 58px;
     left: 0;
     /* height: 330px; */
-    width: 326px;
+    width: 340px;
     border-radius: 12px;
     box-shadow: 0 4px 32px 0 rgba(34, 34, 34, 0.25);
     background: #fff;
@@ -125,10 +129,132 @@
     font-weight: 600;
 }
 
-.select-region__content {
-    padding: 12px;
+.select-region__heading svg {
+    cursor: pointer;
+    position: absolute;
+    top: 6%;
+    left: 16px;
+    transform: translateY(-50%);
 }
 
-/* .select-region__content--selceted {
+.select-region__content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    user-select: none;
+}
 
-} */
+/* ============= search region =============== */
+.select-region__content--search {
+    display: flex;
+    gap: 8px;
+    background-color: #F4F4F4;
+    padding: 8px;
+    border-radius: 999px;
+}
+
+.select-region__content--search svg {
+    color: #8C8C8C;
+}
+
+.select-region__content--search input {
+    border: none;
+    background-color: transparent;
+    flex-grow: 1;
+    outline: none;
+    font-size: 1.4rem;
+    text-indent: 3px;
+}
+
+.select-region__content--city {
+    position: relative;
+    width: 100%;
+}
+
+.select-region__content--city1 {
+    position: relative;
+    height: 54px;
+    width: 100%;
+    border-radius: 12px;
+    border: 2px solid #DADADA;
+    background: #FFFFFF;
+    transition: border 0.25s;
+
+    &:hover {
+        border: 2px solid #222222;
+    }
+}
+
+.select-region__content--city1 div {
+    width: 100%;
+    height: 48px;
+    color: #111111;
+    font-size: 1.46rem;
+    padding: 24px 12px 0 14px;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+    text-align: left;
+    cursor: pointer;
+}
+
+.select-region__content--city1 label {
+    position: absolute;
+    top: 7px;
+    left: 12px;
+    transform-origin: top left;
+    color: #222;
+    font-size: 1.16rem;
+    font-weight: 700;
+    pointer-events: none;
+
+    &::after {
+        content: '*';
+        margin-left: 2px;
+        color: #f03232;
+    }
+}
+
+.select-region__content--city1 span {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 12.6px;
+    right: 8px;
+    color: #222;
+    pointer-events: none;
+}
+
+.select-region__content--city1 span svg {
+    color: #222;
+    font-size: 2.5rem;
+}
+
+
+.select-region__button {
+    padding: 12px 14px;
+    border-top: 1px solid #F4F4F4;
+}
+
+.select-region__button--submit {
+    padding: 0px 14px;
+    height: 40px;
+    width: 100%;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    background: #fa3719;
+    cursor: pointer;
+    transition: background 0.25s;
+
+    &:hover {
+        background: #ff553b;
+    }
+}
+
+
+.select-region__content--city.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

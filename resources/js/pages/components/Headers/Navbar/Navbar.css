@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 30px;
+    padding: 8px 30px;
     width: 100%;
     max-width: 1920px;
     min-width: 1440px;
@@ -32,7 +32,7 @@
 
 .nav__item--list li a {
     position: relative;
-    color: #fa371998;
+    color: #ff5940;
     font-weight: 600;
     transition: 0.25s;
 
@@ -70,7 +70,7 @@
 
 .nav__item--list-scroll li a {
     position: relative;
-    color: #b1b1b1;
+    color: #808080;
     font-weight: 600;
     transition: 0.25s;
 
@@ -176,6 +176,105 @@
     justify-content: center;
     align-items: center;
     column-gap: 8px;
+}
+
+.nav-dropdown__icon-heart {
+    position: relative;
+}
+
+.nav-dropdown__icon-heart--box {
+    position: absolute;
+    top: 60px;
+    right: 50%;
+    transform: translateX(50%);
+    border-radius: 8px;
+    box-shadow: 0px 4px 16px 0px #2222221f;
+    overflow: visible;
+    width: 400px;
+    background: #fff;
+    animation: fadeIn 0.08s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.nav-dropdown__icon-heart--box::before {
+    position: absolute;
+    content: '';
+    height: 0;
+    width: 0;
+    top: -10px;
+    right: 50%;
+    transform: translateX(50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #ffffff;
+    z-index: 102;
+}
+
+.nav-dropdown__icon-heart--box::after {
+    position: absolute;
+    content: '';
+    height: 0;
+    width: 0;
+    top: -11px;
+    right: 50%;
+    transform: translateX(50%);
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid rgba(34, 34, 34, 0.22);
+    z-index: 101;
+}
+
+.nav-dropdown__icon-heart--title {
+    padding: 14px 20px;
+    border-bottom: 1px solid #DADADA;
+}
+
+.nav-dropdown__icon-heart--title span {
+    font-weight: 600;
+}
+
+.nav-dropdown__icon-heart--content {
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-dropdown__icon-heart--content span {
+    font-weight: 700;
+}
+
+.nav-dropdown__icon-heart--content p {
+    font-size: 1.4rem;
+    color: #8C8C8C;
+    text-align: center;
+}
+
+.nav-dropdown__icon-heart--content button {
+    padding: 0px 16px;
+    font-weight: 700;
+    color: #ffffff;
+    height: 40px;
+    border-radius: 8px;
+    background: #fa3719;
+    border: 1px solid #fa3719;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #ff5035;
+    }
 }
 
 .nav__btn-story {

@@ -4,30 +4,37 @@ import banner_vip from '../../../../../public/images/banner-vip.jpg';
 import banner_vip02 from '../../../../../public/images/banner-vip02.jpg';
 import banner_vip03 from '../../../../../public/images/banner-vip03.jpg';
 import ChooseTypeBDS from './ChooseTypeBDS';
-import SelectRegion from './SelectRegion';
 import './Header.css';
+import SelectRegion from './SelectRegion';
 
 export default function Header() {
     const banners = [banner_vip, banner_vip02, banner_vip03];
     const [current, setCurrent] = useState(0);
     const { menuRef, open, setOpen } = useDropdown();
-    const {
-        menuRef: selectRef,
-        open: openSelect,
-        setOpen: setOpenSelect,
-    } = useDropdown();
+    const { menuRef: selectRef, open: openSelect, setOpen: setOpenSelect } = useDropdown();
     const [selectedTitle, setSelectedTitle] = useState('Loại hình BĐS');
-    const [selectedType, setSelectedType] = useState({
-        id: 1,
-        title: 'Tất cả bất động sản',
-    });
+    const [selectedType, setSelectedType] = useState({ id: 1, title: 'Tất cả bất động sản' });
+
+    const [selectedRegionTitle, setSelectedRegionTitle] = useState('Chọn khu vực');
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrent((prev) => (prev + 1) % banners.length);
-        }, 15000);
+        }, 16000);
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        const saved = localStorage.getItem('selected-region');
+        if (saved) {
+            const { city, ward } = JSON.parse(saved);
+
+            if (ward && ward.id) setSelectedRegionTitle(ward.name);
+            else if (city && city.id !== 'all') setSelectedRegionTitle(city.name);
+            else setSelectedRegionTitle("Chọn khu vực");
+        }
+    }, []);
+
 
     return (
         <header className="header">
@@ -65,10 +72,7 @@ export default function Header() {
                                     <div className="search-bar__01">
                                         <div className="search-bar__02">
                                             <div className="search-bar__02--icon-search">
-                                                <img
-                                                    src="/icons/icon-search.svg"
-                                                    alt="Tìm kiếm"
-                                                />
+                                                <img src="/icons/icon-search.svg" alt="Tìm kiếm" />
                                             </div>
 
                                             <input
@@ -81,9 +85,7 @@ export default function Header() {
                                             <div className="search-bar__02--button">
                                                 <button
                                                     className="button-02 select-region"
-                                                    onClick={() =>
-                                                        setOpenSelect(true)
-                                                    }
+                                                    onClick={() => setOpenSelect(true)}
                                                 >
                                                     <svg
                                                         data-type="monochrome"
@@ -101,7 +103,9 @@ export default function Header() {
                                                             fill="currentColor"
                                                         ></path>
                                                     </svg>
-                                                    <span>Chọn khu vực</span>
+                                                    <span>
+                                                        {selectedRegionTitle}
+                                                    </span>
                                                     <svg
                                                         data-type="monochrome"
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -116,13 +120,17 @@ export default function Header() {
                                                     </svg>
                                                 </button>
 
-                                                {openSelect && <SelectRegion selectRef={selectRef} />}
+                                                {openSelect && (
+                                                    <SelectRegion
+                                                        selectRef={selectRef}
+                                                        setOpenSelect={setOpenSelect}
+                                                        setSelectedRegionTitle={setSelectedRegionTitle}
+                                                    />
+                                                )}
 
                                                 <button
                                                     className="button-02 choose-type"
-                                                    onClick={() =>
-                                                        setOpen(true)
-                                                    }
+                                                    onClick={() => setOpen(true)}
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -139,10 +147,7 @@ export default function Header() {
                                                         />
                                                     </svg>
                                                     <span>
-                                                        {selectedTitle ===
-                                                        'Tất cả bất động sản'
-                                                            ? 'Loại hình BĐS'
-                                                            : `${selectedTitle}`}
+                                                        {selectedTitle === 'Tất cả bất động sản' ? 'Loại hình BĐS' : `${selectedTitle}`}
                                                     </span>
                                                 </button>
 
@@ -150,20 +155,14 @@ export default function Header() {
                                                     <ChooseTypeBDS
                                                         menuRef={menuRef}
                                                         setClose={setOpen}
-                                                        setSelectedTitle={
-                                                            setSelectedTitle
-                                                        }
+                                                        setSelectedTitle={setSelectedTitle}
                                                         selected={selectedType}
-                                                        setSelected={
-                                                            setSelectedType
-                                                        }
+                                                        setSelected={setSelectedType}
                                                     />
                                                 )}
 
                                                 <div>
-                                                    <button className="button-02__search">
-                                                        Tìm nhà
-                                                    </button>
+                                                    <button className="button-02__search">Tìm nhà</button>
                                                 </div>
                                             </div>
                                         </div>

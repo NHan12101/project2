@@ -14,6 +14,7 @@ export default function Navbar() {
     const { auth } = props;
     const [isLogin, setIsLogin] = useState(false);
     const { menuRef, open, setOpen } = useDropdown();
+    const { menuRef: saveRef, open: openSave, setOpen: setOpenSave } = useDropdown();
     const [showAuth, setShowAuth] = useState(false);
     const [show, setShow] = useState(false);
 
@@ -25,8 +26,8 @@ export default function Navbar() {
         if (url === '/home') {
             function handleScroll() {
                 console.log(window.scrollY);
-                setShow(window.scrollY > 690);
-            };
+                setShow(window.scrollY > 720);
+            }
 
             window.addEventListener('scroll', handleScroll);
             return () => window.removeEventListener('scroll', handleScroll);
@@ -45,8 +46,7 @@ export default function Navbar() {
         <nav
             className="nav"
             style={{
-                background:
-                    theme === 'dark' ? '#0a0a0ada' : show ? '#fff' : undefined,
+                background: theme === 'dark' ? '#0a0a0ada' : show ? '#fff' : undefined,
                 position: show ? 'sticky' : 'relative',
             }}
         >
@@ -57,19 +57,14 @@ export default function Navbar() {
             <div
                 className="nav__item"
                 style={{
-                    boxShadow: show
-                        ? '0px 1px 16px rgba(0, 0, 0, 0.12)'
-                        : 'none',
+                    boxShadow: show ? '0px 1px 16px rgba(0, 0, 0, 0.08)' : 'none'
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 46 }}>
                     <a href="/home">
-                        <img
-                            src={logo}
-                            alt="Logo"
-                            className="nav__item--logo"
-                        />
+                        <img src={logo} alt="Logo" className="nav__item--logo" />
                     </a>
+
                     <ul
                         className={`${show ? 'nav__item--list-scroll' : 'nav__item--list'}`}
                     >
@@ -108,7 +103,6 @@ export default function Navbar() {
                         autoComplete="off"
                         className="container-search__box--input"
                         placeholder="Tìm bất động sản..."
-                        // value=""
                     />
                     <div className="container-search__box--iconbutton">
                         <button>
@@ -131,15 +125,56 @@ export default function Navbar() {
 
                 <div className="nav__info">
                     <div className="nav__button--icon">
-                        <button className="icon-btn">
-                            <img src="/icons/heart.svg" alt="heart-icon" />
-                        </button>
+                        <div className="nav-dropdown__icon-heart" ref={saveRef}>
+                            <button
+                                className="icon-btn"
+                                onClick={() => setOpenSave((pre) => !pre)}
+                            >
+                                <img src="/icons/heart.svg" alt="heart-icon" />
+                            </button>
+
+                            {openSave && (
+                                <div className="nav-dropdown__icon-heart--box">
+                                    <div className="nav-dropdown__icon-heart--title">
+                                        <span>Tin đăng đã lưu</span>
+                                    </div>
+                                    <div className="nav-dropdown__icon-heart--content">
+                                        <span>
+                                            {isLogin
+                                                ? 'Bạn chưa lưu tin đăng nào'
+                                                : 'Đăng nhập để xem tin đã lưu'}
+                                        </span>
+                                        <p>
+                                            {isLogin
+                                                ? 'Lưu tin yêu thích, tin sẽ hiển thị ở đây để bạn dễ dàng quay lại sau.'
+                                                : 'Bạn có thể thêm và quản lý tin đăng đã lưu sau khi đăng nhập.'}
+                                        </p>
+                                        {!isLogin && (
+                                            <button
+                                                onClick={() => {
+                                                    setShowAuth(true);
+                                                    setOpenSave(false);
+                                                }}
+                                            >
+                                                Đăng nhập
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             className="icon-btn"
-                            onClick={() => router.visit('/chatbox')}
+                            onClick={() =>
+                                isLogin
+                                    ? router.visit('/chatbox')
+                                    : setShowAuth(true)
+                            }
                         >
                             <img src="/icons/chat.svg" alt="chat-icon" />
                         </button>
+
                         <Notification
                             isLogin={isLogin}
                             setShowAuth={() => setShowAuth(true)}
@@ -157,9 +192,20 @@ export default function Navbar() {
                                 {isLogin ? 'Quản lý tin' : 'Đăng nhập'}
                             </button>
                         </div>
+
                         <div>
-                            <button className="nav__btn-story">Đăng tin</button>
+                            <button
+                                className="nav__btn-story"
+                                onClick={
+                                    isLogin
+                                        ? () => router.visit('/')
+                                        : () => setShowAuth(true)
+                                }
+                            >
+                                Đăng tin
+                            </button>
                         </div>
+
                         <div className="nav__info--name" ref={menuRef}>
                             <button
                                 className="dropdown-btn"
@@ -171,8 +217,8 @@ export default function Navbar() {
                                             ? auth.user.avatar_image_url
                                                 ? `/${auth.user.avatar_image_url}`
                                                 : auth.user.avatar
-                                                  ? auth.user.avatar
-                                                  : '/images/ava2.jpg'
+                                                    ? auth.user.avatar
+                                                    : '/images/ava2.jpg'
                                             : '/images/ava2.jpg'
                                     }
                                     alt="avatar"

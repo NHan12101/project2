@@ -98,6 +98,7 @@ export default function Chat() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Nhập tin nhắn..."
+                            autoFocus
                         />
                         <button type="submit">
                             <span>

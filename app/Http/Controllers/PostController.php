@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\City;
 use App\Models\Post;
+use App\Models\PostImage;
+use App\Models\Ward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -28,13 +32,10 @@ class PostController extends Controller
         ]);
     }
 
-
     public function index()
     {
-        // Lấy tất cả posts kèm ảnh và loacation
         $posts = Post::with('images', 'city', 'ward')->get();
 
-        // return response()->json($posts);
         return Inertia::render('Home', [
             'auth' => [
                 'user' => Auth::user(), // null nếu chưa đăng nhập
@@ -44,11 +45,17 @@ class PostController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return inertia('Posts/Create', [
-            'cities' => \App\Models\City::all(),
-            'categories' => \App\Models\Category::all(),
+        $cityId = $request->query('city_id');
+        $wardId = $request->query('ward_id');
+
+        return Inertia::render('Posts/Create', [
+            'cities' => City::all(),
+            'wards' => $cityId ? Ward::where('city_id', $cityId)->get() : [],
+            'categories' => Category::all(),
+            'city_id' => $cityId,
+            'ward_id' => $wardId,
         ]);
     }
 
@@ -70,11 +77,24 @@ class PostController extends Controller
             'category_id' => 'required|exists:categories,id',
             'city_id' => 'required|exists:cities,id',
             'ward_id' => 'nullable|exists:wards,id',
+            'images.*' => 'image|mimes:jpg,png,jpeg,webp|max:5120',
         ]);
-        
         $validated['user_id'] = Auth::id();
+        
+        $post = Post::create($validated); // Tạo bài post
 
-        Post::create($validated);
+        // lưu hình ảnh
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+
+                $path = $image->store('posts', 'public');
+
+                PostImage::create([
+                    'post_id' => $post->id,
+                    'image_path' => $path,
+                ]);
+            }
+        }
 
         return redirect()->route('posts.create')->with('success', 'Đăng bài thành công');
     }

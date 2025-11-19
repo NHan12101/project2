@@ -9,7 +9,7 @@ import classes from './PropertyDetail.module.css';
 
 export default function PropertyDetail({ post, relatedPosts, auth }) {
     const currentUserId = auth?.user?.id;
-    console.log(post)
+    // console.log(post)
 
     const handleStartChat = async () => {
         try {
@@ -36,7 +36,10 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
 
                 <div className={classes['images__detail']}>
                     <div className={classes['image__gallery--left']}>
-                        <img src={`/${post?.images[1]?.image_path}`} alt="" />
+                        <img
+                            src={`/storage/${post?.images[1]?.image_path}`}
+                            alt=""
+                        />
                     </div>
                     <div className={classes['image__gallery--right']}>
                         {post.images && post.images.length > 0 && (
@@ -44,12 +47,12 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
                                 {post.images.map((img, index) => (
                                     <img
                                         key={index}
-                                        src={`/${img.image_path}`}
+                                        src={`/storage/${img.image_path}`}
                                         alt={`property-image-${index}`}
                                     />
                                 ))}
                                 <img
-                                    src={`/${post.images[1].image_path}`}
+                                    src={`/storage/${post.images[1].image_path}`}
                                     alt=""
                                 />
                             </div>

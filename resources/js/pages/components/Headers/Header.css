@@ -17,7 +17,7 @@
 }
 
 .banner__image {
-    height: 760px;
+    height: 800px;
     width: 100%;
     flex-shrink: 0;
     object-fit: cover;
