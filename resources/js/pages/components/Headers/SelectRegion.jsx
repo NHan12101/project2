@@ -56,6 +56,7 @@ export default function SelectRegion({ selectRef, setOpenSelect, setSelectedRegi
 
     function handleSelectAll() {
         setSelectedCity({ id: 'all', name: 'Toàn quốc' });
+        setSelectedWard({ id: null, name: 'Tất cả' });
         setMode('none');
     };
 

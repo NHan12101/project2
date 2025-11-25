@@ -5,17 +5,29 @@ import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import logo from '../../../../../../public/images/StayHub.svg';
 import AuthForm from '../../../Auth/AuthForm.jsx';
+import VerifyOtp from '../../../Auth/VerifyOtp.jsx';
 import Notification from '../Notification/Notification.jsx';
 import Dropdown from './Dropdown.jsx';
 import './Navbar.css';
+import ResetPassword from '../../../Auth/ResetPassword.jsx';
+import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
 
 export default function Navbar() {
     const { props, url } = usePage();
-    const { auth } = props;
+    const { auth, flash } = props;
     const [isLogin, setIsLogin] = useState(false);
+
     const { menuRef, open, setOpen } = useDropdown();
     const { menuRef: saveRef, open: openSave, setOpen: setOpenSave } = useDropdown();
+
     const [showAuth, setShowAuth] = useState(false);
+    const [showVerify, setShowVerify] = useState(false);
+    const [verifyEmail, setVerifyEmail] = useState('');
+
+    const [showReset, setShowReset] = useState(false);
+    const [showForgot, setShowForgot] = useState(false);
+
+
     const [show, setShow] = useState(false);
 
     useEffect(() => {
@@ -33,6 +45,34 @@ export default function Navbar() {
             return () => window.removeEventListener('scroll', handleScroll);
         }
     }, [url]);
+
+    useEffect(() => {
+        if (!flash) return;
+
+        // OTP khi đăng kí
+        if (flash.otp_required && flash.otp_type === "register") {
+            setShowAuth(false);
+            setShowReset(false);
+            setVerifyEmail(flash.email);
+            setShowVerify(true);
+        }
+
+        // OTP khi quên mật khẩu
+        if (flash.otp_required && flash.otp_type === "forgot_password") {
+            setShowForgot(false);   // tắt popup nhập email
+            setShowVerify(true);
+            setVerifyEmail(flash.email);
+        }
+
+        // OTP hợp lệ → cho phép reset password
+        if (flash.reset_password_allowed && flash.email) {
+            setShowVerify(false);
+            setVerifyEmail(flash.email);
+            setShowReset(true);   // bật popup reset mật khẩu
+        }
+
+    }, [flash]);
+
 
     const [theme, setTheme] = useState(
         document.documentElement.classList.contains('dark') ? 'dark' : 'light',
@@ -248,9 +288,41 @@ export default function Navbar() {
 
             {showAuth && (
                 <div className="auth-form" onClick={() => setShowAuth(false)}>
-                    <AuthForm onClose={() => setShowAuth(false)} />
+                    <AuthForm
+                        onClose={() => setShowAuth(false)}
+                        onForgotPassword={() => {
+                            setShowAuth(false);
+                            setShowForgot(true); // bật form nhập email
+                        }}
+
+                    />
                 </div>
             )}
-        </nav>
+
+            {showVerify && (
+                <div className="auth-form">
+                    <VerifyOtp
+                        email={verifyEmail}
+                        onClose={setShowVerify}
+                        flash={flash} />
+                </div>
+            )}
+
+            {showReset && (
+                <div className="auth-form">
+                    <ResetPassword
+                        email={verifyEmail}
+                        flash={flash}
+                        onClose={() => setShowReset(false)}
+                    />
+                </div>
+            )}
+
+            {showForgot && <div className="auth-form">
+                <ForgotPasswordForm onClose={() => setShowForgot(false)} />
+            </div>
+            }
+
+        </nav >
     );
 }

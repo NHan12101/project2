@@ -28,14 +28,15 @@
 }
 
 .pass-link__forgot {
-  color: #333;
+  color: #4bb6b7;
   font-size: 1.4rem;
   margin: 15px 0;
+  cursor: pointer;
   transition: 0.3s ease-in-out;
 }
 
 .pass-link__forgot:hover {
-  color: #4bb6b7;
+  color: #58dcde;
 }
 
 .social-container {
@@ -80,6 +81,7 @@
   padding: 12px 80px;
   letter-spacing: 1px;
   text-transform: capitalize;
+  cursor: pointer;
   transition: 0.3s ease-in-out;
 }
 
@@ -120,6 +122,21 @@ button.ghost {
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.eye-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  height: 16px;
+  width: 16px;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 
 .form-login {
@@ -271,9 +288,10 @@ button.ghost {
 }
 
 .error {
-  color: rgba(255, 0, 0, 0.848);
-  font-size: 1.4rem;
-  text-align: left;
+  color: #ff0000d8;
+  font-size: 1.3rem;
+  text-align: center;
+  line-height: 1.2;
   margin-bottom: 3px;
 }
 

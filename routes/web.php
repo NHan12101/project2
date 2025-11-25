@@ -5,13 +5,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\EmailOtpController;
+use App\Http\Controllers\ForgotPasswordController;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
-    return redirect('/home');
+    return redirect()->route('home');
 });
 
 // ===== TRANG HOME =====
@@ -24,6 +26,14 @@ Route::get('/property-detail/{id}', [PostController::class, 'show']);
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ===== XÁC THỰC / GỬI LẠI OTP =========
+Route::post('/verify-otp', [EmailOtpController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/resend-otp', [EmailOtpController::class, 'sendOtp'])->name('otp.resend');
+
+// ===== QUÊN MẬT KHẨU =============
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);
 
 //=== TRANG BLOGS ====
 Route::get('/blogs', function () {
