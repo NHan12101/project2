@@ -2,124 +2,145 @@ import { useForm } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import './ResetPassword.css';
 
-export default function ResetPassword({ email, onClose, flash }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: email || '',
+export default function ResetPassword({ email, onClose }) {
+    const { data, setData, post, processing, errors: backendErrors, reset } = useForm({
+        email: email,
         password: '',
         password_confirmation: '',
     });
-    console.log(email)
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
+
+    const [frontendErrors, setFrontendErrors] = useState({});
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
 
     useEffect(() => {
-        // cập nhật email từ props vào form (khi email truyền xuống thay đổi)
         if (email) {
             setData('email', email);
         }
     }, [email]);
 
-    const handleSubmit = (e) => {
+    function validateFrontend(form) {
+        const errors = {};
+
+        if (!form.password) errors.password = 'Mật khẩu là bắt buộc.';
+        else if (!passwordRegex.test(form.password))
+            errors.password =
+                'Mật khẩu phải ít nhất 8 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt.';
+
+        if (form.password !== form.password_confirmation)
+            errors.password_confirmation = 'Mật khẩu xác nhận không khớp.';
+
+        return errors;
+    }
+
+    function handleChange(field, value) {
+        // tạo bản copy để validate chính xác
+        const newData = { ...data, [field]: value };
+
+        setData(field, value);
+
+        const newErrors = validateFrontend(newData);
+        setFrontendErrors(newErrors);
+    };
+
+    function handleSubmit(e) {
         e.preventDefault();
+
+        const newErrors = validateFrontend(data);
+
+        if (Object.keys(newErrors).length > 0) {
+            setFrontendErrors(newErrors);
+            return;
+        }
 
         post('/forgot-password/reset', {
             onSuccess: () => {
                 reset();
+                setFrontendErrors({});
                 if (onClose) onClose(false);
             },
         });
     };
 
+    function getError(field) {
+        return frontendErrors[field] || backendErrors[field] || null;
+    }
+
     return (
-        <div className="modal-resetpassword-overlay">
-            <div
-                className="modal-resetpassword"
-                onClick={(e) => e.stopPropagation()} // tránh click vào form bị đóng popup
-            >
-                <h2 className="modal-resetpassword__title">Đặt lại mật khẩu</h2>
+        <div className="modal-resetpassword">
+            <h2 className="modal-resetpassword__title">Đặt lại mật khẩu</h2>
 
-                {/* Flash message */}
-                {flash?.success && (
-                    <div className="notification__success">{flash.success}</div>
-                )}
-                {flash?.error && (
-                    <div className="notification__error">{flash.error}</div>
-                )}
+            <form onSubmit={handleSubmit} className="modal-resetpassword__form">
 
-                {/* Lỗi validate trả về từ Laravel */}
-                {(errors.password || errors.password_confirmation) && (
-                    <div className="notification__error">
-                        {errors.password || errors.password_confirmation}
+                {/* Email ẩn */}
+                <input type="hidden" value={data.email} />
+
+                <div className="input-password">
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        autoFocus
+                        placeholder="Nhập mật khẩu mới"
+                        value={data.password}
+                        onChange={(e) => handleChange('password', e.target.value)}
+                    />
+                    <div
+                        className='eye-toggle__reset'
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? (
+                            <img src="/icons/eye-off.svg" alt="hide" />
+                        ) : (
+                            <img src="/icons/eye.svg" alt="show" />
+                        )}
                     </div>
+                </div>
+
+                {getError('password') && (
+                    <div className='notification__error'>{getError('password')}</div>
                 )}
 
-                <form onSubmit={handleSubmit} className="modal-resetpassword__form">
-
-                    {/* Email ẩn */}
-                    <input type="hidden" value={data.email} />
-
-                    <div className="form-group">
-                        <label>Mật khẩu mới</label>
-                        <div className="input-password">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="Nhập mật khẩu mới"
-                                value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword((prev) => !prev)}
-                            >
-                                {showPassword ? 'Ẩn' : 'Hiện'}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Xác nhận mật khẩu</label>
-                        <div className="input-password">
-                            <input
-                                type={showConfirm ? 'text' : 'password'}
-                                placeholder="Nhập lại mật khẩu"
-                                value={data.password_confirmation}
-                                onChange={(e) =>
-                                    setData('password_confirmation', e.target.value)
-                                }
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowConfirm((prev) => !prev)}
-                            >
-                                {showConfirm ? 'Ẩn' : 'Hiện'}
-                            </button>
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={
-                            processing ||
-                            !data.password ||
-                            !data.password_confirmation
+                <div className="input-password">
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Xác nhận mật khẩu"
+                        value={data.password_confirmation}
+                        onChange={(e) =>
+                            handleChange('password_confirmation', e.target.value)
                         }
-                        className="button-submit"
+                    />
+                    <div
+                        className='eye-toggle__reset'
+                        onClick={() => setShowPassword(!showPassword)}
                     >
-                        Đặt lại mật khẩu
-                    </button>
+                        {showPassword ? (
+                            <img src="/icons/eye-off.svg" alt="hide" />
+                        ) : (
+                            <img src="/icons/eye.svg" alt="show" />
+                        )}
+                    </div>
+                </div>
 
-                    <button
-                        type="button"
-                        className="button-cancel"
-                        onClick={() => onClose(false)}
-                    >
-                        Hủy
-                    </button>
-                </form>
-            </div>
+                {getError('password_confirmation') && (
+                    <div className='notification__error'>{getError('password_confirmation')}</div>
+                )}
+
+                <button
+                    type="submit"
+                    disabled={processing}
+                    className="button-submit"
+                >
+                    Xác nhận
+                </button>
+
+                <button
+                    type="button"
+                    className="button-cancel"
+                    onClick={() => onClose(false)}
+                >
+                    ✕
+                </button>
+            </form>
         </div>
     );
 }

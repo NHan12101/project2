@@ -29,7 +29,7 @@ export default function VerifyOtp({ email, onClose, flash }) {
         setData('otp', otpArray.join(''));
     }, [otpArray]);
 
-    // // Clear lỗi khi user nhập lại
+    // Clear lỗi khi user nhập lại
     // useEffect(() => {
     //     if (otpArray.some((v) => v !== '')) {
     //         if (errors.message) errors.message = null;
@@ -131,7 +131,7 @@ export default function VerifyOtp({ email, onClose, flash }) {
 
     // Ẩn email theo dạng: f***@gmail.com
     function maskEmail(email) {
-        if (!email) return ""; // hoặc return "invalid email"
+        if (!email) return "";
 
         const [local, domain] = email.split("@");
 
@@ -165,15 +165,11 @@ export default function VerifyOtp({ email, onClose, flash }) {
             fontWeight: '600',
             textAlign: 'center',
             outline: 'none',
-            transition: 'border-color 0.2s',
-            color: isCompleted ? '#2a8c4e' : '#000',
-            background: isCompleted ? '#fafffb' : '#fefefe',
-            border: `2px solid ${isCompleted
-                ? '#d9f8e4'
-                : focusedIndex === index
-                    ? '#222'
-                    : '#d1d5db'
-                }`,
+            border: 'none',
+            transition: '0.2s',
+            color: isCompleted ? '#007029' : '#31344b',
+            background:'#e9edf3',
+            boxShadow: 'inset 1px 1px 6px #b8b9be, inset -2px -2px 8px #ffffff',
         })
     };
 
@@ -186,7 +182,17 @@ export default function VerifyOtp({ email, onClose, flash }) {
                     Mã xác thực đã được gửi đến Email: <span>{maskEmail(data.email)}</span>
                 </p>
 
-                <span style={{ display: 'block', margin: '42px 0 12px', userSelect: 'none', fontWeight: 500 }}>Nhập mã OTP</span>
+                <span style={{
+                    display: 'block',
+                    margin: '26px 0 15px',
+                    userSelect: 'none',
+                    color: '#31344b',
+                    fontWeight: 600,
+                    fontSize: 18
+                }}>
+                    Nhập mã OTP
+                </span>
+
                 <form onSubmit={handleSubmit}>
                     <div style={styles.otpContainer} onPaste={handlePaste}>
                         {Array(OTP_LENGTH).fill().map((_, index) => (
@@ -232,7 +238,7 @@ export default function VerifyOtp({ email, onClose, flash }) {
                         disabled={processing || data.otp.length < 6}
                         className='button-verifyOtp'
                         style={{
-                            cursor: data.otp.length < 6 ? 'default' : 'pointer',
+                            pointerEvents: data.otp.length < 6 ? 'none' : '',
                             opacity: data.otp.length < 6 ? 0.84 : 1,
                         }}
                     >

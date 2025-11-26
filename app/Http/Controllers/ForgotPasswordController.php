@@ -74,6 +74,6 @@ class ForgotPasswordController extends Controller
 
         Auth::login($user);
 
-        return redirect('/home')->with('success', 'Đặt lại mật khẩu thành công. Bạn có thể đăng nhập.');
+        return redirect('/home');
     }
 }

@@ -1,15 +1,27 @@
 .verification-box {
-    height: 506px;
     width: 420px;
-    background: #fefefe;
+    background: #e9edf3;
     padding: 10px;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: 4px 4px 26px #00000082;
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .modal {
     font-family: Inter, sans-serif;
-    background: #fff;
+    background: #e9edf3;
     border-radius: 16px;
     padding: 8px 20px;
     width: 100%;
@@ -17,18 +29,19 @@
 }
 
 .modal__title {
-    color: #060606;
-    font-size: 2.2rem;
-    font-weight: 700;
-    padding: 0 0 18px;
-    border-bottom: 1px solid #888;
+    letter-spacing: 0.6px;
+    color: #31344b;
+    font-size: 2.52rem;
+    font-weight: 600;
+    padding: 18px 0;
+    text-transform: uppercase;
     user-select: none;
 }
 
 .modal__desc {
-    font-size: 1.4rem;
-    margin: 20px 0 16px;
-    color: #222;
+    margin: 8px 0 16px;
+    font-size: 1.5rem;
+    color: #31344b;
     user-select: none;
 }
 
@@ -41,7 +54,6 @@
 }
 
 .resend {
-    margin-bottom: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,7 +61,7 @@
 }
 
 .resend p {
-    color: #222;
+    color: #31344b;
     font-size: 1.4rem;
     user-select: none;
 }
@@ -65,39 +77,35 @@
     }
 }
 
-
 .button-verifyOtp {
-    margin-top: 32px;
+    margin: 26px 0 20px;
     width: 100%;
-    padding: 14px 0;
-    background: #fa3719;
-    box-shadow: 2px 2px 6px #c33232ab;
-    color: #fff;
+    padding: 18px;
     border: none;
-    border-radius: 6px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    transition: box-shadow 0.3s;
+    border-radius: 15px;
+    font-weight: 600;
+    color: #31344b;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px #b8b9be, -5px -5px 10px #ffffff;
+    background: #e9edf3;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: 0.2s;
 
     &:hover {
-        box-shadow: 2px 2px 6px #4b1010ab;
+        box-shadow: 3px 3px 8px #b8b9be, -3px -3px 8px #ffffff;
     }
 }
 
 .notification__verify {
-    padding: 16px 2px;
+    padding: 24px 0 0;
     font-size: 1.36rem;
     font-weight: 500;
-    background: #fff5f5;
-    border: 2px solid #ffcbcb;
-    border-radius: 8px;
     color: red;
     user-select: none;
 }
 
 .notification__verify--success {
-    background: #eafaf1;
-    border: 2px solid #d9f8e4;
     color: #2a8c4e;
 }
 

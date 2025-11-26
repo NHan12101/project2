@@ -14,7 +14,13 @@ export default function SelectRegion({ selectRef, setOpenSelect, setSelectedRegi
 
     // ========== NORMALIZE =================
     const normalizeText = (text) =>
-        text?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase() || '';
+        text
+            ?.normalize('NFD')                       // 1. Tách ký tự có dấu thành ký tự + dấu
+            .replace(/[\u0300-\u036f]/g, '')         // 2. Loại bỏ toàn bộ dấu
+            .replace(/\s+/g, '')                     // 3. Xoá mọi khoảng trắng
+            .toLowerCase()                           // 4. Chuyển thành chữ thường
+        || '';
+
 
     // ========== LOAD CITY =============
     useEffect(() => {

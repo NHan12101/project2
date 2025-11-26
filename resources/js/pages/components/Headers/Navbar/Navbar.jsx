@@ -37,7 +37,6 @@ export default function Navbar() {
     useEffect(() => {
         if (url === '/home') {
             function handleScroll() {
-                console.log(window.scrollY);
                 setShow(window.scrollY > 720);
             }
 
@@ -64,7 +63,7 @@ export default function Navbar() {
             setVerifyEmail(flash.email);
         }
 
-        // OTP hợp lệ → cho phép reset password
+        // OTP hợp lệ thì cho phép reset password
         if (flash.reset_password_allowed && flash.email) {
             setShowVerify(false);
             setVerifyEmail(flash.email);
@@ -308,6 +307,17 @@ export default function Navbar() {
                 </div>
             )}
 
+            {showForgot && (
+                <div className="auth-form">
+                    <ForgotPasswordForm
+                        onClose={() => {
+                            setShowForgot(false);
+                            setShowAuth(true);
+                        }}
+                    />
+                </div>
+            )}
+
             {showReset && (
                 <div className="auth-form">
                     <ResetPassword
@@ -317,12 +327,6 @@ export default function Navbar() {
                     />
                 </div>
             )}
-
-            {showForgot && <div className="auth-form">
-                <ForgotPasswordForm onClose={() => setShowForgot(false)} />
-            </div>
-            }
-
         </nav >
     );
 }

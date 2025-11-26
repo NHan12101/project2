@@ -2,7 +2,7 @@
 
 .chat-container {
     display: flex;
-    margin: 14px auto 0;
+    margin: 32px auto 0;
     gap: 30px;
     color: var(--text-color);
     width: calc(100% - 60px);
@@ -16,7 +16,6 @@
     scrollbar-width: thin;
     scrollbar-color: #999 transparent;
     padding: 0 8px 0;
-    /* background: var(--bg-chat); */
 }
 
 .conversation-list__title {
