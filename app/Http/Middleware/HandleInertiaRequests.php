@@ -46,6 +46,16 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+
+            // thêm flash vào props
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'otp_required' => fn() => $request->session()->get('otp_required'),
+                'otp_type' => fn() => $request->session()->get('otp_type'),
+                'reset_password_allowed' => fn() => $request->session()->get('reset_password_allowed'),
+                'email' => fn() => $request->session()->get('email'),
+            ],
         ];
     }
 }

@@ -1,26 +1,27 @@
 import { useForm } from '@inertiajs/react';
-import { useState } from 'react';
-import style from './AuthForm.module.css';
+import { useState, useEffect } from 'react';
+import './ResetPassword.css';
 
-export default function Register({ onClose }) {
+export default function ResetPassword({ email, onClose }) {
     const { data, setData, post, processing, errors: backendErrors, reset } = useForm({
-        email: '',
+        email: email,
         password: '',
         password_confirmation: '',
     });
 
-    const [showPassword, setShowPassword] = useState(false)
-    const [frontendErrors, setFrontendErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
 
+    const [frontendErrors, setFrontendErrors] = useState({});
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
 
-    // Validate frontend
+    useEffect(() => {
+        if (email) {
+            setData('email', email);
+        }
+    }, [email]);
+
     function validateFrontend(form) {
         const errors = {};
-
-        if (!form.email) errors.email = 'Email là bắt buộc.';
-        else if (!/\S+@\S+\.\S+/.test(form.email))
-            errors.email = 'Email không hợp lệ.';
 
         if (!form.password) errors.password = 'Mật khẩu là bắt buộc.';
         else if (!passwordRegex.test(form.password))
@@ -31,7 +32,7 @@ export default function Register({ onClose }) {
             errors.password_confirmation = 'Mật khẩu xác nhận không khớp.';
 
         return errors;
-    };
+    }
 
     function handleChange(field, value) {
         // tạo bản copy để validate chính xác
@@ -43,7 +44,7 @@ export default function Register({ onClose }) {
         setFrontendErrors(newErrors);
     };
 
-    function handleRegister(e) {
+    function handleSubmit(e) {
         e.preventDefault();
 
         const newErrors = validateFrontend(data);
@@ -53,11 +54,11 @@ export default function Register({ onClose }) {
             return;
         }
 
-        post('/register', {
+        post('/forgot-password/reset', {
             onSuccess: () => {
                 reset();
                 setFrontendErrors({});
-                if (onClose) onClose();
+                if (onClose) onClose(false);
             },
         });
     };
@@ -67,33 +68,24 @@ export default function Register({ onClose }) {
     }
 
     return (
-        <div className={`${style['form-container']} ${style['register-container']}`}>
-            <form onSubmit={handleRegister}>
-                <h1 className={style['form-container__header']}>Register</h1>
+        <div className="modal-resetpassword">
+            <h2 className="modal-resetpassword__title">Đặt lại mật khẩu</h2>
 
-                <input
-                    autoComplete="email"
-                    className={style['input__auth-form']}
-                    placeholder="Email"
-                    value={data.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                />
-                {getError('email') && (
-                    <div className={style.error}>{getError('email')}</div>
-                )}
+            <form onSubmit={handleSubmit} className="modal-resetpassword__form">
 
-                <div className={style['input-wrapper']}>
+                {/* Email ẩn */}
+                <input type="hidden" value={data.email} />
+
+                <div className="input-password">
                     <input
                         type={showPassword ? 'text' : 'password'}
-                        autoComplete="password"
-                        className={style['input__auth-form']}
-                        placeholder="Password"
+                        autoFocus
+                        placeholder="Nhập mật khẩu mới"
                         value={data.password}
                         onChange={(e) => handleChange('password', e.target.value)}
                     />
-
                     <div
-                        className={style['eye-toggle']}
+                        className='eye-toggle__reset'
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? (
@@ -105,60 +97,49 @@ export default function Register({ onClose }) {
                 </div>
 
                 {getError('password') && (
-                    <div className={style.error}>{getError('password')}</div>
+                    <div className='notification__error'>{getError('password')}</div>
                 )}
 
-                <div className={style['input-wrapper']}>
+                <div className="input-password">
                     <input
                         type={showPassword ? 'text' : 'password'}
-                        autoComplete="new-password"
-                        className={style['input__auth-form']}
-                        placeholder="Confirm Password"
+                        placeholder="Xác nhận mật khẩu"
                         value={data.password_confirmation}
                         onChange={(e) =>
                             handleChange('password_confirmation', e.target.value)
                         }
                     />
-
                     <div
-                        className={style['eye-toggle']}
+                        className='eye-toggle__reset'
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? (
                             <img src="/icons/eye-off.svg" alt="hide" />
                         ) : (
-                            <img src='/icons/eye.svg' alt="show" />
+                            <img src="/icons/eye.svg" alt="show" />
                         )}
                     </div>
                 </div>
+
                 {getError('password_confirmation') && (
-                    <div className={style.error}>
-                        {getError('password_confirmation')}
-                    </div>
+                    <div className='notification__error'>{getError('password_confirmation')}</div>
                 )}
 
                 <button
                     type="submit"
                     disabled={processing}
-                    className={style['form-container__btn']}
+                    className="button-submit"
                 >
-                    {processing ? 'Loading...' : 'Register'}
+                    Xác nhận
                 </button>
 
-                <span className={style['form-container__span']}>or use your account</span>
-
-                <div className={style['social-container']}>
-                    <button
-                        className={style['login-google']}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            window.location.href = '/auth/google';
-                        }}
-                    >
-                        <img src="/icons/google.svg" alt="google" />
-                        <span>Tiếp tục với Google</span>
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    className="button-cancel"
+                    onClick={() => onClose(false)}
+                >
+                    ✕
+                </button>
             </form>
         </div>
     );

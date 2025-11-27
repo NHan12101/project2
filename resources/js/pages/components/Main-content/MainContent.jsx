@@ -1,5 +1,5 @@
 import { Building2, Home, House, LayoutGrid } from 'lucide-react';
-import momo from '../../../../../public/images/momo.svg';
+import momo from '../../../../../public/images/Momo.svg';
 import './MainContent.css';
 import BlogList from './blogs/BlogList.jsx';
 import Card from './cards/Card.jsx';

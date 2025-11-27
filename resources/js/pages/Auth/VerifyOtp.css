@@ -1,0 +1,132 @@
+.verification-box {
+    width: 420px;
+    background: #e9edf3;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 4px 4px 26px #00000082;
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal {
+    font-family: Inter, sans-serif;
+    background: #e9edf3;
+    border-radius: 16px;
+    padding: 8px 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.modal__title {
+    letter-spacing: 0.6px;
+    color: #31344b;
+    font-size: 2.52rem;
+    font-weight: 600;
+    padding: 18px 0;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.modal__desc {
+    margin: 8px 0 16px;
+    font-size: 1.5rem;
+    color: #31344b;
+    user-select: none;
+}
+
+.modal__desc span {
+    display: block;
+    margin-top: 10px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    user-select: text;
+}
+
+.resend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.resend p {
+    color: #31344b;
+    font-size: 1.4rem;
+    user-select: none;
+}
+
+.resend button {
+    background: transparent;
+    font-size: 1.4rem;
+    color: red;
+    border: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.button-verifyOtp {
+    margin: 26px 0 20px;
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    font-weight: 600;
+    color: #31344b;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px #b8b9be, -5px -5px 10px #ffffff;
+    background: #e9edf3;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: 0.2s;
+
+    &:hover {
+        box-shadow: 3px 3px 8px #b8b9be, -3px -3px 8px #ffffff;
+    }
+}
+
+.notification__verify {
+    padding: 24px 0 0;
+    font-size: 1.36rem;
+    font-weight: 500;
+    color: red;
+    user-select: none;
+}
+
+.notification__verify--success {
+    color: #2a8c4e;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

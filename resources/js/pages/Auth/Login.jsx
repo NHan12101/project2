@@ -1,80 +1,130 @@
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import style from './AuthForm.module.css';
 
-export default function Login({ onClose }) {
-    const {
-        data: loginData,
-        setData: setLoginData,
-        post: loginPost,
-        processing: loginLoading,
-        errors: loginErrors,
-        reset,
-    } = useForm({
+export default function Login({ onClose, onForgotPassword}) {
+    const { data, setData, post, processing, errors: backendErrors, reset } = useForm({
         email: '',
         password: '',
+        remember: false,
     });
 
-    const handleLogin = (e) => {
+    const [showPassword, setShowPassword] = useState(false)
+    const [frontendErrors, setFrontendErrors] = useState({});
+
+    function validateFrontend(form) {
+        const errors = {};
+
+        if (!form.email) errors.email = 'Email là bắt buộc.';
+        else if (!/\S+@\S+\.\S+/.test(form.email))
+            errors.email = 'Email không hợp lệ.';
+
+        if (!form.password) errors.password = 'Mật khẩu là bắt buộc.';
+
+        return errors;
+    };
+
+    function handleChange(field, value) {
+        const newData = { ...data, [field]: value };
+        setData(field, value);
+
+        setFrontendErrors(validateFrontend(newData));
+    };
+
+    function handleLogin(e) {
         e.preventDefault();
 
-        loginPost('/login', {
-            onSuccess: () => {
-                // Reset toàn bộ form về ban đầu
-                reset();
+        const errors = validateFrontend(data);
 
-                // Đóng form modal
+        if (Object.keys(errors).length > 0) {
+            setFrontendErrors(errors);
+            return;
+        }
+
+        post('/login', {
+            onSuccess: () => {
+                reset();
+                setFrontendErrors({});
                 if (onClose) onClose();
             },
         });
     };
 
+    function getError(field) {
+        return frontendErrors[field] || backendErrors[field] || null;
+    }
+
     return (
-        <div
-            className={`${style['form-container']} ${style['login-container']}`}
-        >
+        <div className={`${style['form-container']} ${style['login-container']}`}>
             <form onSubmit={handleLogin}>
                 <h1 className={style['form-container__header']}>Login</h1>
-                <input
-                    className={style['input__auth-form']}
-                    placeholder="Email"
-                    value={loginData.email}
-                    onChange={(e) => setLoginData('email', e.target.value)}
-                />
-                {loginErrors.email && (
-                    <div className={style.error}>{loginErrors.email}</div>
-                )}
 
                 <input
+                    type="email"
+                    autoComplete="email"
+                    autoFocus
                     className={style['input__auth-form']}
-                    type="password"
-                    placeholder="Password"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData('password', e.target.value)}
+                    placeholder="Email"
+                    value={data.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
                 />
-                {loginErrors.password && (
-                    <div className={style.error}>{loginErrors.password}</div>
+                {getError('email') && (
+                    <div className={style.error}>{getError('email')}</div>
                 )}
+
+                <div className={style['input-wrapper']}>
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        className={style['input__auth-form']}
+                        placeholder="Password"
+                        value={data.password}
+                        onChange={(e) => handleChange('password', e.target.value)}
+                    />
+
+                    <div
+                        className={style['eye-toggle']}
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? (
+                            <img src="/icons/eye-off.svg" alt="hide" />
+                        ) : (
+                            <img src="/icons/eye.svg" alt="show" />
+                        )}
+                    </div>
+                </div>
+                {getError('password') && (
+                    <div className={style.error}>{getError('password')}</div>
+                )}
+
                 <div className={style['form-container__content']}>
                     <div className={style.checkbox}>
-                        <input type="checkbox" id="remember" />
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            checked={data.remember}
+                            onChange={(e) => handleChange('remember', e.target.checked)}
+                        />
                         <label htmlFor="remember">Remember me</label>
                     </div>
+
                     <div className={style['pass-link']}>
-                        <a href="#" className={style['pass-link__forgot']}>
+                        <a onClick={onForgotPassword} className={style['pass-link__forgot']}>
                             Forgot password?
                         </a>
                     </div>
                 </div>
+
                 <button
                     type="submit"
                     className={style['form-container__btn']}
-                    disabled={loginLoading}
+                    disabled={processing}
                 >
-                    Login
+                    {processing ? 'Loading...' : 'Login'}
                 </button>
-                <span className={style['form-container__span']}>
-                    or use your account
-                </span>
+
+                <span className={style['form-container__span']}>or use your account</span>
+
                 <div className={style['social-container']}>
                     <button
                         className={style['login-google']}

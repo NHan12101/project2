@@ -3,7 +3,7 @@ import style from './AuthForm.module.css';
 import Login from './Login';
 import Register from './Register';
 
-export default function AuthForm({ onClose }) {
+export default function AuthForm({ onClose, onForgotPassword}) {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
 
     return (
@@ -13,7 +13,7 @@ export default function AuthForm({ onClose }) {
             onClick={(e) => e.stopPropagation()}
         >
             <Register onClose={onClose} />
-            <Login onClose={onClose} />
+            <Login onClose={onClose} onForgotPassword={onForgotPassword}/>
 
             <div className={style['overlay-container']}>
                 <div className={style.overlay}>
