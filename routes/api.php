@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Models\City;
 use App\Models\Ward;
 
+
 // ========= CHAT BOT AI ===============
 Route::get('/chat', function () {
     return Inertia::render('Chat');
@@ -19,3 +20,4 @@ Route::get('/regions/cities', function () {
 Route::get('/regions/wards/{city_id}', function ($city_id) {
     return Ward::where('city_id', $city_id)->get();
 });
+
