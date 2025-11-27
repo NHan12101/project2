@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\EmailOtpController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\PaymentController;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -89,4 +90,42 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+});
+
+Route::post('/payments/create', [PaymentController::class, 'create']);
+
+// Payment Result Pages
+Route::get('/payments/success', function () {
+    return "Payment Success!";
+});
+
+Route::get('/payments/cancel', function () {
+    return "Payment Cancelled!";
+});
+
+// PayPal return
+Route::get('/payments/paypal/return', function () {
+    return "PayPal Payment Success!";
+});
+
+Route::get('/payments/paypal/cancel', function () {
+    return "PayPal Payment Cancelled!";
+});
+
+// MoMo return
+Route::get('/payments/momo/return', function () {
+    return "MoMo Payment Success!";
+});
+
+Route::post('/payments/momo/ipn', function () {
+    return "MoMo IPN Received!";
+});
+
+// VNPAY return
+Route::get('/payments/vnpay/return', function () {
+    return "VNPAY Payment Success!";
+});
+
+Route::get('/payment', function () {
+    return Inertia::render('Payment');
 });
