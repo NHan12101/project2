@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ===== GOOGLE LOGIN =====
-Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect'); 
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 // Trang hoàn tất đăng ký sau khi đăng nhập bằng Google
@@ -80,3 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 });
+
+
+// ========== BỘ LỌC ======///////
+Route::get('/list', [PostController::class, 'showList']);

@@ -15,7 +15,7 @@ class ChatController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = Auth::id() ?? $request->query('user_id', 1);
+        $userId = Auth::id() ;
 
         $conversations = Conversation::where('user_one_id', $userId)
             ->orWhere('user_two_id', $userId)
@@ -32,7 +32,7 @@ class ChatController extends Controller
      */
     public function messages(Request $request, $conversationId)
     {
-        $userId = Auth::id() ?? $request->query('user_id', 1);
+        $userId = Auth::id() ;
 
         // Kiểm tra user có thuộc hội thoại không
         $conversation = Conversation::where(function ($q) use ($userId) {
