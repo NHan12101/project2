@@ -11,6 +11,7 @@ import Dropdown from './Dropdown.jsx';
 import './Navbar.css';
 import ResetPassword from '../../../Auth/ResetPassword.jsx';
 import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
+import { setSourceMapRange } from 'typescript';
 
 export default function Navbar() {
     const { props, url } = usePage();
@@ -35,6 +36,10 @@ export default function Navbar() {
     }, [auth]);
 
     useEffect(() => {
+        if(url !== '/home') {
+            setShow(true);
+        }
+
         if (url === '/home') {
             function handleScroll() {
                 setShow(window.scrollY > 720);

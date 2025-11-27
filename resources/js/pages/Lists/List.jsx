@@ -15,13 +15,13 @@ export default function List({list, cities, categories, filters: initialFilters}
     // console.log(posts);
 
     // Khi người dùng thay đổi filter hoặc sort
-    const handleFilterChange = (e) => {
+    
+    function handleFilterChange(e)  {
         const { name, value, type } = e.target;
 
         // Chuyển input number sang number hoặc null nếu rỗng
         const val =
             type === 'number' ? (value === '' ? null : Number(value)) : value;
-
         const newFilters = { ...filters, [name]: val };
         setFilters(newFilters);
 
