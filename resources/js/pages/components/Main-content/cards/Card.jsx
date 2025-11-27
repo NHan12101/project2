@@ -10,11 +10,11 @@ import { MapPin } from 'lucide-react';
 import { useState } from 'react';
 import './Card.css';
 
-export default function Card({post}) {
+export default function Card({ post, limit = 6 }) {
     const data = post || usePage().props.posts || [];
-    // console.log(data)
+    
     const [likedItems, setLikedItems] = useState([]);
-    const [visibleCount, setVisibleCount] = useState(6);
+    const [visibleCount, setVisibleCount] = useState(limit);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
     const [direction, setDirection] = useState(0);
 
@@ -73,9 +73,7 @@ export default function Card({post}) {
                 {data.slice(0, visibleCount).map((item) => {
                     const isLiked = likedItems.includes(item.id);
                     const currentIndex = currentImageIndex[item.id] || 0;
-                    // const imageSrc = `/${item?.images[currentIndex]?.image_path}`;
                     const imageSrc = `/storage/${item?.images[currentIndex]?.image_path}`;
-
 
                     return (
                         <div
