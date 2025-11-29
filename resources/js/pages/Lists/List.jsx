@@ -17,11 +17,12 @@ export default function List({
 
     const debounceRef = useRef(null);
 
-    const handleFilterChange = (e) => {
+    // Khi người dùng thay đổi filter hoặc sort
+    
+    function handleFilterChange(e)  {
         const { name, value, type } = e.target;
         const val =
             type === 'number' ? (value === '' ? null : Number(value)) : value;
-
         const newFilters = { ...filters, [name]: val };
         setFilters(newFilters);
 

@@ -143,47 +143,51 @@ class PaymentController extends Controller
     /* -------------------------------------------
     |  VNPAY PAYMENT (VND)
     --------------------------------------------*/
-    private function vnpayPayment($amount)
-    {
-        $vnp_TmnCode    = env('VNP_TMN_CODE');
-        $vnp_HashSecret = env('VNP_HASH_SECRET');
-        $vnp_Url        = env('VNP_PAYMENT_URL');
-        $vnp_ReturnUrl  = env('VNP_RETURN_URL');
+private function vnpayPayment($amount)
+{
+    $vnp_TmnCode    = env('VNP_TMN_CODE');
+    $vnp_HashSecret = env('VNP_HASH_SECRET');
+    $vnp_Url        = env('VNP_PAYMENT_URL');
+    $vnp_ReturnUrl  = env('VNP_RETURN_URL');
 
-        $vnp_TxnRef = time();
-        $vnp_OrderInfo = "Thanh toán VNPAY";
-        $vnp_Amount = $amount * 100; // VNPAY tính theo x100
+    $vnp_TxnRef = time();
+    $vnp_Amount = $amount * 100;
+    
+    $inputData = [
+        "vnp_Version" => "2.1.0",
+        "vnp_TmnCode" => $vnp_TmnCode,
+        "vnp_Amount" => $vnp_Amount,
+        "vnp_Command" => "pay",
+        "vnp_CreateDate" => date('YmdHis'),
+        "vnp_CurrCode" => "VND",
+        "vnp_IpAddr" => request()->ip(),
+        "vnp_Locale" => "vn",
+        "vnp_OrderInfo" => "Thanh toan VNPAY",
+        "vnp_OrderType" => "other",
+        "vnp_ReturnUrl" => $vnp_ReturnUrl,
+        "vnp_TxnRef" => $vnp_TxnRef
+    ];
 
-        $inputData = [
-            "vnp_Version" => "2.1.0",
-            "vnp_TmnCode" => $vnp_TmnCode,
-            "vnp_Amount" => $vnp_Amount,
-            "vnp_Command" => "pay",
-            "vnp_CreateDate" => date('YmdHis'),
-            "vnp_CurrCode" => "VND",
-            "vnp_IpAddr" => request()->ip(),
-            "vnp_Locale" => "vn",
-            "vnp_OrderInfo" => $vnp_OrderInfo,
-            "vnp_OrderType" => "other",
-            "vnp_ReturnUrl" => $vnp_ReturnUrl,
-            "vnp_TxnRef" => $vnp_TxnRef
-        ];
+    ksort($inputData);
 
-        ksort($inputData);
-        $query = "";
-        $hashdata = "";
-
-        foreach ($inputData as $key => $value) {
-            $query .= urlencode($key) . "=" . urlencode($value) . "&";
-            $hashdata .= $key . "=" . $value . "&";
+    // ==== BẮT BUỘC: HASH THEO ĐÚNG FORMAT CỦA TÀI LIỆU VNPAY ====
+    $hashData = "";
+    $i = 0;
+    foreach ($inputData as $key => $value) {
+        if ($i == 1) {
+            $hashData .= '&' . urlencode($key) . "=" . urlencode($value);
+        } else {
+            $hashData .= urlencode($key) . "=" . urlencode($value);
+            $i = 1;
         }
-
-        $query = rtrim($query, "&");
-        $hashdata = rtrim($hashdata, "&");
-
-        $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-        $paymentUrl = $vnp_Url . "?" . $query . "&vnp_SecureHash=" . $vnpSecureHash;
-
-        return response()->json(['url' => $paymentUrl]);
     }
+
+    $vnpSecureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
+
+    $query = http_build_query($inputData);
+    $paymentUrl = $vnp_Url . "?" . $query . "&vnp_SecureHash=" . $vnpSecureHash;
+
+    return response()->json(['url' => $paymentUrl]);
+}
+
 }

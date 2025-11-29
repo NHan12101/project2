@@ -11,6 +11,7 @@ import Dropdown from './Dropdown.jsx';
 import './Navbar.css';
 import ResetPassword from '../../../Auth/ResetPassword.jsx';
 import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
+import Suggest from '../Suggest.jsx';
 
 export default function Navbar() {
     const { props, url } = usePage();
@@ -27,6 +28,7 @@ export default function Navbar() {
     const [showReset, setShowReset] = useState(false);
     const [showForgot, setShowForgot] = useState(false);
 
+    const [keyword, setKeyword] = useState('');
 
     const [show, setShow] = useState(false);
 
@@ -35,6 +37,10 @@ export default function Navbar() {
     }, [auth]);
 
     useEffect(() => {
+        if (url !== '/home') {
+            setShow(true);
+        }
+
         if (url === '/home') {
             function handleScroll() {
                 setShow(window.scrollY > 720);
@@ -127,22 +133,16 @@ export default function Navbar() {
                     </ul>
                 </div>
 
-                <div
-                    className="container-search__box"
-                    style={{
-                        display: show ? 'flex' : 'none',
-                    }}
-                >
-                    <div className="container-search__box--iconsearch">
-                        <div className="aw__cf5h6c0">
-                            <img src="/icons/icon-search.svg" alt="search" />
-                        </div>
-                    </div>
-                    <input
-                        autoComplete="off"
-                        className="container-search__box--input"
-                        placeholder="Tìm bất động sản..."
+                <div style={{ display: show ? 'block' : 'none', position: 'relative' }}>
+
+                    <Suggest
+                        value={keyword}
+                        onChange={setKeyword}
+                        classContainer={'container-search__box'}
+                        classInput={'container-search__box--input'}
+                        classScroll={show}
                     />
+
                     <div className="container-search__box--iconbutton">
                         <button>
                             <svg
