@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import banner_vip from '../../../../../public/images/banner-vip.jpg';
 import banner_vip02 from '../../../../../public/images/banner-vip02.jpg';
 import banner_vip03 from '../../../../../public/images/banner-vip03.jpg';
+import Suggest from './Suggest';
+import SelectRegion from './SelectRegion';
 import ChooseTypeBDS from './ChooseTypeBDS';
 import './Header.css';
-import SelectRegion from './SelectRegion';
+import { usePage } from '@inertiajs/react';
 
 export default function Header() {
+    const { posts } = usePage().props;
     const banners = [banner_vip, banner_vip02, banner_vip03];
     const [current, setCurrent] = useState(0);
     const { menuRef, open, setOpen } = useDropdown();
@@ -16,6 +19,9 @@ export default function Header() {
     const [selectedType, setSelectedType] = useState({ id: 1, title: 'Tất cả bất động sản' });
 
     const [selectedRegionTitle, setSelectedRegionTitle] = useState('Chọn khu vực');
+
+    const [keyword, setKeyword] = useState('');
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -39,18 +45,20 @@ export default function Header() {
     return (
         <header className="header">
             <div className="header__banner">
-                <div
-                    className="banner__wrapper"
-                    style={{ transform: `translateX(-${current * 100}%)` }}
-                >
-                    {banners.map((img, index) => (
-                        <img
-                            key={index}
-                            src={img}
-                            alt={`banner-${index}`}
-                            className="banner__image"
-                        />
-                    ))}
+                <div style={{ overflow: 'hidden' }}>
+                    <div
+                        className="banner__wrapper"
+                        style={{ transform: `translateX(-${current * 100}%)` }}
+                    >
+                        {banners.map((img, index) => (
+                            <img
+                                key={index}
+                                src={img}
+                                alt={`banner-${index}`}
+                                className="banner__image"
+                            />
+                        ))}
+                    </div>
                 </div>
 
                 <div className="banner__overlay">
@@ -71,15 +79,13 @@ export default function Header() {
                                 <div className="search-bar">
                                     <div className="search-bar__01">
                                         <div className="search-bar__02">
-                                            <div className="search-bar__02--icon-search">
-                                                <img src="/icons/icon-search.svg" alt="Tìm kiếm" />
-                                            </div>
 
-                                            <input
-                                                type="text"
-                                                className="search-bar__02--input"
-                                                autoComplete="off"
-                                                placeholder="Tìm bất động sản..."
+                                            <Suggest
+                                                posts={posts}
+                                                value={keyword}
+                                                onChange={setKeyword}
+                                                classContainer={'search-bar__02--search'}
+                                                classInput={'search-bar__02--input'}
                                             />
 
                                             <div className="search-bar__02--button">

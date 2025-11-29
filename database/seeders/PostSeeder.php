@@ -46,7 +46,9 @@ class PostSeeder extends Seeder
                 'ward_id' => $ward->id,
             ]);
 
-            foreach ($images as $img) {
+            $randomImages = collect($images)->shuffle();
+
+            foreach ($randomImages as $img) {
                 PostImage::create([
                     'post_id'    => $post->id,
                     'image_path' => $img,

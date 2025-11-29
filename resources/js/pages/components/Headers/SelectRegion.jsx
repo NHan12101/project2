@@ -13,14 +13,16 @@ export default function SelectRegion({ selectRef, setOpenSelect, setSelectedRegi
     const [mode, setMode] = useState('none'); // none | city | ward
 
     // ========== NORMALIZE =================
-    const normalizeText = (text) =>
-        text
+    function normalizeText(text) {
+        if(!text) return '';
+
+        return text
             ?.normalize('NFD')                       // 1. Tách ký tự có dấu thành ký tự + dấu
             .replace(/[\u0300-\u036f]/g, '')         // 2. Loại bỏ toàn bộ dấu
-            .replace(/\s+/g, '')                     // 3. Xoá mọi khoảng trắng
-            .toLowerCase()                           // 4. Chuyển thành chữ thường
-        || '';
-
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D')   // 3. Cho phép giữ đ và Đ
+            .replace(/\s+/g, '')                     // 4. Xoá mọi khoảng trắng
+            .toLowerCase();
+    }
 
     // ========== LOAD CITY =============
     useEffect(() => {
