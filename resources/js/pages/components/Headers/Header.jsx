@@ -1,4 +1,5 @@
 import useDropdown from '@/hooks/useDropdown';
+import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import banner_vip from '../../../../../public/images/banner-vip.jpg';
 import banner_vip02 from '../../../../../public/images/banner-vip02.jpg';
@@ -7,7 +8,6 @@ import Suggest from './Suggest';
 import SelectRegion from './SelectRegion';
 import ChooseTypeBDS from './ChooseTypeBDS';
 import './Header.css';
-import { usePage } from '@inertiajs/react';
 
 export default function Header() {
     const { posts } = usePage().props;
@@ -16,12 +16,13 @@ export default function Header() {
     const { menuRef, open, setOpen } = useDropdown();
     const { menuRef: selectRef, open: openSelect, setOpen: setOpenSelect } = useDropdown();
     const [selectedTitle, setSelectedTitle] = useState('Loại hình BĐS');
-    const [selectedType, setSelectedType] = useState({ id: 1, title: 'Tất cả bất động sản' });
+    const [selectedType, setSelectedType] = useState({ id: 'all', title: 'Tất cả bất động sản' });
 
     const [selectedRegionTitle, setSelectedRegionTitle] = useState('Chọn khu vực');
 
     const [keyword, setKeyword] = useState('');
 
+    const saved = localStorage.getItem('selected-region');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,7 +32,6 @@ export default function Header() {
     }, []);
 
     useEffect(() => {
-        const saved = localStorage.getItem('selected-region');
         if (saved) {
             const { city, ward } = JSON.parse(saved);
 
@@ -40,6 +40,25 @@ export default function Header() {
             else setSelectedRegionTitle("Chọn khu vực");
         }
     }, []);
+
+
+
+function handleSearch() {
+
+    const { city, ward } = JSON.parse(saved);
+
+    const params = {
+        keyword: keyword || null,
+        city_id: city?.id === 'all' ? null : city?.id ?? null,
+        ward_id: ward?.id === 'all' ? null : ward?.id ?? null,
+        category_id: selectedType?.id === 'all' ? null : selectedType.id ?? null
+    };
+
+    router.get('/home-finder', params, {
+        preserveState: false,
+        preserveScroll: true
+    });
+}
 
 
     return (
@@ -79,7 +98,6 @@ export default function Header() {
                                 <div className="search-bar">
                                     <div className="search-bar__01">
                                         <div className="search-bar__02">
-
                                             <Suggest
                                                 posts={posts}
                                                 value={keyword}
@@ -168,7 +186,7 @@ export default function Header() {
                                                 )}
 
                                                 <div>
-                                                    <button className="button-02__search">Tìm nhà</button>
+                                                    <button className="button-02__search" onClick={handleSearch}>Tìm nhà</button>
                                                 </div>
                                             </div>
                                         </div>

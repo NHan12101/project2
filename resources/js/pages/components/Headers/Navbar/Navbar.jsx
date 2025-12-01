@@ -105,7 +105,7 @@ export default function Navbar() {
                     boxShadow: show ? '0px 1px 16px rgba(0, 0, 0, 0.08)' : 'none'
                 }}
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 46 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
                     <a href="/home">
                         <img src={logo} alt="Logo" className="nav__item--logo" />
                     </a>
@@ -128,12 +128,12 @@ export default function Navbar() {
                             <a href="">Dự án</a>
                         </li>
                         <li>
-                            <a href="">Liên hệ</a>
+                            <a href="">Tin tức</a>
                         </li>
                     </ul>
                 </div>
 
-                <div style={{ display: show ? 'block' : 'none', position: 'relative' }}>
+                <div style={{ display: show ? 'block' : 'none', position: 'relative', width: 'calc(100% - 1060px)', }}>
 
                     <Suggest
                         value={keyword}

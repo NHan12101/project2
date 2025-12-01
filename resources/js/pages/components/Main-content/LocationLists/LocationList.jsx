@@ -1,20 +1,17 @@
 import dalat from '../../../../../../public/images/dalat.png';
 import danang from '../../../../../../public/images/danang.png';
-import {
-    default as hanoi,
-    default as hanoi1,
-} from '../../../../../../public/images/hanoi.png';
+import { default as hanoi1 } from '../../../../../../public/images/hanoi.png';
 import hcm from '../../../../../../public/images/hcm.png';
 import hcm1 from '../../../../../../public/images/hcm1.png';
-import './HomeListing.css';
+import './LocationList.css';
 
 const cities = [
     {
-        name: 'Hà Nội',
-        image: hanoi,
+        name: 'TP.Hồ Chí Minh',
+        image: hcm1,
     },
     {
-        name: 'Tp.HCM',
+        name: 'Hà Nội',
         image: hcm,
     },
     {
@@ -30,27 +27,34 @@ const cities = [
         image: hcm1,
     },
     {
-        name: 'Tp. khác',
+        name: 'Đồng Nai',
         image: hanoi1,
     },
 ];
 
-export default function HomeListing() {
+export default function LocationList() {
     return (
         <div className="city-section">
             <div className="main-contain">
                 <div className="city-section__home">
                     <h1 className="header_title city-section__title">
-                        NGÔI NHÀ BẤT ĐỘNG SẢN CỦA VIỆT NAM
+                        Bất động sản theo địa điểm
                     </h1>
                     <div className="city-grid">
                         {cities.map((city, index) => (
-                            <div className="city-card" key={index}>
+                            <div
+                                className={`city-grid__item city-grid__item${index + 1}`}
+                                key={index}
+                            >
                                 <img src={city.image} alt={city.name} />
-                                <h1 className="city-info">{city.name}</h1>
-                                <p className="city-info-more">
-                                    XEM THÊM DỰ ÁN    ▶
-                                </p>
+                                <div className="city-info">
+                                    <h1 className="city-info__title">
+                                        {city.name}
+                                    </h1>
+                                    <p className="city-info__desc">
+                                        80.000 tin đăng
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </div>

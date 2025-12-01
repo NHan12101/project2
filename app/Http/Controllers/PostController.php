@@ -13,75 +13,6 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function showList(Request $request)
-    {
-        $query = Post::with('images', 'city', 'ward');
-
-        if ($request->city_id) {
-            $query->where('city_id', $request->city_id);
-        }
-
-        if ($request->category_id) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        if ($request->minPrice) {
-            $query->where('price', '>=', $request->minPrice);
-        }
-
-        if ($request->maxPrice) {
-            $query->where('price', '<=', $request->maxPrice);
-        }
-
-        if ($request->minArea) {
-            $query->where('area', '>=', $request->minArea);
-        }
-
-        if ($request->maxArea) {
-            $query->where('area', '<=', $request->maxArea);
-        }
-
-        if ($request->bedrooms) {
-            $query->where('bedrooms', $request->bedrooms);
-        }
-
-        if ($request->sort === 'price_asc') {
-            $query->orderBy('price', 'asc');
-        }
-
-        if ($request->sort === 'price_desc') {
-            $query->orderBy('price', 'desc');
-        }
-
-        return Inertia::render('Lists/List', [
-            'list' => $query->get(),
-            'cities' => City::all(),
-            'categories' => Category::all(),
-            'filters' => $request->all(),
-        ]);
-    }
-
-
-
-    public function show($id)
-    {
-        // Thêm 'user' vào with() để load thông tin người đăng bài
-        $posts = Post::with('images', 'city', 'ward', 'user')->findOrFail($id);
-
-        $related = Post::with('images', 'city', 'ward')
-            ->where('id', '!=', $id)
-            ->take(6)
-            ->get();
-
-        return Inertia::render('PropertyDetail/PropertyDetail', [
-            'post' => $posts,
-            'relatedPosts' => $related,
-            'auth' => [
-                'user' => Auth::user(),
-            ],
-        ]);
-    }
-
     public function index()
     {
         $posts = Post::with('images', 'city', 'ward')->get();
@@ -92,6 +23,26 @@ class PostController extends Controller
             ],
 
             'posts' => $posts,
+            'isHome' => true,
+        ]);
+    }
+
+    public function show($id)
+    {
+        // Thêm 'user' vào with() để load thông tin người đăng bài
+        $posts = Post::with('images', 'city', 'ward', 'user')->findOrFail($id);
+
+        $related = Post::with('images', 'city', 'ward')
+            ->where('id', '!=', $id)
+            ->take(16)
+            ->get();
+
+        return Inertia::render('PropertyDetail/PropertyDetail', [
+            'post' => $posts,
+            'relatedPosts' => $related,
+            'auth' => [
+                'user' => Auth::user(),
+            ],
         ]);
     }
 

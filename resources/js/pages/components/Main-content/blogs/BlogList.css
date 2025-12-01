@@ -4,7 +4,7 @@
 }
 
 .news-grid {
-    margin-top: 70px;
+    margin-top: 42px;
     display: grid;
     grid-template-columns: 2fr 3fr;
     column-gap: 30px;

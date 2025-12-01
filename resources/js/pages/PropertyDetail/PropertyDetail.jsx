@@ -4,7 +4,7 @@ import location_related from '../../../../public/images/Rectangle.png';
 import Chat from '../Chat.jsx';
 import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
-import Card from '../components/Main-content/cards/Card.jsx';
+import CardList from '../components/Main-content/cards/CardList.jsx';
 import classes from './PropertyDetail.module.css';
 
 export default function PropertyDetail({ post, relatedPosts, auth }) {
@@ -179,7 +179,8 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
                     Bất động sản dành cho bạn
                 </h1>
             </div>
-            <Card post={relatedPosts} />
+
+            <CardList post={relatedPosts} limit={8} showMore={true} />
             <Footer />
         </>
     );

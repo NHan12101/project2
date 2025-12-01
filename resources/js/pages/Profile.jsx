@@ -3,12 +3,9 @@ import { useState } from 'react';
 import './Profile.css';
 import Footer from './components/Footer/Footer.jsx';
 import Navbar from './components/Headers/Navbar/Navbar.jsx';
-import Card from './components/Main-content/cards/Card.jsx';
+import CardList from './components/Main-content/cards/CardList.jsx';
 
 export default function Profile({ user, properties }) {
-    // console.log(user);
-    // console.log(properties);
-
     const [activeTab, setActiveTab] = useState('properties');
     const { data, setData, post, processing, errors } = useForm({
         name: user?.name || '',
@@ -254,7 +251,11 @@ export default function Profile({ user, properties }) {
                         <div className="tab-content">
                             {activeTab === 'properties' &&
                                 (properties.length > 0 ? (
-                                    <Card post={properties}/>
+                                    <CardList
+                                        post={properties}
+                                        limit={8}
+                                        showMore={true}
+                                    />
                                 ) : (
                                     <div className="empty-state">
                                         <i className="fas fa-home"></i>

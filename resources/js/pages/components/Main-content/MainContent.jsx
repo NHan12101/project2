@@ -1,40 +1,22 @@
-import { Building2, Home, House, LayoutGrid } from 'lucide-react';
 import momo from '../../../../../public/images/Momo.svg';
-import './MainContent.css';
 import BlogList from './blogs/BlogList.jsx';
-import Card from './cards/Card.jsx';
-import HomeListing from './home-listing/HomeListing.jsx';
+import CardList from './cards/CardList.jsx';
+import HotNews from './HotNews.jsx';
+import LocationList from './LocationLists/LocationList.jsx';
+import './MainContent.css';
 
-function MainContent() {
-    const items = [
-        { icon: <Home color="#e53935" size={70} />, name: 'Nhà phố' },
-        { icon: <Building2 color="#e53935" size={70} />, name: 'Căn hộ' },
-        { icon: <House color="#e53935" size={70} />, name: 'Villa' },
-        { icon: <LayoutGrid color="#e53935" size={70} />, name: 'Mặt bằng' },
-    ];
-
+export default function MainContent() {
     return (
         <>
-            <section className="category">
-                <div className="main-contain">
-                    <h1 className="header_title category__title--head">
-                        Danh mục nổi bật
-                    </h1>
-                    <div className="category-list">
-                        {items.map((item, i) => (
-                            <div key={i} className="category-item">
-                                {item.icon}
-                                <p className="category__title">{item.name}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <h1 className="header_title card__heading--title">
-                        Bất động sản dành cho bạn
-                    </h1>
-                </div>
-            </section>
+            <HotNews />
 
-            <Card />
+            <div className="main-contain">
+                <h1 className="header_title card__heading--title">
+                    Bất động sản dành cho bạn
+                </h1>
+            </div>
+
+            <CardList limit={8} showMore={true} />
 
             <section className="partner">
                 <div className="main-contain">
@@ -91,11 +73,9 @@ function MainContent() {
                 </div>
             </section>
 
-            <HomeListing />
+            <LocationList />
 
             <BlogList />
         </>
     );
 }
-
-export default MainContent;

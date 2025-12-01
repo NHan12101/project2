@@ -1,0 +1,113 @@
+    .hot-news {
+        margin-top: 16px;
+        padding: 60px 0;
+    }
+
+    .hot-news__container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 35px;
+    }
+
+    .hot-news__content {
+        width: 80%;
+    }
+
+    .hot-news__categories {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 16px 22px 0;
+        border-bottom: 1px solid #cecece;
+    }
+
+    .hot-news__category-list {
+        display: flex;
+        gap: 28px;
+    }
+
+    .hot-news__category-item {
+        color: #222;
+        font-size: 2.8rem;
+        font-weight: 700;
+    }
+
+    .hot-news__body {
+        margin-top: 22px;
+        display: flex;
+        gap: 22px;
+    }
+
+
+    .hot-news__main-post {
+        width: 67%;
+    }
+
+    .hot-news__main-caption {
+        font-size: 3.1rem;
+        line-height: 1.2;
+        font-weight: 700;
+        margin-top: 20px;
+    }
+
+    .hot-news__main-desc {
+        line-height: 1.4;
+    }
+
+    .hot-news__main-figure {
+        border-radius: 14px;
+        height: 415px;
+        background: #00000044;
+    }
+
+    .hot-news__main-date {
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .hot-news__main-desc {
+        margin-top: 20px;
+    }
+
+    .hot-news__related {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 48%;
+    }
+
+    .hot-news__related-item {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .hot-news__related-figure {
+        border-radius: 14px;
+        flex-shrink: 0;
+        height: 125px;
+        width: 190px;
+        background: #00000043;
+    }
+
+    .hot-news__related-caption {
+        font-size: 1.8rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .hot-news__aside {
+        margin-top: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        width: 20%;
+    }
+
+    .hot-news__aside--box {
+        height: 380px;
+        width: 100%;
+        background: #00000039;
+    }

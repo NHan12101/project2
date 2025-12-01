@@ -137,7 +137,7 @@ export default function SelectRegion({ selectRef, setOpenSelect, setSelectedRegi
             </svg>
         </span>
     );
-
+    
     return (
         <div ref={selectRef} className="select-region__container">
             {/* ================= HEADER =============== */}
@@ -172,6 +172,7 @@ export default function SelectRegion({ selectRef, setOpenSelect, setSelectedRegi
                             />
                         </svg>
                         <input
+                            autoFocus
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={mode === 'city' ? 'Tìm tỉnh thành' : 'Tìm phường xã'}

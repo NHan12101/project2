@@ -99,7 +99,7 @@
     display: flex;
     align-items: center;
     border-radius: 20px;
-    padding: 12px 16px 12px 24px;
+    padding: 12px 16px 12px 16px;
     background-color: #FFFFFF;
     height: 72px;
     width: 100%;
@@ -116,10 +116,10 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    padding-left: 16px;
-    padding-right: 16px;
-    height: 40px;
-    width: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    /* height: 40px; */
+    /* width: 40px; */
     gap: 8px;
     color: rgb(76, 76, 76);
 }

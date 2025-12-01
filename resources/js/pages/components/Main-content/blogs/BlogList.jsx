@@ -36,7 +36,7 @@ const BlogList = () => {
     return (
         <div className="news-section">
             <div className="main-contain">
-                <h1 className='header_title'>TIN TỨC - SỰ KIỆN - HOẠT ĐỘNG</h1>
+                <h1 className='header_title'>Tin tức bất động sản</h1>
                 <div className="news-grid">
                     <div className="news-main">
                         <img src={newsData[0].image} alt={newsData[0].title} />

@@ -1,0 +1,96 @@
+.city-section {
+    margin-top: 120px;
+}
+
+.city-grid {
+    margin-top: 46px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 110px);
+    gap: 22px;
+}
+
+
+.city-grid__item {
+    position: relative;
+    z-index: 99;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 3px 3px 12px #00000053;
+}
+
+.city-grid__item:hover img {
+    transform: scale(1.1);
+}
+
+.city-grid__item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.city-info {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    background: linear-gradient(360deg, rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.74));
+    color: var(--bg-color);
+}
+
+
+.city-info:hover .city-info__title,
+.city-info:hover .city-info__desc {
+    text-decoration: underline;
+}
+
+.city-info__title {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.city-info__desc {
+    position: absolute;
+    top: 50px;
+    left: 18px;
+    font-weight: 600;
+    text-underline-offset: 2px;
+}
+
+.city-grid__item1 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+}
+
+.city-grid__item2 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 3;
+    grid-row-start: 3;
+}
+
+.city-grid__item3 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 1;
+}
+
+.city-grid__item4 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 4;
+    grid-row-start: 1;
+}
+
+.city-grid__item5 {
+    grid-row: span 2 / span 2;
+    grid-row-start: 4;
+}
+
+.city-grid__item6 {
+    grid-row: span 2 / span 2;
+    grid-row-start: 4;
+}

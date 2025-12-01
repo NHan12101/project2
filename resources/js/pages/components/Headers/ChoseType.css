@@ -24,7 +24,7 @@
 }
 
 .chose-type__box {
-    height: 180px;
+    height: 252px;
     overflow-y: scroll;
     scrollbar-width: none;
 }
