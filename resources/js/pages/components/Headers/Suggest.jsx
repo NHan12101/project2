@@ -3,7 +3,7 @@ import useDropdown from '@/hooks/useDropdown.js';
 import { useEffect, useState } from 'react';
 
 
-export default function Suggest({ value, onChange, classContainer = '', classInput = '', classScroll }) {
+export default function Suggest({ value, setKeyword, selectedType, classContainer = '', classInput = '', classScroll }) {
     const { suggestTitles } = usePage().props;
     const { menuRef: suggestionsRef, open: openSuggestions, setOpen: setOpenSuggestions } = useDropdown();
 
@@ -42,10 +42,18 @@ export default function Suggest({ value, onChange, classContainer = '', classInp
         );
     }, [value, suggestTitles]);
 
-    function handleSearch() {
-        const params = {
-            keyword: value || null,
-        };
+    function handleSearch(keyword) {
+        const saved = localStorage.getItem('selected-region');
+        const { city, ward } = JSON.parse(saved);
+        
+    const params = {
+        keyword: keyword || null,
+        ...(classScroll ? {} : {
+            city_id: city?.id === 'all' ? null : city?.id ?? null,
+            ward_id: ward?.id === 'all' ? null : ward?.id ?? null,
+            category_id: selectedType?.id === 'all' ? null : selectedType.id ?? null
+        })
+    };
 
         router.get('/home-finder', params, {
             preserveState: false,
@@ -81,11 +89,14 @@ export default function Suggest({ value, onChange, classContainer = '', classInp
                 placeholder="Tìm bất động sản..."
                 value={value}
                 onChange={(e) => {
-                    onChange(e.target.value);
+                    setKeyword(e.target.value);
                     setOpenSuggestions(!!e.target.value.trim());
                 }}
                 onFocus={() => {
                     if (value.trim()) setOpenSuggestions(true);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSearch(value);
                 }}
             />
 
@@ -114,11 +125,10 @@ export default function Suggest({ value, onChange, classContainer = '', classInp
                         <div
                             key={index}
                             className="suggestion-item"
-                            // onClick={() => onChange(title)}
                             onClick={()=> {
-                                onChange(title)
-                                handleSearch(); 
+                                setKeyword(title)
                                 setOpenSuggestions(false)
+                                handleSearch(title);
                             }}
                         >
                             <div className='suggestion-content'>

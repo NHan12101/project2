@@ -137,7 +137,7 @@ export default function Navbar() {
 
                     <Suggest
                         value={keyword}
-                        onChange={setKeyword}
+                        setKeyword={setKeyword}
                         classContainer={'container-search__box'}
                         classInput={'container-search__box--input'}
                         classScroll={show}

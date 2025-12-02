@@ -17,7 +17,7 @@ export default function CardList({ post, limit = 8, showMore = true }) {
         } else {
             // Chỉ trang Home mới có logic XEM TẤT CẢ
             if (isHome) {
-                router.get('/login');
+                router.get('/home-finder');
             }
         }
     }

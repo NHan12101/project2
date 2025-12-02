@@ -12,7 +12,7 @@ export default function HomeFinder({
     filters: initialFilters,
 }) {
     const [filters, setFilters] = useState(initialFilters || {});
-    const [posts, setPosts] = useState(list || []);
+    const [posts, setPosts] = useState(list?.data || []); // Lấy data từ paginator
     const [showFilters, setShowFilters] = useState(false);
 
     const debounceRef = useRef(null);
@@ -30,9 +30,9 @@ export default function HomeFinder({
         const newFilters = { ...filters };
 
         if (val === undefined) {
-            delete newFilters[name]; // ⬅ nếu rỗng thì xoá khỏi query
+            delete newFilters[name];
         } else {
-            newFilters[name] = val; // gán bình thường
+            newFilters[name] = val;
         }
 
         setFilters(newFilters);
@@ -44,7 +44,7 @@ export default function HomeFinder({
                 preserveState: true,
                 replace: true,
                 onSuccess: (page) => {
-                    setPosts(page.props.list || []);
+                    setPosts(page.props.list?.data || []);
                     setFilters(page.props.filters || {});
                 },
             });
@@ -59,14 +59,15 @@ export default function HomeFinder({
             {
                 preserveState: true,
                 onSuccess: (page) => {
-                    setPosts(page.props.list || []);
+                    setPosts(page.props.list?.data || []);
+                    setFilters(page.props.filters || {});
                 },
             },
         );
     };
 
     const activeFilterCount = Object.values(filters).filter(
-        (v) => v !== null && v !== '',
+        (v) => v !== null && v !== undefined && v !== '',
     ).length;
 
     return (
@@ -134,11 +135,7 @@ export default function HomeFinder({
                                 <label>Khu vực</label>
                                 <select
                                     name="city_id"
-                                    value={
-                                        filters.city_id != null
-                                            ? String(filters.city_id)
-                                            : ''
-                                    }
+                                    value={filters.city_id?.toString() ?? ''}
                                     onChange={handleFilterChange}
                                     className="filter-input"
                                 >
@@ -146,7 +143,7 @@ export default function HomeFinder({
                                     {cities.map((city) => (
                                         <option
                                             key={city.id}
-                                            value={String(city.id)}
+                                            value={city.id.toString()}
                                         >
                                             {city.name}
                                         </option>
@@ -160,9 +157,7 @@ export default function HomeFinder({
                                 <select
                                     name="category_id"
                                     value={
-                                        filters.category_id != null
-                                            ? String(filters.category_id)
-                                            : ''
+                                        filters.category_id?.toString() ?? ''
                                     }
                                     onChange={handleFilterChange}
                                     className="filter-input"
@@ -171,7 +166,7 @@ export default function HomeFinder({
                                     {categories.map((category) => (
                                         <option
                                             key={category.id}
-                                            value={String(category.id)}
+                                            value={category.id.toString()}
                                         >
                                             {category.name}
                                         </option>
@@ -187,11 +182,7 @@ export default function HomeFinder({
                                         type="number"
                                         name="minPrice"
                                         placeholder="Từ"
-                                        value={
-                                            filters.minPrice != null
-                                                ? filters.minPrice
-                                                : ''
-                                        }
+                                        value={filters.minPrice ?? ''}
                                         onChange={handleFilterChange}
                                         className="filter-input"
                                     />
@@ -200,11 +191,7 @@ export default function HomeFinder({
                                         type="number"
                                         name="maxPrice"
                                         placeholder="Đến"
-                                        value={
-                                            filters.maxPrice != null
-                                                ? filters.maxPrice
-                                                : ''
-                                        }
+                                        value={filters.maxPrice ?? ''}
                                         onChange={handleFilterChange}
                                         className="filter-input"
                                     />
@@ -219,11 +206,7 @@ export default function HomeFinder({
                                         type="number"
                                         name="minArea"
                                         placeholder="Từ"
-                                        value={
-                                            filters.minArea != null
-                                                ? filters.minArea
-                                                : ''
-                                        }
+                                        value={filters.minArea ?? ''}
                                         onChange={handleFilterChange}
                                         className="filter-input"
                                     />
@@ -232,11 +215,7 @@ export default function HomeFinder({
                                         type="number"
                                         name="maxArea"
                                         placeholder="Đến"
-                                        value={
-                                            filters.maxArea != null
-                                                ? filters.maxArea
-                                                : ''
-                                        }
+                                        value={filters.maxArea ?? ''}
                                         onChange={handleFilterChange}
                                         className="filter-input"
                                     />
@@ -250,11 +229,7 @@ export default function HomeFinder({
                                     type="number"
                                     name="bedrooms"
                                     placeholder="Nhập số phòng"
-                                    value={
-                                        filters.bedrooms != null
-                                            ? filters.bedrooms
-                                            : ''
-                                    }
+                                    value={filters.bedrooms ?? ''}
                                     onChange={handleFilterChange}
                                     className="filter-input"
                                     min="0"
@@ -266,7 +241,7 @@ export default function HomeFinder({
                                 <label>Sắp xếp</label>
                                 <select
                                     name="sort"
-                                    value={filters?.sort || ''}
+                                    value={filters.sort?.toString() ?? ''}
                                     onChange={handleFilterChange}
                                     className="filter-input"
                                 >

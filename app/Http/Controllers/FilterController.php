@@ -68,6 +68,9 @@ class FilterController extends Controller
             $query->orderBy('price', 'desc');
         }
 
+        // --- PAGINATION: 20 posts per page ---
+        $posts = $query->paginate(20)->withQueryString();
+
         // --- RETURN filters to frontend ---
         $filters = $request->only([
             'keyword',
@@ -83,7 +86,7 @@ class FilterController extends Controller
         ]);
 
         return Inertia::render('Posts/HomeFinder', [
-            'list' => $query->get(),
+            'list' => $posts,
             'cities' => City::all(),
             'categories' => Category::all(),
             'filters' => $filters,

@@ -44,7 +44,6 @@ export default function Header() {
 
 
 function handleSearch() {
-
     const { city, ward } = JSON.parse(saved);
 
     const params = {
@@ -99,9 +98,9 @@ function handleSearch() {
                                     <div className="search-bar__01">
                                         <div className="search-bar__02">
                                             <Suggest
-                                                posts={posts}
                                                 value={keyword}
-                                                onChange={setKeyword}
+                                                setKeyword={setKeyword}
+                                                selectedType={selectedType}
                                                 classContainer={'search-bar__02--search'}
                                                 classInput={'search-bar__02--input'}
                                             />
