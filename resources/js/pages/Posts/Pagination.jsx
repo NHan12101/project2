@@ -1,37 +1,65 @@
-export default function Pagination({ meta, onPageChange }) {
-    if (!meta) return null;
+import { router } from '@inertiajs/react';
+import React from 'react';
+
+export default function Pagination({ meta, filters }) {
+    if (!meta?.last_page || meta.last_page <= 1) return null;
 
     const { current_page, last_page } = meta;
 
-    if (last_page <= 1) return null; // Nếu chỉ có 1 trang thì không hiển thị
+    const goToPage = (pageNumber) => {
+        if (pageNumber === '...' || pageNumber < 1 || pageNumber > last_page) return;
+        router.get('/home-finder', { ...filters, page: pageNumber }, {
+            preserveState: true,
+            replace: true,
+            scroll: 'top',
+        });
+    };
 
-    const pages = [];
-    for (let i = 1; i <= last_page; i++) {
-        pages.push(i);
-    }
+    const getPageNumbers = () => {
+        const pages = [];
+        const delta = 2; // số trang trước và sau current_page
+        let start = Math.max(2, current_page - delta);
+        let end = Math.min(last_page - 1, current_page + delta);
+
+        pages.push(1); // luôn có trang đầu
+        if (start > 2) pages.push('...');
+
+        for (let i = start; i <= end; i++) pages.push(i);
+
+        if (end < last_page - 1) pages.push('...');
+        if (last_page > 1) pages.push(last_page); // luôn có trang cuối
+
+        return pages;
+    };
 
     return (
         <div className="pagination">
             <button
+                onClick={() => goToPage(current_page - 1)}
                 disabled={current_page === 1}
-                onClick={() => onPageChange(current_page - 1)}
+                className="pagination-btn"
             >
                 Prev
             </button>
 
-            {pages.map((page) => (
-                <button
-                    key={page}
-                    className={page === current_page ? 'active' : ''}
-                    onClick={() => onPageChange(page)}
-                >
-                    {page}
-                </button>
-            ))}
+            {getPageNumbers().map((pageNumber, idx) =>
+                pageNumber === '...' ? (
+                    <span key={`dots-${idx}`} className="pagination-ellipsis">…</span>
+                ) : (
+                    <button
+                        key={pageNumber}
+                        onClick={() => goToPage(pageNumber)}
+                        className={`pagination-btn ${pageNumber === current_page ? 'active' : ''}`}
+                    >
+                        {pageNumber}
+                    </button>
+                )
+            )}
 
             <button
+                onClick={() => goToPage(current_page + 1)}
                 disabled={current_page === last_page}
-                onClick={() => onPageChange(current_page + 1)}
+                className="pagination-btn"
             >
                 Next
             </button>

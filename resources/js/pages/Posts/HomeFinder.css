@@ -2,13 +2,13 @@
 .list-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
-    padding: 2rem 0;
+    padding: 32px 0;
 }
 
 .list-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 20px;
 }
 
 /* ===== Header Section ===== */
@@ -18,7 +18,7 @@
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 16px;
 }
 
 .list-header-content h1.list-title {
@@ -29,7 +29,7 @@
 }
 
 .list-subtitle {
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     color: #64748b;
     margin: 0;
 }
@@ -42,8 +42,8 @@
 .filter-toggle-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    gap: 8px;
+    padding: 12px 24px;
     background: white;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
@@ -68,9 +68,9 @@
     right: -8px;
     background: #ef4444;
     color: white;
-    font-size: 0.75rem;
+    font-size: 1.4rem;
     font-weight: 600;
-    padding: 0.2rem 0.5rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 12px;
     min-width: 20px;
     text-align: center;
@@ -81,7 +81,7 @@
     background: white;
     border-radius: 16px;
     padding: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.3rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     max-height: 0;
     overflow: hidden;
@@ -105,7 +105,7 @@
 }
 
 .filter-header h3 {
-    font-size: 1.25rem;
+    font-size: 1.7rem;
     font-weight: 600;
     color: #1e293b;
     margin: 0;
@@ -117,7 +117,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     color: #64748b;
-    font-size: 0.875rem;
+    font-size: 1.3rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -138,7 +138,7 @@
 .filter-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem;
 }
 
 .filter-group label {
@@ -153,7 +153,7 @@
     padding: 0.75rem 1rem;
     border: 2px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 0.95rem;
+    font-size: 1.42rem;
     color: #334155;
     background: #fafafa;
     transition: all 0.2s ease;
@@ -201,7 +201,7 @@
 }
 
 .no-results svg {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.6rem;
 }
 
 .no-results h3 {

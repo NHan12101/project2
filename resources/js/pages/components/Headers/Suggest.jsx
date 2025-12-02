@@ -79,9 +79,7 @@ export default function Suggest({ value, setKeyword, selectedType, classContaine
                     : <img src="/icons/icon-search.svg" alt="Tìm kiếm" />
                 }
             </div>
-
-
-
+            
             <input
                 type="text"
                 autoComplete="off"
