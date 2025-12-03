@@ -18,10 +18,6 @@ class PostController extends Controller
         $posts = Post::with('images', 'city', 'ward')->get();
 
         return Inertia::render('Home', [
-            'auth' => [
-                'user' => Auth::user(), // null nếu chưa đăng nhập
-            ],
-
             'posts' => $posts,
             'isHome' => true,
         ]);
@@ -40,9 +36,6 @@ class PostController extends Controller
         return Inertia::render('PropertyDetail/PropertyDetail', [
             'post' => $posts,
             'relatedPosts' => $related,
-            'auth' => [
-                'user' => Auth::user(),
-            ],
         ]);
     }
 

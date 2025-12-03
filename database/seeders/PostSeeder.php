@@ -35,7 +35,7 @@ class PostSeeder extends Seeder
             // 'posts/home6.png',
         ];
 
-        Post::factory(5000)->create()->each(function ($post) use ($images) {
+        Post::factory(1600)->create()->each(function ($post) use ($images) {
 
             $ward = Ward::inRandomOrder()->first();   // Lấy ward ngẫu nhiên
 

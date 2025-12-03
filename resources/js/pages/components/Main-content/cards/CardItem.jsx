@@ -1,27 +1,26 @@
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
-export default function CardItem({ item }) {
-    const [likedItems, setLikedItems] = useState([]);
+export default function CardItem({ item, favoritePostIds }) {
+    const { auth } = usePage().props;
+    console.log(auth);
+    const [likedItems, setLikedItems] = useState(favoritePostIds);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
     const [direction, setDirection] = useState(0);
 
-    function toggleLike(id) {
-        setLikedItems(prev =>
-            prev.includes(id)
-                ? prev.filter(likedId => likedId !== id)
-                : [...prev, id]
-        );
-    }
+    useEffect(() => {
+        setLikedItems(favoritePostIds);
+    }, [favoritePostIds]);
 
     function handlePrevImage(id, total) {
         setDirection(-1);
-        setCurrentImageIndex(prev => ({
+        setCurrentImageIndex((prev) => ({
             ...prev,
             [id]: prev[id] > 0 ? prev[id] - 1 : total - 1,
         }));
@@ -29,14 +28,14 @@ export default function CardItem({ item }) {
 
     function handleNextImage(id, total) {
         setDirection(1);
-        setCurrentImageIndex(prev => ({
+        setCurrentImageIndex((prev) => ({
             ...prev,
             [id]: prev[id] < total - 1 ? prev[id] + 1 : 0,
         }));
     }
 
     const slideVariants = {
-        enter: direction => ({
+        enter: (direction) => ({
             x: direction > 0 ? 300 : -300,
             opacity: 0,
         }),
@@ -44,7 +43,7 @@ export default function CardItem({ item }) {
             x: 0,
             opacity: 1,
         },
-        exit: direction => ({
+        exit: (direction) => ({
             x: direction > 0 ? -300 : 300,
             opacity: 0,
         }),
@@ -60,7 +59,51 @@ export default function CardItem({ item }) {
         }
     }
 
-    const isLiked = likedItems.includes(item.id);
+    function toggleLike(id) {
+        if (!auth.user) {
+            toast.error('Bạn cần đăng nhập để lưu tin đăng!');
+            return;
+        }
+
+        // Kiểm tra trước trạng thái hiện tại
+        const isCurrentlyLiked = likedItems.includes(id);
+
+        // Optimistic UI: đổi tim ngay
+        setLikedItems(
+            (prev) =>
+                isCurrentlyLiked
+                    ? prev.filter((item) => item !== id) // unlike
+                    : [...prev, id], // like
+        );
+
+        // Hiển thị toast theo hành động
+        if (isCurrentlyLiked) {
+            toast('Đã hủy theo dõi tin này'); // unlike
+        } else {
+            toast('Tin đã được đưa vào danh sách theo dõi'); // like
+        }
+
+        // Gửi request lên server
+        router.post(
+            '/favorite/toggle',
+            { post_id: id },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onError: () => {
+                    // rollback nếu lỗi server
+                    setLikedItems(
+                        (prev) =>
+                            isCurrentlyLiked
+                                ? [...prev, id] // rollback like
+                                : prev.filter((item) => item !== id), // rollback unlike
+                    );
+                },
+            },
+        );
+    }
+
+    const isLiked = likedItems?.includes(item.id);
     const currentIndex = currentImageIndex[item.id] || 0;
     const imageSrc = `/storage/${item?.images[currentIndex]?.image_path}`;
 
@@ -85,7 +128,11 @@ export default function CardItem({ item }) {
                             animate="center"
                             exit="exit"
                             transition={{
-                                x: { type: 'spring', stiffness: 250, damping: 25 },
+                                x: {
+                                    type: 'spring',
+                                    stiffness: 250,
+                                    damping: 25,
+                                },
                                 opacity: { duration: 0.28 },
                             }}
                         />
@@ -95,18 +142,24 @@ export default function CardItem({ item }) {
                         <>
                             <button
                                 className="arrow-btn left"
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
-                                    handlePrevImage(item.id, item.images.length);
+                                    handlePrevImage(
+                                        item.id,
+                                        item.images.length,
+                                    );
                                 }}
                             >
                                 ‹
                             </button>
                             <button
                                 className="arrow-btn right"
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
-                                    handleNextImage(item.id, item.images.length);
+                                    handleNextImage(
+                                        item.id,
+                                        item.images.length,
+                                    );
                                 }}
                             >
                                 ›
@@ -122,7 +175,7 @@ export default function CardItem({ item }) {
                                     index === currentIndex ? 'active' : ''
                                 }`}
                                 onClick={() =>
-                                    setCurrentImageIndex(prev => ({
+                                    setCurrentImageIndex((prev) => ({
                                         ...prev,
                                         [item.id]: index,
                                     }))
@@ -137,7 +190,8 @@ export default function CardItem({ item }) {
                 <h1 className="property-title">{item.title}</h1>
 
                 <p className="property-meta">
-                    Phòng ngủ: <b>{item.bedrooms}</b> | Diện tích: <b>{item.area}m²</b>
+                    Phòng ngủ: <b>{item.bedrooms}</b> | Diện tích:{' '}
+                    <b>{item.area}m²</b>
                 </p>
 
                 <p className="property-price">
@@ -157,7 +211,7 @@ export default function CardItem({ item }) {
 
                     <button
                         className="heart-button"
-                        onClick={e => {
+                        onClick={(e) => {
                             e.stopPropagation();
                             toggleLike(item.id);
                         }}

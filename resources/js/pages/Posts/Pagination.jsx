@@ -1,5 +1,4 @@
 import { router } from '@inertiajs/react';
-import React from 'react';
 
 export default function Pagination({ meta, filters }) {
     if (!meta?.last_page || meta.last_page <= 1) return null;

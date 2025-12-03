@@ -14,7 +14,7 @@ import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
 import Suggest from '../Suggest.jsx';
 
 export default function Navbar() {
-    const { props, url } = usePage();
+    const { props, url} = usePage();
     const { auth, flash } = props;
     const [isLogin, setIsLogin] = useState(false);
 
@@ -43,7 +43,7 @@ export default function Navbar() {
 
         if (url === '/home') {
             function handleScroll() {
-                setShow(window.scrollY > 720);
+                setShow(window.scrollY > 730);
             }
 
             window.addEventListener('scroll', handleScroll);

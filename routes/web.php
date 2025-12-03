@@ -9,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\EmailOtpController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PaymentController;
@@ -133,3 +134,7 @@ Route::get('/payment', function () {
 
 // ========== BỘ LỌC ======///////
 Route::get('/home-finder', [FilterController::class, 'index']);
+
+
+//  ========= YÊU THÍCH ===============
+Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);

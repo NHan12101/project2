@@ -75,3 +75,51 @@ a {
   font-weight: 700;
   color: var(--text-color);
 }
+
+/* ==== NProgress Pro Override ==== */
+
+/* Thanh progress */
+#nprogress .bar {
+  background: linear-gradient(90deg, #FF0000, #FF4D4D, #FF1A1A) !important; /* đỏ đậm → đỏ sáng → đỏ nhạt */
+  height: 2px !important;
+  border-radius: 3px !important;
+  box-shadow: 0 0 8px #FF0000, 0 0 12px #FF4D4D !important; /* glow nhẹ */
+}
+
+/* Thanh “peg” (bóng đuôi) */
+#nprogress .peg {
+  box-shadow: 0 0 15px #FF0000, 0 0 10px #FF4D4D, 0 0 5px #FF1A1A !important;
+  opacity: 1 !important;
+  transform: rotate(3deg) translate(0px, -4px) !important;
+}
+
+/* Spinner tròn */
+#nprogress .spinner {
+  display: block !important; 
+  position: fixed;
+  z-index: 1031;
+  top: 15px;
+  right: 15px;
+}
+
+#nprogress .spinner-icon {
+  width: 16px !important;
+  height: 16px !important;
+  border: solid 2px transparent !important;
+  border-top-color: #FF0000 !important;
+  border-left-color: #FF4D4D !important;
+  border-radius: 50% !important;
+  animation: nprogress-spin 0.8s linear infinite !important;
+}
+
+/* Spin animation */
+@keyframes nprogress-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Background khi fade out */
+#nprogress .nprogress-custom-parent {
+  overflow: hidden;
+  position: relative;
+}

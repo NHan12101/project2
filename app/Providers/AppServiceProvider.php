@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Favorite;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
@@ -25,9 +27,15 @@ class AppServiceProvider extends ServiceProvider
         if (request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https') {
             URL::forceScheme('https');
         }
-        
+
         // Chia sẻ titles toàn cục cho Suggest
         Inertia::share([
+            'favoritePostIds' => function () {
+                return Favorite::where('user_id', Auth::id())
+                    ->pluck('post_id')
+                    ->toArray();
+            },
+
             'suggestTitles' => function () {
                 return Post::pluck('title'); // chỉ lấy title
             },

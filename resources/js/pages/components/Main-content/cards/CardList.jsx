@@ -6,7 +6,7 @@ import './Card.css';
 import CardItem from './CardItem';
 
 export default function CardList({ post, limit = 8, showMore = true }) {
-    const { posts, isHome } = usePage().props;
+    const { posts, favoritePostIds, isHome } = usePage().props;
     const data = post || posts || [];
 
     const [visibleCount, setVisibleCount] = useState(limit);
@@ -26,7 +26,7 @@ export default function CardList({ post, limit = 8, showMore = true }) {
         <div className="main-contain">
             <div className="property-grid">
                 {data.slice(0, visibleCount).map((item) => (
-                    <CardItem key={item.id} item={item} />
+                    <CardItem key={item.id} item={item} favoritePostIds={favoritePostIds}/>
                 ))}
             </div>
 

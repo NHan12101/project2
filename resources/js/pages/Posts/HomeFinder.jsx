@@ -3,8 +3,8 @@ import { useRef, useState } from 'react';
 import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
-import './HomeFinder.css';
 import Pagination from './Pagination.jsx';
+import './HomeFinder.css';
 
 export default function HomeFinder() {
     const {
@@ -90,10 +90,10 @@ export default function HomeFinder() {
                                 Danh sách bất động sản
                             </h1>
                             <p className="list-subtitle">
-                                Tìm thấy{' '}
+                                Tìm thấy
                                 <span className="highlight">
                                     {list.total ?? 0}
-                                </span>{' '}
+                                </span>
                                 kết quả
                             </p>
                         </div>

@@ -19,19 +19,34 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        padding: 22px 16px 22px 0;
+        padding: 22px 16px 12px 0;
         border-bottom: 1px solid #cecece;
     }
 
     .hot-news__category-list {
         display: flex;
-        gap: 28px;
     }
 
     .hot-news__category-item {
+        position: relative;
+        cursor: pointer;
+        padding: 8px 12px;
         color: #222;
-        font-size: 2.8rem;
+        font-size: 2.7rem;
         font-weight: 700;
+        transition: all 0.2s;
+    }
+
+    .hot-news__category-item.active::after,
+    .hot-news__category-item.hover::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -12px;
+        height: 4px;
+        width: 100%;
+        background-color: #ff0000;
+        transition: width 0.2s;
     }
 
     .hot-news__body {
@@ -43,6 +58,11 @@
 
     .hot-news__main-post {
         width: 67%;
+        transition: all 0.3s;
+    }
+
+    .hot-news__main-post.fade {
+        opacity: 0.7;
     }
 
     .hot-news__main-caption {
@@ -60,6 +80,13 @@
         border-radius: 14px;
         height: 415px;
         background: #00000044;
+        overflow: hidden;
+    }
+
+    .hot-news__main-image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
 
     .hot-news__main-date {
@@ -82,6 +109,12 @@
         display: flex;
         align-items: center;
         gap: 22px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .hot-news__related-item:hover {
+        background: #f7f7f7;
     }
 
     .hot-news__related-figure {
@@ -90,6 +123,13 @@
         height: 125px;
         width: 190px;
         background: #00000043;
+        overflow: hidden;
+    }
+
+    .hot-news__related-image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
 
     .hot-news__related-caption {
@@ -107,7 +147,17 @@
     }
 
     .hot-news__aside--box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
         height: 380px;
         width: 100%;
         background: #00000039;
+    }
+
+    .hot-news__aside--box img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
