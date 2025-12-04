@@ -101,7 +101,7 @@ export default function Suggest({ value, setKeyword, selectedType, classContaine
             {openSuggestions && (
                 <div className={classScroll ? 'suggestions-box__scroll' : 'suggestions-box'}>
                     <div className='suggestion-item'>
-                        <div className='suggestion-content'>
+                        <div className='suggestion-content' onClick={() => handleSearch(value)}>
                             <span style={{ textAlign: 'left', width: '100%' }}>{`Tìm kiếm từ khóa "${value}"`}</span>
 
                             <svg

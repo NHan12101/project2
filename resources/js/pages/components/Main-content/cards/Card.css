@@ -8,30 +8,30 @@
     grid-template-columns: repeat(4, 1fr);
     column-gap: 26px;
     row-gap: 38px;
-    padding: 20px 0;
+    padding: 20px 3px;
     justify-items: center;
 }
 
 .property-card {
     width: 100%;
-    max-width: 430px;
-    height: 426px;
+    height: 438px;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 7px rgba(255, 255, 255, 0.1), 0 2px 7px rgba(0, 0, 0, 0.1);
     position: relative;
+    padding: 15px;
     transition: box-shadow 0.3s ease;
     user-select: none;
     cursor: pointer;
 }
 
 .property-card:hover {
-    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3), 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 14px rgba(255, 255, 255, 0.3), 0 5px 14px rgba(0, 0, 0, 0.3);
 }
 
 .vip-badge {
     position: absolute;
-    top: 34px;
+    top: 48px;
     left: -26px;
     z-index: 10;
     background-color: #d90c0c;
@@ -50,15 +50,11 @@
     object-fit: cover;
 }
 
-.property-info {
-    padding: 10px 15px;
-}
-
 .property-title {
-    height: 4.3rem;
-    font-size: 2.1rem;
+    height: 4.2rem;
+    font-size: 2rem;
     font-weight: 600;
-    margin: 4px 0 8px;
+    margin: 8px 0 10px;
     color: var(--card-text);
     overflow: hidden;
     -webkit-line-clamp: 2;
@@ -74,7 +70,7 @@
 
 .property-price {
     margin: 16px 0;
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: #d60000;
     font-weight: bold;
 }
@@ -160,6 +156,7 @@
     position: relative;
     width: 100%;
     height: 210px;
+    border-radius: 12px;
     overflow: hidden;
 }
 

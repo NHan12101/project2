@@ -87,6 +87,16 @@ export default function Navbar() {
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
 
+    const queryParams = url.includes('?') ? new URLSearchParams(url.split('?')[1]) : null;
+    const currentType = queryParams?.get('type') || null;
+
+    function handleSearch() {
+        router.get('/home-finder', {keyword: keyword || null}, {
+            preserveState: false,
+            preserveScroll: true,
+        });
+    }
+
     return (
         <nav
             className="nav"
@@ -114,21 +124,44 @@ export default function Navbar() {
                         className={`${show ? 'nav__item--list-scroll' : 'nav__item--list'}`}
                     >
                         <li>
-                            <a href="" className="active">
+                            <button
+                                className={`nav-link ${url === '/home' ? 'active' : ''}`} 
+                                onClick={() => router.get('/home')}
+                            >
                                 Trang chủ
-                            </a>
+                            </button>
                         </li>
                         <li>
-                            <a href="">Mua nhà</a>
+                            <button
+                                className={`nav-link ${url.startsWith('/home-finder') && currentType === 'sale' ? 'active' : ''}`}
+                                onClick={() => router.get('/home-finder', { type: 'sale' })}
+                            >
+                                Mua nhà
+                            </button>
                         </li>
                         <li>
-                            <a href="">Thuê nhà</a>
+                            <button
+                                className={`nav-link ${url.startsWith('/home-finder') && currentType === 'rent' ? 'active' : ''}`}
+                                onClick={() => router.get('/home-finder', { type: 'rent' })}
+                            >
+                                Thuê nhà
+                            </button>
                         </li>
                         <li>
-                            <a href="">Dự án</a>
+                            <button
+                                className="nav-link"
+                                onClick={() => router.get('/')}
+                            >
+                                Dự án
+                            </button>
                         </li>
                         <li>
-                            <a href="">Tin tức</a>
+                            <button
+                                className="nav-link"
+                                onClick={() => router.get('/')}
+                            >
+                                Tin tức
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -144,7 +177,7 @@ export default function Navbar() {
                     />
 
                     <div className="container-search__box--iconbutton">
-                        <button>
+                        <button onClick={handleSearch}>
                             <svg
                                 data-type="monochrome"
                                 xmlns="http://www.w3.org/2000/svg"

@@ -28,11 +28,21 @@ class FilterController extends Controller
             });
         }
 
-
         // --- SIMPLE FILTERS ---
         $query->when($request->filled('city_id'), fn($q) => $q->where('city_id', $request->city_id));
         $query->when($request->filled('ward_id'), fn($q) => $q->where('ward_id', $request->ward_id));
         $query->when($request->filled('category_id'), fn($q) => $q->where('category_id', $request->category_id));
+
+        // --- TYPE (sale / rent) ---
+        if ($request->filled('type')) {
+            if ($request->type === 'sale') {
+                $query->where('type', 'sale');
+            }
+
+            if ($request->type === 'rent') {
+                $query->where('type', 'rent');
+            }
+        }
 
         // --- PRICE ---
         $query->when($request->filled('minPrice'), fn($q) => $q->where('price', '>=', $request->minPrice));

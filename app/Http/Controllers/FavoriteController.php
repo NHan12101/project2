@@ -29,4 +29,8 @@ class FavoriteController extends Controller
 
         return redirect()->back(303);        
     }
+
+    public function index() {
+        
+    }
 }
