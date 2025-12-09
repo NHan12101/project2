@@ -43,8 +43,8 @@ html {
 
 body {
   font-family: "Inter", sans-serif;
-  /* font-family: "Reddit Sans", sans-serif; */
   font-size: 1.6rem;
+  background: #fefefe;
 }
 
 input,
@@ -80,10 +80,12 @@ a {
 
 /* Thanh progress */
 #nprogress .bar {
-  background: linear-gradient(90deg, #FF0000, #FF4D4D, #FF1A1A) !important; /* đỏ đậm → đỏ sáng → đỏ nhạt */
+  background: linear-gradient(90deg, #FF0000, #FF4D4D, #FF1A1A) !important;
+  /* đỏ đậm → đỏ sáng → đỏ nhạt */
   height: 2px !important;
   border-radius: 3px !important;
-  box-shadow: 0 0 8px #FF0000, 0 0 12px #FF4D4D !important; /* glow nhẹ */
+  box-shadow: 0 0 8px #FF0000, 0 0 12px #FF4D4D !important;
+  /* glow nhẹ */
 }
 
 /* Thanh “peg” (bóng đuôi) */
@@ -95,7 +97,7 @@ a {
 
 /* Spinner tròn */
 #nprogress .spinner {
-  display: block !important; 
+  display: block !important;
   position: fixed;
   z-index: 1031;
   top: 15px;
@@ -114,8 +116,13 @@ a {
 
 /* Spin animation */
 @keyframes nprogress-spin {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Background khi fade out */

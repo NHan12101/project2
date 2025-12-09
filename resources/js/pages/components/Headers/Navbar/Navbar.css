@@ -1,6 +1,6 @@
 .nav {
     top: 0px;
-    z-index: 999;
+    z-index: 2;
 }
 
 .nav__item {
@@ -379,7 +379,7 @@
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 999;
     animation: fadeIn 0.32s ease-in-out;
 }
 

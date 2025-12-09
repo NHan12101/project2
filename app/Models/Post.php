@@ -26,7 +26,22 @@ class Post extends Model
         'category_id',
         'city_id',
         'ward_id',
+        'subscription_id',
+        'package_expired_at',
+        'slug',
+        'floor',
+        'direction',
+        'legal',
+        'furniture',
     ];
+
+    // Ẩn bài đăng có status là 'hidden'
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('visible', function ($query) {
+    //         $query->where('status', 'visible');
+    //     });
+    // }
 
     // Quan hệ: mỗi bài viết thuộc về 1 người dùng
     public function user()
@@ -55,5 +70,15 @@ class Post extends Model
     public function images()
     {
         return $this->hasMany(PostImage::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
+    }
+
+    public function utilities()
+    {
+        return $this->belongsToMany(Utility::class, 'post_utilities');
     }
 }

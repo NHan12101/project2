@@ -13,10 +13,10 @@ export default function HotNews() {
         relatedPosts: [
             {
                 id: 1,
-                title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit.',
+                title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit consequatur quasi commodi enim eum',
                 image: '/images/image.gif',
                 date: '02/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum laboriosam quam sint debitis magnam!...',
+                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit consequatur quasi commodi enim eum illum hic ullam fugit dolor, facere unde aspernatur iusto deserunt perferendis ea assumenda vitae delectus modi. Mollitia, unde? Nulla, libero vitae.Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit',
             },
             {
                 id: 2,

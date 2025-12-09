@@ -31,10 +31,16 @@
         position: relative;
         cursor: pointer;
         padding: 8px 12px;
-        color: #222;
-        font-size: 2.7rem;
+        color: #757575;
+        font-size: 2.65rem;
         font-weight: 700;
         transition: all 0.2s;
+    }
+
+
+    .hot-news__category-item.active,
+    .hot-news__category-item:hover {
+        color: #222;
     }
 
     .hot-news__category-item.active::after,

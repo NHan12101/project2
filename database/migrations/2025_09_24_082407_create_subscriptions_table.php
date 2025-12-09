@@ -5,16 +5,20 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('package');
-            $table->enum('duration_days', ['3', '7', '14', '30']);
+            $table->string('name');
+            $table->integer('days'); // số ngày bài được ưu tiên / hiển thị
+            $table->integer('price'); // giá tiền (VND hoặc USD)
+            $table->string('currency')->default('VND');
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('subscriptions');
     }
 };

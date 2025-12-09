@@ -23,7 +23,7 @@ Route::get('/', function () {
 Route::get('/home', [PostController::class, 'index'])->name('home');
 
 // ===== PROPERTY DETAIL =====
-Route::get('/property-detail/{id}', [PostController::class, 'show']);
+Route::get('/property-detail/{slug}', [PostController::class, 'show'])->name('propertyDetail.show');
 
 // ===== XỬ LÝ FORM ĐĂNG KÝ / ĐĂNG NHẬP / ĐĂNG XUẤT =====
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
@@ -88,53 +88,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/conversations/{id}', [ChatController::class, 'show']);
 });
 
-// ========== TẠO BÀI POST ================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-});
-
-Route::post('/payments/create', [PaymentController::class, 'create']);
-
-// Payment Result Pages
-Route::get('/payments/success', function () {
-    return "Payment Success!";
-});
-
-Route::get('/payments/cancel', function () {
-    return "Payment Cancelled!";
-});
-
-// PayPal return
-Route::get('/payments/paypal/return', function () {
-    return "PayPal Payment Success!";
-});
-
-Route::get('/payments/paypal/cancel', function () {
-    return "PayPal Payment Cancelled!";
-});
-
-// MoMo return
-Route::get('/payments/momo/return', function () {
-    return "MoMo Payment Success!";
-});
-
-Route::post('/payments/momo/ipn', function () {
-    return "MoMo IPN Received!";
-});
-
-// VNPAY return
-Route::get('/payments/vnpay/return', function () {
-    return "VNPAY Payment Success!";
-});
-
-Route::get('/payment', function () {
-    return Inertia::render('Payment');
-});
-
 // ========== BỘ LỌC ======///////
 Route::get('/home-finder', [FilterController::class, 'index']);
 
 
 //  ========= YÊU THÍCH ===============
 Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+
+
+// ========== TẠO BÀI POST VÀ THANH TOÁN ================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
+    Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
+    Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
+    Route::post('/payments/momo/ipn', [PaymentController::class, 'momoIpn'])->name('payment.momo.ipn');
+});

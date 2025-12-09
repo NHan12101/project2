@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             CitySeeder::class,
             WardSeeder::class,
-            PaymentSeeder::class,
+            // PaymentSeeder::class,
+            SubscriptionSeeder::class,
+            UtilitySeeder::class,
             PersonalAccessTokenSeeder::class,
             PostSeeder::class,
         ]);

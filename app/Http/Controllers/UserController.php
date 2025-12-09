@@ -14,9 +14,9 @@ class UserController extends Controller
      */
     public function show()
     {
-        $user =User::with('posts.images', 'posts.city', 'posts.ward')->find(Auth::id());
+        $user = User::with('posts.images', 'posts.city', 'posts.ward')->find(Auth::id());
 
-        $properties = $user->posts()->with('images', 'city', 'ward')->get();
+        $properties = $user->posts()->with('images', 'city', 'ward')->where('status', 'visible')->get();
 
         return Inertia::render('Profile', [
             'user' => $user,
