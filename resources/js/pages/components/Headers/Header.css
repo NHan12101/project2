@@ -6,6 +6,7 @@
 .header__banner {
     position: relative;
     width: 100%;
+    box-shadow: -2px 16px 46px rgba(255, 0, 0, 0.117);
 }
 
 .banner__wrapper {

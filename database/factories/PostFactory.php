@@ -31,6 +31,9 @@ class PostFactory extends Factory
             'city_id' => City::inRandomOrder()->value('id'),
             'ward_id' => Ward::inRandomOrder()->value('id'),
 
+            'latitude' => $this->faker->randomFloat(7, 10.0000000, 22.5000000),
+            'longitude' => $this->faker->randomFloat(7, 102.0000000, 110.0000000),
+
             'floors' => $this->faker->numberBetween(1, 12),
             'direction' => $this->faker->randomElement(['Đông', 'Tây', 'Nam', 'Bắc', 'Đông Nam', 'Tây Nam', 'Đông Bắc', 'Tây Bắc']),
             'legal' => $this->faker->randomElement(['Sổ hồng', 'Sổ đỏ', 'Hợp đồng mua bán', 'Giấy tay']),

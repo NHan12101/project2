@@ -1,12 +1,21 @@
 import useDropdown from '@/hooks/useDropdown.js';
+import { initFavorites, useFavorite } from '@/hooks/useFavorite.js';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import Chat from '../Chat.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
+import MapView from '../MapView.jsx';
 import './PropertyDetail.css';
 
-export default function PropertyDetail({ post, relatedPosts }) {
+export default function PropertyDetail({
+    post,
+    relatedPosts,
+    favoritePostIds,
+    auth,
+}) {
     const utilities = [
         { id: 1, icon: '/icons/bed-icon.png', value: post.bedrooms },
         { id: 2, icon: '/icons/bathroom-icon.png', value: post.bathrooms },
@@ -89,9 +98,51 @@ export default function PropertyDetail({ post, relatedPosts }) {
         { id: 3, title: 'Loại đăng', value: 'Tin thường' },
     ];
 
-    console.log(post);
-
     const { menuRef, open, setOpen } = useDropdown();
+    const galleryRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const { isLiked, toggle } = useFavorite(post.id);
+
+    useEffect(() => {
+        initFavorites(favoritePostIds);
+    }, [favoritePostIds]);
+
+    // Hàm kiểm tra scroll
+    function checkScroll() {
+        const el = galleryRef.current;
+        if (!el) return;
+
+        const tolerance = 2;
+
+        setCanScrollLeft(el.scrollLeft > 0);
+        setCanScrollRight(
+            el.scrollLeft + el.clientWidth < el.scrollWidth - tolerance,
+        );
+    }
+
+    // Gán ref với sự kiện scroll
+    useEffect(() => {
+        const el = galleryRef.current;
+        if (!el) return;
+
+        checkScroll(); // chạy khi mới vào trang
+
+        el.addEventListener('scroll', checkScroll);
+        window.addEventListener('resize', checkScroll);
+
+        return () => {
+            el.removeEventListener('scroll', checkScroll);
+            window.removeEventListener('resize', checkScroll);
+        };
+    }, []);
+
+    // Scroll trái / phái
+    function scrollGallery(amount) {
+        const el = galleryRef.current;
+        el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
 
     function formatPrice(price) {
         if (price >= 1_000_000_000) {
@@ -123,9 +174,7 @@ export default function PropertyDetail({ post, relatedPosts }) {
             <section className="property-detail">
                 {/* ảnh phòng chính */}
                 <div className="property-detail__main-image">
-                    {/* <img src="/storage/posts/home3.png" /> */}
-
-                    <iframe
+                    {/* <iframe
                         width="100%"
                         height="100%"
                         src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
@@ -134,31 +183,60 @@ export default function PropertyDetail({ post, relatedPosts }) {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         className="main-video"
-                    ></iframe>
+                    ></iframe> */}
+                    <iframe
+                        src="https://kuula.co/share/hSwx8?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1&autorotate=0.2&autopause=1&hideinfo=1&hidefullscreen=1&hidecontrols=1&hidetitle=1&hideinst=1"
+                        style={{ width: '100%', height: '604px' }}
+                        frameBorder="0"
+                        allow="vr; gyroscope; accelerometer"
+                        allowFullScreen
+                    />
                 </div>
 
                 <div className="property-detail__content">
                     <div className="property-detail__info">
                         {/* ảnh con */}
-                        <div className="property-detail__gallery">
-                            {post.images.map((img, index) => (
-                                <div
-                                    key={index}
-                                    className="property-detail__gallery-item"
+                        <div className="gallery-wrapper">
+                            {canScrollLeft && (
+                                <button
+                                    className="gallery-btn left"
+                                    onClick={() => scrollGallery(-1299)}
                                 >
-                                    <img
-                                        src={`/storage/${img.image_path}`}
-                                        alt={`property-image-${index}`}
-                                    />
-                                </div>
-                            ))}
+                                    ❮
+                                </button>
+                            )}
 
-                            {/* Thêm mấy phần tử giả để test */}
-                            <div className="property-detail__gallery-item"></div>
+                            <div
+                                ref={galleryRef}
+                                id="galleryScroll"
+                                className="property-detail__gallery"
+                            >
+                                {post.images.map((img, index) => (
+                                    <div
+                                        key={index}
+                                        className="property-detail__gallery-item"
+                                    >
+                                        <img
+                                            loading="lazy"
+                                            src={`/storage/${img.image_path}`}
+                                        />
+                                    </div>
+                                ))}
 
-                            <div className="property-detail__gallery-item"></div>
+                                {/* Thêm phần tử giả để test */}
+                                <div className="property-detail__gallery-item"></div>
+                                <div className="property-detail__gallery-item"></div>
+                                <div className="property-detail__gallery-item"></div>
+                            </div>
 
-                            <div className="property-detail__gallery-item"></div>
+                            {canScrollRight && (
+                                <button
+                                    className="gallery-btn right"
+                                    onClick={() => scrollGallery(1299)}
+                                >
+                                    ❯
+                                </button>
+                            )}
                         </div>
 
                         <div className="property-detail__header">
@@ -167,13 +245,23 @@ export default function PropertyDetail({ post, relatedPosts }) {
                                 {post.title}
                             </h1>
 
-                            <div className="property-detail__save">
+                            <div
+                                className="property-detail__save"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggle();
+                                }}
+                            >
                                 <img
-                                    src="/icons/heart.svg"
+                                    src={
+                                        isLiked
+                                            ? '/icons/heart-filled.svg'
+                                            : '/icons/heart.svg'
+                                    }
                                     alt="heart-empty.svg"
                                 />
                                 <span className="property-detail__save-text">
-                                    Lưu
+                                    {isLiked ? 'Đã lưu' : 'Lưu'}
                                 </span>
                             </div>
                         </div>
@@ -193,7 +281,7 @@ export default function PropertyDetail({ post, relatedPosts }) {
                                     fill="currentColor"
                                 ></path>
                             </svg>
-                            {post.address}
+                            <span>{post.address}</span>
                         </div>
 
                         {/* mô tả bài đăng */}
@@ -217,6 +305,7 @@ export default function PropertyDetail({ post, relatedPosts }) {
                                         className="property-detail__feature-item"
                                     >
                                         <img
+                                            loading="lazy"
                                             src={att.icon}
                                             alt={att.lable}
                                             className="property-detail__feature-icon"
@@ -255,6 +344,7 @@ export default function PropertyDetail({ post, relatedPosts }) {
                                     className="property-detail__amenity-item"
                                 >
                                     <img
+                                        loading="lazy"
                                         src={item.icon}
                                         alt="icon"
                                         className="property-detail__amenity-icon"
@@ -298,7 +388,13 @@ export default function PropertyDetail({ post, relatedPosts }) {
 
                             <button
                                 className="property-detail__button property-detail__button--chat"
-                                onClick={handleStartChat}
+                                onClick={() => {
+                                    auth?.user
+                                        ? handleStartChat()
+                                        : toast.error(
+                                              'Bạn cần đăng nhập để bắt đầu cuộc trò chuyện!',
+                                          );
+                                }}
                             >
                                 <img src="/icons/chat.svg" alt="chat" />
                             </button>
@@ -327,7 +423,9 @@ export default function PropertyDetail({ post, relatedPosts }) {
                         Xem trên bản đồ
                     </h3>
 
-                    <div className="property-detail__map"></div>
+                    <div className="property-detail__map">
+                        <MapView lng={post.longitude} lat={post.latitude} />
+                    </div>
                 </div>
 
                 {/* Ngày đăng bài và ngày hết hạn */}

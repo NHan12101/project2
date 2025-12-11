@@ -27,7 +27,7 @@ export default function Header() {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrent((prev) => (prev + 1) % banners.length);
-        }, 16000);
+        }, 6000);
         return () => clearInterval(interval);
     }, []);
 

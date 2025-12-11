@@ -88,7 +88,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/conversations/{id}', [ChatController::class, 'show']);
 });
 
-// ========== BỘ LỌC ======///////
+// ========== BỘ LỌC ========= //
 Route::get('/home-finder', [FilterController::class, 'index']);
 
 

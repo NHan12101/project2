@@ -3,8 +3,8 @@
     bottom: -12px;
     right: -30px;
     z-index: 1;
-    width: 184px;
-    height: 184px;
+    width: 176px;
+    height: 176px;
     cursor: pointer;
     animation: float 2.5s ease-in-out infinite;
 }

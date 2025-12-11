@@ -5,7 +5,7 @@ export default function HotNews() {
     const hotNews = {
         categories: [
             { id: 1, name: 'Tin nổi bật' },
-            { id: 2, name: 'Tin Tức' },
+            { id: 2, name: 'Tin tức' },
             { id: 3, name: 'BĐS TPHCM' },
             { id: 4, name: 'BĐS Hà Nội' },
         ],
