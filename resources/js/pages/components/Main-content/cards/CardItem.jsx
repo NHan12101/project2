@@ -1,16 +1,16 @@
-import { router, usePage } from '@inertiajs/react';
+import { initFavorites, useFavorite } from '@/hooks/useFavorite';
+import { router } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 
 export default function CardItem({ item, favoritePostIds }) {
-    const { auth } = usePage().props;
-    const [likedItems, setLikedItems] = useState(favoritePostIds);
     const [currentImageIndex, setCurrentImageIndex] = useState({});
     const [direction, setDirection] = useState(0);
 
+    const { isLiked, toggle } = useFavorite(item.id);
+    
     useEffect(() => {
-        setLikedItems(favoritePostIds);
+        initFavorites(favoritePostIds);
     }, [favoritePostIds]);
 
     function handlePrevImage(id, total) {
@@ -54,51 +54,6 @@ export default function CardItem({ item, favoritePostIds }) {
         }
     }
 
-    function toggleLike(id) {
-        if (!auth.user) {
-            toast.error('Bạn cần đăng nhập để lưu tin đăng!');
-            return;
-        }
-
-        // Kiểm tra trước trạng thái hiện tại
-        const isCurrentlyLiked = likedItems.includes(id);
-
-        // Optimistic UI: đổi tim ngay
-        setLikedItems(
-            (prev) =>
-                isCurrentlyLiked
-                    ? prev.filter((item) => item !== id) // unlike
-                    : [...prev, id], // like
-        );
-
-        // Hiển thị toast theo hành động
-        if (isCurrentlyLiked) {
-            toast('Đã hủy theo dõi tin này'); // unlike
-        } else {
-            toast('Tin đã được đưa vào danh sách theo dõi'); // like
-        }
-
-        // Gửi request lên server
-        router.post(
-            '/favorite/toggle',
-            { post_id: id },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onError: () => {
-                    // rollback nếu lỗi server
-                    setLikedItems(
-                        (prev) =>
-                            isCurrentlyLiked
-                                ? [...prev, id] // rollback like
-                                : prev.filter((item) => item !== id), // rollback unlike
-                    );
-                },
-            },
-        );
-    }
-
-    const isLiked = likedItems?.includes(item.id);
     const currentIndex = currentImageIndex[item.id] || 0;
     const imageSrc = `/storage/${item?.images[currentIndex]?.image_path}`;
 
@@ -221,7 +176,7 @@ export default function CardItem({ item, favoritePostIds }) {
                         className="heart-button"
                         onClick={(e) => {
                             e.stopPropagation();
-                            toggleLike(item.id);
+                            toggle();
                         }}
                     >
                         <img
@@ -231,7 +186,7 @@ export default function CardItem({ item, favoritePostIds }) {
                                     : '/icons/heart.svg'
                             }
                             alt="heart"
-                            className='property__heart-icon'
+                            className="property__heart-icon"
                         />
                     </button>
                 </div>
