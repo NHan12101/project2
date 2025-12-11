@@ -221,6 +221,7 @@ export default function CardItem({ item, favoritePostIds }) {
                             color={isLiked ? '#ff4d4d' : '#181818'}
                             size="xl"
                             style={{ transition: 'color 0.4s' }}
+                            
                         />
                     </button>
                 </div>

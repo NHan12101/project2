@@ -138,3 +138,13 @@ Route::get('/home-finder', [FilterController::class, 'index']);
 
 //  ========= YÊU THÍCH ===============
 Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+
+//==========Lưu tin yêu thích//==============
+Route::middleware('auth')->group(function () {
+    Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/toggle', [FavoriteController::class, 'toggle']);
+    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
+});
+
+
+ 

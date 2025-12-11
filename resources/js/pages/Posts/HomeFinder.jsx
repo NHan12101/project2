@@ -18,6 +18,35 @@ export default function HomeFinder() {
     const [showFilters, setShowFilters] = useState(false);
     const debounceRef = useRef(null);
 
+    // Hàm format giá
+    function formatPrice(price) {
+        if (price >= 1_000_000_000) {
+            return (price / 1_000_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' tỷ';
+        } else if (price >= 1_000_000) {
+            return (price / 1_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' triệu';
+        } else {
+            return price.toLocaleString('vi-VN');
+        }
+    }
+
+    // Các mốc giá (tính bằng VNĐ)
+    const priceOptions = [
+        { value: '', label: 'Chọn giá' },
+        { value: 500000000, label: formatPrice(500000000) },
+        { value: 800000000, label: formatPrice(800000000) },
+        { value: 1000000000, label: formatPrice(1000000000) },
+        { value: 2000000000, label: formatPrice(2000000000) },
+        { value: 3000000000, label: formatPrice(3000000000) },
+        { value: 5000000000, label: formatPrice(5000000000) },
+        { value: 7000000000, label: formatPrice(7000000000) },
+        { value: 10000000000, label: formatPrice(10000000000) },
+        { value: 15000000000, label: formatPrice(15000000000) },
+        { value: 20000000000, label: formatPrice(20000000000) },
+        { value: 30000000000, label: formatPrice(30000000000) },
+        { value: 50000000000, label: formatPrice(50000000000) },
+        { value: 100000000000, label: formatPrice(100000000000) },
+    ];
+
     const activeFilterCount = Object.values(filters).filter(
         (v) => v !== null && v !== undefined && v !== '',
     ).length;
@@ -34,11 +63,6 @@ export default function HomeFinder() {
 
         // clone filters
         const newFilters = { ...filters };
-
-        // // nếu người dùng thay đổi bất cứ filter nào ngoài keyword
-        // if (name !== 'keyword') {
-        //     delete newFilters.keyword; // xóa keyword nếu có
-        // }
 
         // cập nhật filter hiện tại
         if (val === undefined) delete newFilters[name];
@@ -171,25 +195,25 @@ export default function HomeFinder() {
 
                             {/* Price */}
                             <div className="filter-group">
-                                <label>Khoảng giá (VNĐ)</label>
+                                <label>Khoảng giá</label>
                                 <div className="range-inputs">
-                                    <input
-                                        type="number"
-                                        name="minPrice"
-                                        placeholder="Từ"
-                                        value={filters.minPrice ?? ''}
-                                        onChange={handleFilterChange}
-                                        className="filter-input"
-                                    />
+                                    
                                     <span className="range-separator">-</span>
-                                    <input
-                                        type="number"
+                                    <select
                                         name="maxPrice"
-                                        placeholder="Đến"
-                                        value={filters.maxPrice ?? ''}
+                                        value={filters.maxPrice?.toString() ?? ''}
                                         onChange={handleFilterChange}
                                         className="filter-input"
-                                    />
+                                    >
+                                        {priceOptions.map((option) => (
+                                            <option
+                                                key={`max-${option.value}`}
+                                                value={option.value}
+                                            >
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
 

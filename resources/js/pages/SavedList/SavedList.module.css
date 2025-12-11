@@ -1,0 +1,225 @@
+.breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.breadcrumb span:first-child:hover {
+    color: #00a86b;
+}
+
+.separator {
+    margin: 0 8px;
+}
+
+.pageTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 24px;
+}
+
+.listingsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.listingCard {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.listingCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.listingImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.listingImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.listingImageWrapper:hover .listingImage {
+    transform: scale(1.05);
+}
+
+.imageCount {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.listingContent {
+    padding: 16px;
+}
+
+.listingTitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 42px;
+}
+
+.listingTitle:hover {
+    color: #00a86b;
+}
+
+.listingPrice {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ef4444;
+    margin: 0 0 12px 0;
+}
+
+.listingMeta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.ownerBadge {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    color: #555;
+}
+
+.postedTime::before,
+.location::before {
+    content: '·';
+    margin-right: 8px;
+}
+
+.listingActions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chatButton {
+    flex: 1;
+    background: white;
+    border: 1px solid #00a86b;
+    color: #00a86b;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chatButton:hover {
+    background: #00a86b;
+    color: white;
+}
+
+.favoriteButton {
+    background: white;
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.favoriteButton:hover {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.favoriteButton.active {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 80px 20px;
+    color: #666;
+}
+
+.emptyState p {
+    font-size: 18px;
+    margin-bottom: 24px;
+}
+
+.exploreButton {
+    background: #00a86b;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.exploreButton:hover {
+    background: #008f5a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .listingsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .pageTitle {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .listingMeta {
+        font-size: 12px;
+    }
+
+    .listingTitle {
+        font-size: 14px;
+    }
+
+    .listingPrice {
+        font-size: 16px;
+    }
+
+    .chatButton {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+}

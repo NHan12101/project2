@@ -200,7 +200,10 @@ export default function Navbar() {
                         <div className="nav-dropdown__icon-heart" ref={saveRef}>
                             <button
                                 className="icon-btn"
-                                onClick={() => setOpenSave((pre) => !pre)}
+                                onClick={() => {
+                                    setOpenSave((pre) => !pre);
+                                    router.visit('/saved');
+                                }}
                             >
                                 <img src="/icons/heart.svg" alt="heart-icon" />
                             </button>
