@@ -16,7 +16,9 @@ export default function MainContent() {
                 </h1>
             </div>
 
-            <CardList limit={8} showMore={true} />
+            <div className="main-contain">
+                <CardList limit={8} showMore={true} />
+            </div>
 
             <section className="partner">
                 <div className="main-contain">

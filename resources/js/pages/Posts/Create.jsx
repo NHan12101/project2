@@ -8,6 +8,7 @@ export default function Create({
     categories,
     city_id,
     ward_id,
+    packages,
 }) {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
@@ -20,17 +21,22 @@ export default function Create({
         livingrooms: 0,
         kitchens: 0,
         is_vip: false,
-        status: 'visible',
+        status: 'hidden',
         type: 'rent',
         category_id: '',
         city_id: city_id ?? '',
         ward_id: ward_id ?? '',
         images: [],
+        subscription_id: '',
+        payment_method: 'momo',
     });
 
     const submit = (e) => {
         e.preventDefault();
-        post('/posts');
+        console.log('Form data sắp gửi:', data); // kiểm tra dữ liệu trước khi post
+        router.post('/posts', data, {
+            onSuccess: () => router.visit('/payments/create'),
+        });
     };
 
     function handleCityChange(e) {
@@ -167,29 +173,6 @@ export default function Create({
                     />
                 </div>
 
-                {/* VIP Checkbox */}
-                <div className="post-form__field post-form__field--row">
-                    <input
-                        type="checkbox"
-                        checked={data.is_vip}
-                        onChange={(e) => setData('is_vip', e.target.checked)}
-                    />
-                    <label className="post-form__label-inline">Đăng VIP</label>
-                </div>
-
-                {/* Status */}
-                <div className="post-form__field">
-                    <label className="post-form__label">Trạng thái</label>
-                    <select
-                        className="post-form__select"
-                        value={data.status}
-                        onChange={(e) => setData('status', e.target.value)}
-                    >
-                        <option value="visible">Hiển thị</option>
-                        <option value="hidden">Ẩn</option>
-                    </select>
-                </div>
-
                 {/* Type */}
                 <div className="post-form__field">
                     <label className="post-form__label">Loại hình</label>
@@ -253,6 +236,41 @@ export default function Create({
                     </select>
                 </div>
 
+                <div>
+                    <label>Chọn gói</label>
+                    <select
+                        value={data.subscription_id}
+                        onChange={(e) =>
+                            setData('subscription_id', e.target.value)
+                        }
+                    >
+                        <option value="">-- Chọn gói --</option>
+                        {packages.map((pkg) => (
+                            <option key={pkg.id} value={pkg.id}>
+                                {pkg.name} - {pkg.price} {pkg.currency}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.subscription_id && (
+                        <div className="error">{errors.subscription_id}</div>
+                    )}
+                </div>
+
+                <div>
+                    <label>Phương thức thanh toán</label>
+                    <select
+                        value={data.payment_method}
+                        onChange={(e) =>
+                            setData('payment_method', e.target.value)
+                        }
+                    >
+                        <option value="momo">MoMo</option>
+                        <option value="vnpay">VNPay</option>
+                        <option value="stripe">Stripe</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
+                </div>
+
                 <div className="post-form__field">
                     <label className="post-form__label">Hình ảnh</label>
                     <input
@@ -264,7 +282,7 @@ export default function Create({
 
                 {/* Submit */}
                 <button className="post-form__button" disabled={processing}>
-                    Đăng bài
+                    Đăng bài & Thanh toán
                 </button>
             </form>
         </>

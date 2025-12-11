@@ -1,12 +1,22 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import './Notification.css';
 
-function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth }) {
+function NotificationList({
+    closeSidebar,
+    isOpen,
+    isLogin,
+    setShowAuth,
+    notifications,
+}) {
     return (
         <>
-            <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={closeSidebar}></div>
+            <div
+                className={`overlay ${isOpen ? 'show' : ''}`}
+                onClick={closeSidebar}
+            ></div>
 
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
@@ -18,14 +28,14 @@ function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth }) {
                 {isLogin ? (
                     <div className="sidebar-content">
                         <div className="notify-item">
-                            <span>Bạn có 1 tin nhắn mới</span>
+                            <span>Bạn có {notifications.length} tin nhắn</span>
                         </div>
-                        <div className="notify-item">
+                        {/* <div className="notify-item">
                             <span>Bài đăng của bạn được duyệt</span>
                         </div>
                         <div className="notify-item">
                             <span>Cập nhật hệ thống lúc 12:00</span>
-                        </div>
+                        </div> */}
                     </div>
                 ) : (
                     <div className="sidebar--notlogin">
@@ -41,7 +51,10 @@ function NotificationList({ closeSidebar, isOpen, isLogin, setShowAuth }) {
 }
 
 export default function Notification({ isLogin, setShowAuth }) {
+    const { notifications } = usePage().props;
     const [isOpen, setIsOpen] = useState(false);
+
+    console.log(notifications);
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -57,6 +70,7 @@ export default function Notification({ isLogin, setShowAuth }) {
                 isLogin={isLogin}
                 isOpen={isOpen}
                 closeSidebar={() => setIsOpen(false)}
+                notifications={notifications}
             />
         </>
     );

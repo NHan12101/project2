@@ -1,0 +1,433 @@
+.property-detail {
+    margin: 35px auto 0;
+    width: calc(100% - 200px);
+}
+
+.property-detail__main-image {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 572px;
+    width: 100%;
+    border-radius: 20px;
+    background: #00000044;
+    box-shadow: 2px 4px 12px #0000004b;
+    overflow: hidden;
+}
+
+.property-detail__main-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.property-detail__content {
+    margin-top: 26px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.property-detail__info {
+    width: 75%;
+}
+
+
+.gallery-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+
+.gallery-wrapper::before,
+.gallery-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 48px;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.gallery-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, #fefefe8e, rgba(255, 255, 255, 0));
+}
+
+.gallery-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #fefefe8e, rgba(255, 255, 255, 0));
+}
+
+.gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    border: 2px solid #000000;
+    background: #fefefe;
+    color: rgb(0, 0, 0);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-btn.left {
+    left: -10px;
+}
+
+.gallery-btn.right {
+    right: -10px;
+}
+
+.property-detail__gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    /* không xuống dòng */
+    overflow-x: auto;
+    /* cho phép kéo ngang */
+    scrollbar-width: none;
+    /* gap: 24px; */
+    padding: 0 0 10px 0;
+}
+
+.property-detail__gallery-item {
+    /* margin: 0px 12px 0px 12px; */
+    margin: 0 12px;
+    height: 134px;
+    min-width: 235px;
+    border-radius: 20px;
+    background: #adadad;
+    box-shadow: 2px 4px 8px #0000002d;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.94;
+    transition: opacity 0.3s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.property-detail__gallery-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.property-detail__header {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+}
+
+.property-detail__title {
+    font-size: 3rem;
+    word-spacing: 3px;
+    font-weight: 600;
+    padding: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.property-detail__save {
+    margin-right: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    min-width: 94px;
+    padding: 0 16px;
+    border: 1px solid #dadada;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background: #eeeeee;
+    }
+}
+
+.property-detail__save svg {
+    font-size: 2.2rem;
+}
+
+.property-detail__save-text {
+    user-select: none;
+    font-weight: 600;
+}
+
+.property-detail__address {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.property-detail__address span {
+    margin-top: 2px;
+}
+
+.property-detail__heading-title {
+    margin-top: 26px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    word-spacing: 2px;
+}
+
+.property-detail__description {
+    margin-top: 12px;
+    width: 100%;
+    word-spacing: 1px;
+    font-size: 1.54rem;
+    line-height: 1.36;
+}
+
+/* ======= Đặc điểm bất động sản ============== */
+
+.property-detail__features {
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+    width: 67%;
+    background: #fff;
+}
+
+.property-detail__feature-row {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-gap: 30px;
+    width: 100%;
+}
+
+.property-detail__feature-item {
+    break-inside: avoid;
+    min-height: 56px;
+    border-bottom: 1px solid #f5f5f5;
+    border-top: 1px solid #f5f5f5;
+    width: 100%;
+    max-height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 0px;
+    margin-bottom: -1px;
+}
+
+.property-detail__feature-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    user-select: none;
+    pointer-events: none;
+}
+
+.property-detail__feature-label {
+    margin: 2px 16px 2px 12px;
+    width: 192px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 20px;
+    color: #2C2C2C;
+}
+
+.property-detail__feature-value {
+    margin: 2px 0px;
+    width: calc(100% - 204px);
+    font-size: 1.52rem;
+    line-height: 20px;
+    font-weight: 600;
+    color: #2C2C2C;
+    max-height: 80px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+/* =========== Bản đồ =============== */
+.property-detail__map {
+    margin-top: 20px;
+    height: 420px;
+    width: 75%;
+    border: 2.2px dashed #000000;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0000001b;
+}
+
+.property-detail__meta {
+    margin-top: 32px;
+    width: 32%;
+    display: flex;
+    column-gap: 88px;
+    border-top: 1px solid #dadada;
+    border-bottom: 1px solid #dadada;
+    padding: 16px 6px;
+}
+
+.property-detail__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.property-detail__meta-label {
+    color: #999;
+    font-size: 1.4rem;
+}
+
+.property-detail__meta-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Thong tin phong */
+.property-detail__room-info {
+    position: sticky;
+    top: 110px;
+    width: 400px;
+    height: 358px;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 1px 4px 12px #00000044;
+    background: #ffffff;
+}
+
+.property-detail__room-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.property-detail__owner {
+    margin-top: 22px;
+}
+
+.property-detail__owner-label {
+    font-weight: 600;
+}
+
+.property-detail__amenities {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    padding: 10px 18px;
+    background: #f2f2f2;
+}
+
+.property-detail__amenity-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.property-detail__amenity-icon {
+    height: 30px;
+    width: 30px;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+}
+
+.property-detail__amenity-value {
+    font-size: 1.64rem;
+    font-weight: 500;
+    user-select: none;
+}
+
+.property-detail__price-box {
+    margin-top: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 56px 12px 20px;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    border-radius: 8px;
+}
+
+.property-detail__price {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.property-detail__price-label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #999;
+}
+
+.property-detail__price-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #272727;
+}
+
+.property-detail__actions {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.property-detail__button {
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.25s;
+}
+
+.property-detail__button--primary {
+    padding: 14px 20px;
+    color: #fff;
+    background: #fa3719;
+    width: 100%;
+    font-weight: 600;
+
+    &:hover {
+        background: rgb(247, 6, 6);
+    }
+}
+
+.property-detail__button--chat {
+    padding: 9px;
+    border: 1.2px solid #dadada;
+    background: #ffffff;
+
+    &:hover {
+        background: #ededed;
+    }
+}
+
+.property-detail__card-list {
+    margin-top: 80px;
+}
+
+.main-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

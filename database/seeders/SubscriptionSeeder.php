@@ -4,21 +4,40 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Subscription;
-use App\Models\User;
 
 class SubscriptionSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+        $subscriptions = [
+            [
+                'name' => 'Gói cơ bản',
+                'days' => 16, // Thời gian dùng thử
+                'price' => 0,
+                'currency' => 'VND',
+            ],
+            [
+                'name' => 'Gói tiêu chuẩn',
+                'days' => 7,
+                'price' => 49000,
+                'currency' => 'VND',
+            ],
+            [
+                'name' => 'Gói VIP',
+                'days' => 14,
+                'price' => 98000,
+                'currency' => 'VND',
+            ],
+            [
+                'name' => 'Gói Siêu VIP',
+                'days' => 30,
+                'price' => 199000,
+                'currency' => 'VND',
+            ],
+        ];
 
-        foreach (User::all() as $user) {
-            Subscription::create([
-                'user_id'    => $user->id,
-                'package'    => $faker->randomElement(['basic', 'pro', 'premium']),
-                'start_date' => $faker->dateTimeBetween('-1 year', 'now'),
-                'end_date'   => $faker->dateTimeBetween('now', '+1 year'),
-            ]);
+        foreach ($subscriptions as $sub) {
+            Subscription::create($sub);
         }
     }
 }

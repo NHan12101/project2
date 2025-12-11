@@ -165,7 +165,7 @@
 }
 
 .bubble-own {
-    background: #ff6464;
+    background: #ff4023;
     color: white;
 }
 
@@ -227,7 +227,7 @@
     display: flex;
     align-items: center;
     padding: 12px 19px;
-    background-color: var(--hover-bg);
+    background-color: #ff4023;
     color: var(--bg-color);
     border-radius: 24px;
     cursor: pointer;
@@ -236,7 +236,7 @@
 }
 
 .file-upload-button:hover {
-    opacity: 0.9;
+    opacity: 0.94;
 }
 
 .file-upload-button:active {

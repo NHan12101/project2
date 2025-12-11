@@ -25,7 +25,8 @@ createInertiaApp({
                             color: '#fff',
                             fontWeight: '500',
                             fontSize: '1.38rem',
-                            width: '600px',
+                            minWidth: '360px',
+                            maxWidth: '500px',
                             background: '#000000ab'
                         },
                         success: {

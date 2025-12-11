@@ -12,7 +12,7 @@ class FilterController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with(['images', 'city', 'ward', 'category']);
+        $query = Post::with(['images', 'city', 'ward', 'category'])->where('status', 'visible');
 
         // --- KEYWORD ---
         if ($request->filled('keyword')) {

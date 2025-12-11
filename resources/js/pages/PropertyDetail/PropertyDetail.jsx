@@ -1,14 +1,158 @@
+import useDropdown from '@/hooks/useDropdown.js';
+import { initFavorites, useFavorite } from '@/hooks/useFavorite.js';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import location_related from '../../../../public/images/Rectangle.png';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import Chat from '../Chat.jsx';
-import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
-import classes from './PropertyDetail.module.css';
+import MapView from '../MapView.jsx';
+import './PropertyDetail.css';
 
-export default function PropertyDetail({ post, relatedPosts, auth }) {
-    const currentUserId = auth?.user?.id;
+export default function PropertyDetail({
+    post,
+    relatedPosts,
+    favoritePostIds,
+    auth,
+}) {
+    const utilities = [
+        { id: 1, icon: '/icons/bed-icon.png', value: post.bedrooms },
+        { id: 2, icon: '/icons/bathroom-icon.png', value: post.bathrooms },
+        { id: 3, icon: '/icons/livingroom-icon.png', value: post.livingrooms },
+        { id: 4, icon: '/icons/kitchen-icon.png', value: post.kitchens },
+    ];
+
+    const attribute = [
+        {
+            id: 1,
+            icon: '/icons/apartment_type.png',
+            lable: 'Loại hình căn hộ',
+            value: post.category.name,
+        },
+        {
+            id: 2,
+            icon: '/icons/price.png',
+            lable: 'Khoảng giá',
+            value: formatPrice(post.price),
+        },
+        {
+            id: 3,
+            icon: '/icons/size.png',
+            lable: 'Diện tích',
+            value: `${post.area} m²`,
+        },
+        {
+            id: 4,
+            icon: '/icons/bed-icon.png',
+            lable: 'Số phòng ngủ',
+            value: post.bedrooms,
+        },
+        {
+            id: 5,
+            icon: '/icons/bathroom-icon.png',
+            lable: 'Số phòng tắm, vệ sinh',
+            value: post.bathrooms,
+        },
+        {
+            id: 6,
+            icon: '/icons/livingroom-icon.png',
+            lable: 'Số phòng khách',
+            value: post.livingrooms,
+        },
+        {
+            id: 7,
+            icon: '/icons/kitchen-icon.png',
+            lable: 'Số phòng bếp',
+            value: post.kitchens,
+        },
+        {
+            id: 8,
+            icon: '/icons/floor.png',
+            lable: 'Số tầng',
+            value: post.floors,
+        },
+        {
+            id: 9,
+            icon: '/icons/direction.png',
+            lable: 'Hướng nhà',
+            value: post.direction,
+        },
+        {
+            id: 10,
+            icon: '/icons/property_legal_document.png',
+            lable: 'Giấy tờ pháp lý',
+            value: post.legal,
+        },
+        {
+            id: 11,
+            icon: '/icons/noithat.png',
+            lable: 'Nội thất',
+            value: post.furniture,
+        },
+    ];
+
+    const meta = [
+        { id: 1, title: 'Ngày đăng', value: '09/12/2025' },
+        { id: 2, title: 'Ngày hết hạn', value: '29/12/2025' },
+        { id: 3, title: 'Loại đăng', value: 'Tin thường' },
+    ];
+
+    const { menuRef, open, setOpen } = useDropdown();
+    const galleryRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const { isLiked, toggle } = useFavorite(post.id);
+
+    useEffect(() => {
+        initFavorites(favoritePostIds);
+    }, [favoritePostIds]);
+
+    // Hàm kiểm tra scroll
+    function checkScroll() {
+        const el = galleryRef.current;
+        if (!el) return;
+
+        const tolerance = 2;
+
+        setCanScrollLeft(el.scrollLeft > 0);
+        setCanScrollRight(
+            el.scrollLeft + el.clientWidth < el.scrollWidth - tolerance,
+        );
+    }
+
+    // Gán ref với sự kiện scroll
+    useEffect(() => {
+        const el = galleryRef.current;
+        if (!el) return;
+
+        checkScroll(); // chạy khi mới vào trang
+
+        el.addEventListener('scroll', checkScroll);
+        window.addEventListener('resize', checkScroll);
+
+        return () => {
+            el.removeEventListener('scroll', checkScroll);
+            window.removeEventListener('resize', checkScroll);
+        };
+    }, []);
+
+    // Scroll trái / phái
+    function scrollGallery(amount) {
+        const el = galleryRef.current;
+        el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    function formatPrice(price) {
+        if (price >= 1_000_000_000) {
+            return (price / 1_000_000_000).toFixed(1).replace('.', ',') + ' tỷ';
+        } else if (price >= 1_000_000) {
+            return (price / 1_000_000).toFixed(1).replace('.', ',') + ' triệu';
+        } else {
+            return price.toLocaleString('vi-VN');
+        }
+    }
 
     const handleStartChat = async () => {
         try {
@@ -27,161 +171,287 @@ export default function PropertyDetail({ post, relatedPosts, auth }) {
         <>
             <Head title={`StayHub | ${post.title}`} />
             <Navbar />
-            <Chat />
-            <div className="main-contain">
-                <div className={classes['header__location--image']}>
-                    <img src={location_related} alt="loaction_related" />
-                </div>
-                <h1 className={classes['title']}>{post.title}</h1>
-
-                <div className={classes['images__detail']}>
-                    <div className={classes['image__gallery--left']}>
-                        <img
-                            src={`/storage/${post?.images[0]?.image_path}`}
-                            alt=""
-                        />
-                    </div>
-                    <div className={classes['image__gallery--right']}>
-                        {post.images && post.images.length > 0 && (
-                            <div className={classes['image-gallery']}>
-                                {post.images.map((img, index) => (
-                                    <img
-                                        key={index}
-                                        src={`/storage/${img.image_path}`}
-                                        alt={`property-image-${index}`}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
+            <section className="property-detail">
+                {/* ảnh phòng chính */}
+                <div className="property-detail__main-image">
+                    {/* <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
+                        title="YouTube video"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="main-video"
+                    ></iframe> */}
+                    <iframe
+                        src="https://kuula.co/share/hSwx8?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1&autorotate=0.2&autopause=1&hideinfo=1&hidefullscreen=1&hidecontrols=1&hidetitle=1&hideinst=1"
+                        style={{ width: '100%', height: '604px' }}
+                        frameBorder="0"
+                        allow="vr; gyroscope; accelerometer"
+                        allowFullScreen
+                    />
                 </div>
 
-                <h2 className={classes['heading__title']}>
-                    Đặc điểm nổi bật của dự án
-                </h2>
-                <ul className={classes['list__desc']}>
-                    <li>
-                        Hồ bơi, phòng tập thể dục, phòng cộng đồng, sân chơi,
-                        nhà hàng, quán cà phê, phòng chờ, phòng đọc sách và
-                        vườn.
-                    </li>
-                    <li>
-                        150 căn hộ chung cư cao cấp do Tập đoàn Phenikaa phát
-                        triển
-                    </li>
-                    <li>
-                        Dịch vụ cao cấp: An ninh tòa nhà 24/7, dịch vụ đỗ xe,
-                        giặt là, spa và lễ tân.
-                    </li>
-                    <li>
-                        Khách sạn và căn hộ dịch vụ được quản lý bởi Marriott.
-                    </li>
-                </ul>
-
-                <div className={classes['list__price--level']}>
-                    <div className={classes['price-level']}>
-                        <h3>Mức giá</h3>
-                        <span>{post.price}</span>
-                    </div>
-                    <div className={classes['price-level']}>
-                        <h3>Diện tích</h3>
-                        <span>{post.area} m²</span>
-                    </div>
-                    <div className={classes['price-level']}>
-                        <h3>Phòng ngủ</h3>
-                        <span>{post.bedrooms}</span>
-                    </div>
-                </div>
-
-                <div className={classes['real-estate-container']}>
-                    <div className={classes['real-estate-info']}>
-                        <h3>Thông tin mô tả</h3>
-                        <h4>
-                            Cơ hội vàng mua căn hộ Glory Heights Vinhomes Grand
-                            Park giá tốt nhất.
-                        </h4>
-
-                        <p>
-                            Nắm giữ hàng phát mãi, cắt lỗ, thanh lý giảm sâu giá
-                            tốt hơn thị trường. Giỏ hàng chuẩn minh bạch cam kết
-                            không làm mất thời gian khách hàng. Hỗ trợ pháp lý &
-                            thủ tục nhanh gọn uy tín lâu năm.
-                        </p>
-
-                        <h4>(*) Lý do nên chọn ngay:</h4>
-                        <ul>
-                            <li>
-                                Vị trí trung tâm khu đô thị, đông dân cư, tiềm
-                                năng khai thác mạnh.
-                            </li>
-                            <li>
-                                Thanh khoản cao, dễ mua, dễ bán, sinh lời bền
-                                vững.
-                            </li>
-                            <li>
-                                Giá ưu đãi, thấp hơn mặt bằng thị trường hiện
-                                tại.
-                            </li>
-                            <li>
-                                Pháp lý minh bạch, thủ tục sang nhượng nhanh
-                                gọn.
-                            </li>
-                        </ul>
-
-                        <h4>(*) Phù hợp cho:</h4>
-                        <ul>
-                            <li>Nhà đầu tư muốn tối đa lợi nhuận.</li>
-                            <li>Gia đình trẻ cần an cư lâu dài.</li>
-                            <li>
-                                Khách hàng tìm kênh đầu tư an toàn và sinh lời
-                                bền vững.
-                            </li>
-                        </ul>
-
-                        <p className={classes['contact']}>
-                            Liên hệ ngay: <b>0908 770 ***</b> để nhận bảng giá
-                            chi tiết và giữ chỗ sớm nhất. <br />
-                            Inbox trực tiếp để được tư vấn nhanh chóng, tận
-                            tình, hoàn toàn miễn phí.
-                        </p>
-
-                        <p className={classes['note']}>
-                            Số lượng có hạn ai nhanh tay người đó thắng.
-                        </p>
-                    </div>
-
-                    <div className={classes['real-estate-seller']}>
-                        <div className={classes['real-estate-seller__avatar']}>
-                            <img
-                                src={post.user?.avatar_url || avatar}
-                                alt="Người đăng bán"
-                            />
-                        </div>
-                        <div>
-                            <h4>{post.user?.name || 'Ẩn danh'}</h4>
-                            <p>Người đăng bán</p>
-                            <p className={classes['phone']}>
-                                +84 {post.user?.phone || 'Không có'}
-                            </p>
-                            {currentUserId !== post.user?.id && (
+                <div className="property-detail__content">
+                    <div className="property-detail__info">
+                        {/* ảnh con */}
+                        <div className="gallery-wrapper">
+                            {canScrollLeft && (
                                 <button
-                                    onClick={handleStartChat}
-                                    className={classes['contact-btn']}
+                                    className="gallery-btn left"
+                                    onClick={() => scrollGallery(-1299)}
                                 >
-                                    LIÊN HỆ NGAY ▶
+                                    ❮
+                                </button>
+                            )}
+
+                            <div
+                                ref={galleryRef}
+                                id="galleryScroll"
+                                className="property-detail__gallery"
+                            >
+                                {post.images.map((img, index) => (
+                                    <div
+                                        key={index}
+                                        className="property-detail__gallery-item"
+                                    >
+                                        <img
+                                            loading="lazy"
+                                            src={`/storage/${img.image_path}`}
+                                        />
+                                    </div>
+                                ))}
+
+                                {/* Thêm phần tử giả để test */}
+                                <div className="property-detail__gallery-item"></div>
+                                <div className="property-detail__gallery-item"></div>
+                                <div className="property-detail__gallery-item"></div>
+                            </div>
+
+                            {canScrollRight && (
+                                <button
+                                    className="gallery-btn right"
+                                    onClick={() => scrollGallery(1299)}
+                                >
+                                    ❯
                                 </button>
                             )}
                         </div>
+
+                        <div className="property-detail__header">
+                            {/* Tiêu đề */}
+                            <h1 className="property-detail__title">
+                                {post.title}
+                            </h1>
+
+                            <div
+                                className="property-detail__save"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggle();
+                                }}
+                            >
+                                <img
+                                    src={
+                                        isLiked
+                                            ? '/icons/heart-filled.svg'
+                                            : '/icons/heart.svg'
+                                    }
+                                    alt="heart-empty.svg"
+                                />
+                                <span className="property-detail__save-text">
+                                    {isLiked ? 'Đã lưu' : 'Lưu'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Địa chỉ */}
+                        <div className="property-detail__address">
+                            <svg
+                                data-type="monochrome"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="24"
+                                height="24"
+                                fill="none"
+                            >
+                                <path
+                                    d="M18.0005 10.0439C18.0005 6.70038 15.3084 4 12.0005 4C8.69261 4 6.00049 6.70038 6.00049 10.0439C6.00061 10.9862 6.35786 12.0899 6.979 13.2705C7.59357 14.4386 8.42503 15.6049 9.27588 16.6514C10.1241 17.6945 10.9756 18.599 11.6157 19.2432C11.7546 19.3829 11.8843 19.5096 12.0005 19.623C12.1167 19.5096 12.2464 19.3829 12.3853 19.2432C13.0254 18.599 13.8769 17.6945 14.7251 16.6514C15.5759 15.6049 16.4074 14.4386 17.022 13.2705C17.6431 12.0899 18.0004 10.9862 18.0005 10.0439ZM13.2368 9.75C13.2367 9.05386 12.6773 8.5 12.0005 8.5C11.3238 8.50016 10.7652 9.05396 10.7651 9.75C10.7651 10.4461 11.3238 10.9998 12.0005 11C12.6773 11 13.2368 10.4462 13.2368 9.75ZM20.0005 10.0439C20.0004 11.4492 19.4826 12.8887 18.7915 14.2021C18.0937 15.5284 17.1749 16.8075 16.2759 17.9131C15.3742 19.0219 14.4755 19.9768 13.8032 20.6533C13.4666 20.992 13.1851 21.2623 12.9868 21.4492C12.8876 21.5427 12.8088 21.6161 12.7544 21.666C12.7274 21.6908 12.7066 21.7103 12.6919 21.7236C12.6845 21.7303 12.6784 21.7356 12.6743 21.7393C12.6724 21.741 12.6706 21.7421 12.6694 21.7432L12.6675 21.7451L12.0005 22.3418L11.3335 21.7451L11.3315 21.7432C11.3304 21.7421 11.3286 21.741 11.3267 21.7393C11.3226 21.7356 11.3164 21.7303 11.3091 21.7236C11.2944 21.7103 11.2736 21.6908 11.2466 21.666C11.1921 21.6161 11.1134 21.5427 11.0142 21.4492C10.8158 21.2623 10.5344 20.992 10.1978 20.6533C9.52545 19.9768 8.62674 19.0219 7.7251 17.9131C6.82612 16.8075 5.90731 15.5284 5.20947 14.2021C4.51839 12.8887 4.0006 11.4492 4.00049 10.0439C4.00049 5.6075 7.57638 2 12.0005 2C16.4246 2 20.0005 5.6075 20.0005 10.0439ZM15.2368 9.75C15.2368 11.5391 13.7936 13 12.0005 13C10.2075 12.9998 8.76514 11.539 8.76514 9.75C8.76521 7.96108 10.2076 6.50015 12.0005 6.5C13.7935 6.5 15.2367 7.96099 15.2368 9.75Z"
+                                    fill="currentColor"
+                                ></path>
+                            </svg>
+                            <span>{post.address}</span>
+                        </div>
+
+                        {/* mô tả bài đăng */}
+                        <h3 className="property-detail__heading-title">
+                            Thông tin mô tả
+                        </h3>
+                        <p className="property-detail__description">
+                            {post.description}
+                        </p>
+
+                        {/* Đặc điểm bất động sản */}
+                        <h3 className="property-detail__heading-title">
+                            Đặc điểm bất động sản
+                        </h3>
+
+                        <div className="property-detail__features">
+                            <div className="property-detail__feature-row">
+                                {attribute.map((att) => (
+                                    <div
+                                        key={att.id}
+                                        className="property-detail__feature-item"
+                                    >
+                                        <img
+                                            loading="lazy"
+                                            src={att.icon}
+                                            alt={att.lable}
+                                            className="property-detail__feature-icon"
+                                        />
+                                        <span className="property-detail__feature-label">
+                                            {att.lable}
+                                        </span>
+                                        <strong className="property-detail__feature-value">
+                                            {att.value}
+                                        </strong>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/*================= Phần thông tin phòng ===============*/}
+                    <div className="property-detail__room-info">
+                        <p className="property-detail__room-title">
+                            Thông tin ngắn gọn
+                        </p>
+
+                        <p className="property-detail__owner">
+                            <span className="property-detail__owner-label">
+                                Chủ sở hữu:{' '}
+                            </span>
+                            {post?.user?.name}
+                        </p>
+
+                        {/* Tiện ích */}
+                        <div className="property-detail__amenities">
+                            {/* Phòng ngủ phòng tắm phòng khách bếp diện tích */}
+                            {utilities.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="property-detail__amenity-item"
+                                >
+                                    <img
+                                        loading="lazy"
+                                        src={item.icon}
+                                        alt="icon"
+                                        className="property-detail__amenity-icon"
+                                    />
+                                    <span className="property-detail__amenity-value">
+                                        {item.value}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Giá cả */}
+                        <div className="property-detail__price-box">
+                            <div className="property-detail__price">
+                                <span className="property-detail__price-label">
+                                    Giá{' '}
+                                </span>
+                                <strong className="property-detail__price-value">
+                                    {formatPrice(post.price)}
+                                </strong>
+                            </div>
+
+                            <div className="property-detail__price">
+                                <span className="property-detail__price-label">
+                                    Diện tích{' '}
+                                </span>
+                                <strong className="property-detail__price-value">
+                                    {post.area} m²
+                                </strong>
+                            </div>
+                        </div>
+
+                        {/* nút bấm */}
+                        <div className="property-detail__actions">
+                            <button
+                                className="property-detail__button property-detail__button--primary"
+                                onClick={() => setOpen(true)}
+                            >
+                                Thông tin liên hệ
+                            </button>
+
+                            <button
+                                className="property-detail__button property-detail__button--chat"
+                                onClick={() => {
+                                    auth?.user
+                                        ? handleStartChat()
+                                        : toast.error(
+                                              'Bạn cần đăng nhập để bắt đầu cuộc trò chuyện!',
+                                          );
+                                }}
+                            >
+                                <img src="/icons/chat.svg" alt="chat" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <h1 className="header_title card__heading--title">
-                    Bất động sản dành cho bạn
-                </h1>
-            </div>
+                {open && (
+                    <div className="auth-form">
+                        <div
+                            ref={menuRef}
+                            style={{
+                                height: 600,
+                                width: 400,
+                                background: '#fff',
+                            }}
+                        >
+                            sssss
+                        </div>
+                    </div>
+                )}
 
-            <CardList post={relatedPosts} limit={8} showMore={true} />
-            <Footer />
+                {/* Xem trên bản đồ */}
+                <div className="property-detail__section--map">
+                    <h3 className="property-detail__heading-title">
+                        Xem trên bản đồ
+                    </h3>
+
+                    <div className="property-detail__map">
+                        <MapView lng={post.longitude} lat={post.latitude} />
+                    </div>
+                </div>
+
+                {/* Ngày đăng bài và ngày hết hạn */}
+                <div className="property-detail__meta">
+                    {meta.map((m) => (
+                        <div key={m.id} className="property-detail__meta-item">
+                            <span className="property-detail__meta-label">
+                                {m.title}
+                            </span>
+                            <span className="property-detail__meta-value">
+                                {m.value}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="property-detail__card-list">
+                    <h1 className="header_title card__heading--title">
+                        Bất động sản liên quan
+                    </h1>
+
+                    <CardList post={relatedPosts} limit={10} showMore={true} />
+                </div>
+
+                <Chat />
+            </section>
         </>
     );
 }

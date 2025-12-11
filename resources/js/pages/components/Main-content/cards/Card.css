@@ -5,7 +5,7 @@
 .property-grid {
     margin-top: 22px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     column-gap: 26px;
     row-gap: 38px;
     padding: 20px 3px;
@@ -17,6 +17,7 @@
     height: 438px;
     border-radius: 16px;
     overflow: hidden;
+    background: #fff;
     box-shadow: 0 2px 7px rgba(255, 255, 255, 0.1), 0 2px 7px rgba(0, 0, 0, 0.1);
     position: relative;
     padding: 15px;
@@ -33,7 +34,7 @@
     position: absolute;
     top: 48px;
     left: -26px;
-    z-index: 10;
+    z-index: 1;
     background-color: #d90c0c;
     color: white;
     font-size: 1.5rem;
@@ -85,7 +86,6 @@
     padding: 3px 0;
     display: flex;
     align-items: center;
-    column-gap: 3px;
 }
 
 .property-location span {
@@ -110,16 +110,29 @@
 }
 
 .heart-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: transparent;
     padding: 3.2px;
     cursor: pointer;
 }
 
+.property__heart-icon {
+    width: 27px;
+    height: 27px;
+    transition: transform 0.3s;
+}
+
+.heart-button:hover .property__heart-icon {
+    transform: scale(1.05);
+}
+
 .show-more-container {
     display: flex;
     justify-content: center;
-    margin: 26px 0;
+    margin: 16px 0 22px;
 }
 
 .show-more-btn {
@@ -127,11 +140,10 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    padding: 16px 30px;
-    font-size: 1.7rem;
+    padding: 14px 60px;
     font-weight: 600;
-    border: 2px solid var(--text-color);
-    border-radius: 12px;
+    border: 1px solid #dadada;
+    border-radius: 999px;
     background-color: transparent;
     color: var(--text-color);
     cursor: pointer;
@@ -139,8 +151,7 @@
 }
 
 .show-more-btn:hover {
-    background-color: var(--text-color);
-    color: var(--bg-color)
+    background-color: #f3f3f3;
 }
 
 .expand-icon {

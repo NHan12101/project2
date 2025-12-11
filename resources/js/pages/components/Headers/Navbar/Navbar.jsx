@@ -273,7 +273,7 @@ export default function Navbar() {
                                 className="nav__btn-story"
                                 onClick={
                                     isLogin
-                                        ? () => router.visit('/')
+                                        ? () => router.visit('/posts/create')
                                         : () => setShowAuth(true)
                                 }
                             >

@@ -282,7 +282,7 @@ export default function HomeFinder() {
                             <>
                                 <CardList
                                     post={list.data}
-                                    limit={1000}
+                                    limit={20}
                                     showMore={false}
                                 />
                                 <Pagination meta={list} filters={filters} />

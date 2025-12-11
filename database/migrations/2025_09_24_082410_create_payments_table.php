@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subscription_id')->nullable()->constrained()->onDelete('cascade');
 
             $table->string('method'); // stripe, paypal, momo, vnpay
             $table->string('status')->default('pending'); // pending | success | failed

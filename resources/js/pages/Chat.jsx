@@ -1,7 +1,7 @@
+import Spline from '@splinetool/react-spline';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { IoSend } from 'react-icons/io5';
-import chatbot from '../../../public/images/chatbot.png';
 import './Chat.css';
 
 export default function Chat() {
@@ -100,10 +100,13 @@ export default function Chat() {
                             placeholder="Nhập tin nhắn..."
                             autoFocus
                         />
-                        <button type="submit">
+                        <button
+                            type="submit"
+                            style={{ display: input ? 'inline-block' : 'none' }}
+                        >
                             <span>
                                 <IoSend
-                                    size={28}
+                                    size={24}
                                     style={{ marginRight: '5px' }}
                                 />
                             </span>
@@ -111,14 +114,14 @@ export default function Chat() {
                     </form>
                 </div>
             ) : (
-                <img
-                    src={chatbot}
-                    alt="chat-ai"
+                <div
                     className="chat-toggle"
                     onClick={() => {
                         setOpen(!open);
                     }}
-                />
+                >
+                    <Spline scene="https://prod.spline.design/ywCzVWVJY8ZT4Ins/scene.splinecode" />
+                </div>
             )}
         </>
     );

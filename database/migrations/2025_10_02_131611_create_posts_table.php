@@ -13,22 +13,59 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            
             $table->string('title');
+
             $table->text('description');
+
             $table->unsignedBigInteger('price');
+
             $table->string('address');
+
             $table->decimal('area', 10, 2);
+
             $table->integer('bedrooms');
+
             $table->integer('bathrooms');
+
             $table->integer('livingrooms');
+
             $table->integer('kitchens');
+
             $table->boolean('is_vip')->default(false);
-            $table->enum('status', ['hidden', 'visible'])->default('visible');
+
+            $table->foreignId('subscription_id')->nullable()->constrained('subscriptions');
+
+            $table->enum('status', ['draft', 'pending', 'visible', 'hidden'])->default('draft');
+
+            $table->timestamp('package_expired_at')->nullable();
+
             $table->enum('type', ['rent', 'sale']);
+
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Thay đổi cascade thành set null
+
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+
             $table->foreignId('city_id')->constrained();
+
             $table->foreignId('ward_id')->nullable()->constrained();
+
+            // --- Nhóm SEO ---
+            $table->string('slug')->unique()->nullable();
+
+            // --- Nhóm vị trí nâng cao ---
+            $table->decimal('latitude', 10, 7)->nullable();
+
+            $table->decimal('longitude', 10, 7)->nullable();
+
+            $table->integer('floors')->nullable();
+
+            $table->string('direction')->nullable(); // Đông, Tây, Nam, Bắc
+
+            $table->string('legal')->nullable(); // Sổ hồng, Sổ đỏ...
+
+            $table->string('furniture')->nullable(); // đầy đủ / cơ bản / trống
+
             $table->timestamps();
         });
     }

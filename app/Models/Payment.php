@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
@@ -17,6 +16,7 @@ class Payment extends Model
         'order_id',
         'payment_url',
         'metadata',
+        'subscription_id',
     ];
 
     protected $casts = [
@@ -27,5 +27,10 @@ class Payment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
     }
 }

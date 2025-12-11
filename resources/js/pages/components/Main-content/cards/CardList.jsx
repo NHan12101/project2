@@ -11,9 +11,12 @@ export default function CardList({ post, limit = 8, showMore = true }) {
 
     const [visibleCount, setVisibleCount] = useState(limit);
 
+    const increment = isHome ? 8 : 10;
+    const maxVisible = isHome ? 16 : 20;
+
     function handleShowMore() {
-        if (visibleCount + 8 <= 16) {
-            setVisibleCount(visibleCount + 8);
+        if (visibleCount + increment <= maxVisible) {
+            setVisibleCount(visibleCount + increment);
         } else {
             // Chỉ trang Home mới có logic XEM TẤT CẢ
             if (isHome) {
@@ -23,7 +26,7 @@ export default function CardList({ post, limit = 8, showMore = true }) {
     }
 
     return (
-        <div className="main-contain">
+        <>
             <div className="property-grid">
                 {data.slice(0, visibleCount).map((item) => (
                     <CardItem key={item.id} item={item} favoritePostIds={favoritePostIds}/>
@@ -33,7 +36,7 @@ export default function CardList({ post, limit = 8, showMore = true }) {
             {showMore && data.length > limit && (
                 <div className="show-more-container">
                     {/* nút MỞ RỘNG — luôn có */}
-                    {visibleCount + 8 <= 16 && (
+                    {visibleCount + increment <= maxVisible && (
                         <button
                             className="show-more-btn"
                             onClick={handleShowMore}
@@ -47,7 +50,7 @@ export default function CardList({ post, limit = 8, showMore = true }) {
                     )}
 
                     {/* nút XEM TẤT CẢ — chỉ Home mới có */}
-                    {visibleCount + 8 > 16 && isHome && (
+                    {visibleCount + increment > maxVisible && isHome && (
                         <button
                             className="show-more-btn"
                             onClick={handleShowMore}
@@ -57,6 +60,6 @@ export default function CardList({ post, limit = 8, showMore = true }) {
                     )}
                 </div>
             )}
-        </div>
+        </>
     );
 }
