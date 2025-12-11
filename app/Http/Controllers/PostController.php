@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\Subscription;
@@ -143,6 +144,18 @@ class PostController extends Controller
                     'image_path' => $path,
                 ]);
             }
+        }
+
+        // Tạo thông báo cho gói free
+        if ($post->status === 'visible') {
+            Notification::create([
+                'user_id' => Auth::id(),
+                'type' => 'post_published',
+                'data' => [
+                    'post_id' => $post->id,
+                    'title' => $post->title,
+                ],
+            ]);
         }
 
         // Nếu là gói free thì trả về view chi tiết ngay

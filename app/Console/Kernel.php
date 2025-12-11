@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\HideExpiredPosts;
+use App\Console\Commands\NotifyExpiringPosts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,6 +17,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Đăng ký command của bạn
         HideExpiredPosts::class,
+        NotifyExpiringPosts::class,
     ];
 
     /**
@@ -23,11 +25,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Chạy command kiểm tra bài hết hạn mỗi 5 phút
+        // Chạy command kiểm tra bài hết hạn mỗi 1 phút
         $schedule->command('posts:hide-expired')->everyMinute(); /// everyMinute // everyFiveMinutes
 
         // Nếu muốn chạy hàng ngày lúc 0:00
         // $schedule->command('posts:hide-expired')->dailyAt('00:00');
+
+        // Chạy command kiểm tra bài viết sắp hết hạn mỗi ngày 
+        $schedule->command('posts:notify-expiring')->dailyAt('00:00');
     }
 
     /**

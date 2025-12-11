@@ -12,6 +12,7 @@ use App\Http\Controllers\EmailOtpController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 
 // ===== TRANG MẶC ĐỊNH =====
@@ -105,4 +106,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
     Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
     Route::post('/payments/momo/ipn', [PaymentController::class, 'momoIpn'])->name('payment.momo.ipn');
+});
+
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
+    Route::delete('/notifications', [NotificationController::class, 'clearAll']);
 });

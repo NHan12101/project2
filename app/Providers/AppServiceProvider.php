@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Favorite;
+use App\Models\Notification;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
@@ -34,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
                 return Favorite::where('user_id', Auth::id())
                     ->pluck('post_id')
                     ->toArray();
+            },
+
+            'notifications' => function () {
+                return Notification::where('user_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->get();
             },
 
             'suggestTitles' => function () {
