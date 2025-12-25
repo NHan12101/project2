@@ -55,6 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'otp_type' => fn() => $request->session()->get('otp_type'),
                 'reset_password_allowed' => fn() => $request->session()->get('reset_password_allowed'),
                 'email' => fn() => $request->session()->get('email'),
+                'post_id' => fn() => $request->session()->get('post_id'),
             ],
         ];
     }

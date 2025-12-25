@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
-    protected $fillable = ['name', 'days', 'price', 'currency'];
+    protected $fillable = [
+        'name',
+        'price_per_day',
+        'currency',
+        'priority'
+    ];
 
     public function posts()
     {

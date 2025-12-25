@@ -27,8 +27,7 @@ export default function Suggest({
         return text
             ?.normalize('NFD') // 1. Tách ký tự có dấu thành ký tự + dấu
             .replace(/[\u0300-\u036f]/g, '') // 2. Loại bỏ toàn bộ dấu
-            .replace(/đ/g, 'd')
-            .replace(/Đ/g, 'D') // 3. Cho phép giữ đ và Đ
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D') // 3. Cho phép giữ đ và Đ
             .replace(/[^a-zA-Z0-9\s]/g, '') // 4. Xóa mọi ký tự không phải chữ cái hoặc số
             .toLowerCase();
     }

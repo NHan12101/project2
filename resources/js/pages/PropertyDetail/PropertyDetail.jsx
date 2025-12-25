@@ -2,12 +2,14 @@ import useDropdown from '@/hooks/useDropdown.js';
 import { initFavorites, useFavorite } from '@/hooks/useFavorite.js';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import Chat from '../Chat.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
+import Footer from '../components/Footer/Footer.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
 import MapView from '../MapView.jsx';
+import Image360Viewer from '../Posts/modals/Image360Viewer.jsx';
 import './PropertyDetail.css';
 
 export default function PropertyDetail({
@@ -105,6 +107,62 @@ export default function PropertyDetail({
 
     const { isLiked, toggle } = useFavorite(post.id);
 
+    const [mediaList, setMediaList] = useState([]);
+    const [activeMedia, setActiveMedia] = useState(null);
+
+    const buildMediaList = (post) => {
+        const list = [];
+
+        if (post.video) {
+            list.push({
+                id: 'video',
+                type: 'video',
+                src: `/storage/${post.video}`,
+            });
+        }
+
+        if (post.youtube_url) {
+            list.push({
+                id: 'youtube',
+                type: 'youtube',
+                src: post.youtube_url,
+            });
+        }
+
+        post.images?.forEach((img, index) => {
+            list.push({
+                id: `img-${index}`,
+                type: img.is360 ? '360' : 'image',
+                src: `/storage/${img.medium_path}`, // ảnh chính
+                thumb: `/storage/${img.thumb_path}`, // thumbnail
+                full: `/storage/${img.image_path}`, // ảnh gốc (nếu cần)
+            });
+        });
+
+        return list;
+    };
+
+    useEffect(() => {
+        const list = buildMediaList(post);
+        setMediaList(list);
+
+        const defaultMedia =
+            list.find((m) => m.type === 'video') ||
+            list.find((m) => m.type === 'youtube') ||
+            list.find((m) => m.type === '360') ||
+            list.find((m) => m.type === 'image');
+
+        setActiveMedia(defaultMedia);
+    }, [post]);
+
+    // Tối ưu cảm giác load
+    useEffect(() => {
+        if (activeMedia?.type === 'image' || activeMedia?.type === '360') {
+            const img = new Image();
+            img.src = activeMedia.src;
+        }
+    }, [activeMedia]);
+
     useEffect(() => {
         initFavorites(favoritePostIds);
     }, [favoritePostIds]);
@@ -115,19 +173,28 @@ export default function PropertyDetail({
         if (!el) return;
 
         const tolerance = 2;
-
         setCanScrollLeft(el.scrollLeft > 0);
         setCanScrollRight(
             el.scrollLeft + el.clientWidth < el.scrollWidth - tolerance,
         );
     }
 
-    // Gán ref với sự kiện scroll
+    function scrollGallery(direction = 1) {
+        const el = galleryRef.current;
+        if (!el) return;
+        const amount = el.clientWidth * 0.8 * direction;
+        el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    // Dùng useLayoutEffect để chạy ngay sau render, trước khi paint
+    useLayoutEffect(() => {
+        checkScroll();
+    }, [mediaList]); // mediaList thay đổi thì kiểm tra scroll
+
+    // Gắn listener scroll / resize
     useEffect(() => {
         const el = galleryRef.current;
         if (!el) return;
-
-        checkScroll(); // chạy khi mới vào trang
 
         el.addEventListener('scroll', checkScroll);
         window.addEventListener('resize', checkScroll);
@@ -137,12 +204,6 @@ export default function PropertyDetail({
             window.removeEventListener('resize', checkScroll);
         };
     }, []);
-
-    // Scroll trái / phái
-    function scrollGallery(amount) {
-        const el = galleryRef.current;
-        el.scrollBy({ left: amount, behavior: 'smooth' });
-    }
 
     function formatPrice(price) {
         if (price >= 1_000_000_000) {
@@ -174,23 +235,58 @@ export default function PropertyDetail({
             <section className="property-detail">
                 {/* ảnh phòng chính */}
                 <div className="property-detail__main-image">
+                    {/* Ưu tiên video upload */}
+                    {activeMedia?.type === 'video' && (
+                        <video
+                            controls
+                            playsInline
+                            muted
+                            width="100%"
+                            height="100%"
+                            key={activeMedia.id}
+                        >
+                            <source src={activeMedia.src} type="video/mp4" />
+                        </video>
+                    )}
+
+                    {/* Nếu không có video thì dùng YouTube */}
+                    {activeMedia?.type === 'youtube' && (
+                        <iframe
+                            key={activeMedia.id}
+                            src={`https://www.youtube.com/embed/${activeMedia.src}?autoplay=0&mute=1`}
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="main-video"
+                        />
+                    )}
+
+                    {/* Nếu không có video và yt thì chơi ảnh 360 */}
+                    {activeMedia?.type === '360' && (
+                        <Image360Viewer
+                            key={activeMedia.id}
+                            src={activeMedia.full}
+                        />
+                    )}
+
+                    {activeMedia?.type === 'image' && (
+                        <img
+                            key={activeMedia.id}
+                            src={activeMedia.full}
+                            loading="eager"
+                            decoding="async"
+                        />
+                    )}
+
                     {/* <iframe
-                        width="100%"
-                        height="100%"
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0"
-                        title="YouTube video"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="main-video"
-                    ></iframe> */}
-                    <iframe
                         src="https://kuula.co/share/hSwx8?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1&autorotate=0.2&autopause=1&hideinfo=1&hidefullscreen=1&hidecontrols=1&hidetitle=1&hideinst=1"
                         style={{ width: '100%', height: '604px' }}
                         frameBorder="0"
                         allow="vr; gyroscope; accelerometer"
                         allowFullScreen
-                    />
+                    /> */}
                 </div>
 
                 <div className="property-detail__content">
@@ -200,7 +296,7 @@ export default function PropertyDetail({
                             {canScrollLeft && (
                                 <button
                                     className="gallery-btn left"
-                                    onClick={() => scrollGallery(-1299)}
+                                    onClick={() => scrollGallery(-1)}
                                 >
                                     ❮
                                 </button>
@@ -211,28 +307,56 @@ export default function PropertyDetail({
                                 id="galleryScroll"
                                 className="property-detail__gallery"
                             >
-                                {post.images.map((img, index) => (
+                                {mediaList.map((media) => (
                                     <div
-                                        key={index}
-                                        className="property-detail__gallery-item"
+                                        key={media.id}
+                                        className={`property-detail__gallery-item ${
+                                            activeMedia?.id === media.id
+                                                ? 'is-active'
+                                                : ''
+                                        }`}
+                                        onClick={() => setActiveMedia(media)}
                                     >
-                                        <img
-                                            loading="lazy"
-                                            src={`/storage/${img.image_path}`}
-                                        />
+                                        {media.type === 'video' && (
+                                            <div className="video-thumb video-thumb__video"></div>
+                                        )}
+
+                                        {media.type === 'youtube' && (
+                                            <div className="video-thumb video-thumb__youtube">
+                                                <svg
+                                                    height="62px"
+                                                    width="62px"
+                                                    version="1.1"
+                                                    viewBox="0 0 68 48"
+                                                >
+                                                    <path
+                                                        d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"
+                                                        fill="#ff0033"
+                                                    ></path>
+                                                    <path
+                                                        d="M 45,24 27,14 27,34"
+                                                        fill="#fff"
+                                                    ></path>
+                                                </svg>
+                                            </div>
+                                        )}
+
+                                        {(media.type === 'image' ||
+                                            media.type === '360') && (
+                                            <img
+                                                src={media.thumb ?? media.src}
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        )}
                                     </div>
                                 ))}
-
-                                {/* Thêm phần tử giả để test */}
-                                <div className="property-detail__gallery-item"></div>
-                                <div className="property-detail__gallery-item"></div>
-                                <div className="property-detail__gallery-item"></div>
                             </div>
 
                             {canScrollRight && (
                                 <button
                                     className="gallery-btn right"
-                                    onClick={() => scrollGallery(1299)}
+                                    onClick={() => scrollGallery(1)}
                                 >
                                     ❯
                                 </button>
@@ -452,6 +576,8 @@ export default function PropertyDetail({
 
                 <Chat />
             </section>
+
+            <Footer />
         </>
     );
 }

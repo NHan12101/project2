@@ -12,6 +12,8 @@ export default function Chat() {
     const scrollRef = useRef(null);
     const [isOpenChat, setIsOpenChat] = useState(false);
 
+    const url = 'https://prod.spline.design/ywCzVWVJY8ZT4Ins/scene.splinecode';
+
     const sendMessage = async (e) => {
         e.preventDefault();
         setIsOpenChat(true);
@@ -120,7 +122,7 @@ export default function Chat() {
                         setOpen(!open);
                     }}
                 >
-                    <Spline scene="https://prod.spline.design/ywCzVWVJY8ZT4Ins/scene.splinecode" />
+                    <Spline scene={url} />
                 </div>
             )}
         </>

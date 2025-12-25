@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\PostPackageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -55,15 +56,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ===== GOOGLE LOGIN =====
-Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect'); 
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 // Trang hoàn tất đăng ký sau khi đăng nhập bằng Google
 Route::get('/complete-register', fn() => Inertia::render('CompleteRegister'))->name('complete.register');
 Route::post('/complete-register', [GoogleController::class, 'completeRegister']);
-
-// Email xác minh
-// Auth::routes(['verify' => true]);
 
 // Trang yêu cầu xác minh email
 Route::get('/force-logout', function () {
@@ -92,7 +90,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // ========== BỘ LỌC ========= //
 Route::get('/home-finder', [FilterController::class, 'index']);
 
-
 //  ========= YÊU THÍCH ===============
 Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);
 
@@ -101,11 +98,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
-    Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::get('/payments/{payment}/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
     Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
     Route::post('/payments/momo/ipn', [PaymentController::class, 'momoIpn'])->name('payment.momo.ipn');
+
+    Route::post('/posts/{post}/package', [PostPackageController::class, 'store'])->name('posts.package.store');
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

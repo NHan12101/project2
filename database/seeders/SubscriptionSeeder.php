@@ -11,28 +11,28 @@ class SubscriptionSeeder extends Seeder
     {
         $subscriptions = [
             [
-                'name' => 'Gói cơ bản',
-                'days' => 16, // Thời gian dùng thử
-                'price' => 0,
+                'name' => 'Tin thường',
+                'price_per_day' => 3600,
                 'currency' => 'VND',
+                'priority' => 1,
             ],
             [
-                'name' => 'Gói tiêu chuẩn',
-                'days' => 7,
-                'price' => 49000,
+                'name' => 'VIP bạc',
+                'price_per_day' => 70000,
                 'currency' => 'VND',
+                'priority' => 2,
             ],
             [
-                'name' => 'Gói VIP',
-                'days' => 14,
-                'price' => 98000,
+                'name' => 'VIP vàng',
+                'price_per_day' => 139800,
                 'currency' => 'VND',
+                'priority' => 3,
             ],
             [
-                'name' => 'Gói Siêu VIP',
-                'days' => 30,
-                'price' => 199000,
+                'name' => 'VIP kim cương',
+                'price_per_day' => 364000,
                 'currency' => 'VND',
+                'priority' => 4,
             ],
         ];
 

@@ -55,14 +55,17 @@ export default function CardItem({ item, favoritePostIds }) {
     }
 
     const currentIndex = currentImageIndex[item.id] || 0;
-    const imageSrc = `/storage/${item?.images[currentIndex]?.image_path}`;
+    const imageSrc = `/storage/${
+        item?.images?.[currentIndex]?.medium_path ??
+        item?.images?.[currentIndex]?.image_path
+    }`;
 
     return (
         <article
             className="property-card"
             onClick={() => router.get(`/property-detail/${item.slug}`)}
         >
-            {item.is_vip ? <span className="vip-badge">VIP</span> : undefined}
+            {/* {item?.is_vip ? <span className="vip-badge">VIP</span> : undefined} */}
 
             {item.images?.length > 0 && (
                 <div className="image-container">

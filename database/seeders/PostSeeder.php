@@ -33,17 +33,21 @@ class PostSeeder extends Seeder
         }
 
         $images = [
-            'posts/home1.png',
-            'posts/home2.png',
-            'posts/home3.png',
-            'posts/home4.png',
-            'posts/home5.png',
-            'posts/home6.png',
+            'posts/photo-seeder/test-photo01.jpg',
+            'posts/photo-seeder/test-photo02.jpg',
+            'posts/photo-seeder/test-photo03.jpg',
+            'posts/photo-seeder/test-photo04.jpg',
+            'posts/photo-seeder/test-photo05.jpg',
+            'posts/photo-seeder/test-photo06.jpg',
+            'posts/photo-seeder/test-photo07.jpg',
+            'posts/photo-seeder/test-photo08.jpg',
+            'posts/photo-seeder/test-photo09.jpg',
+            'posts/photo-seeder/test-photo10.jpg',
         ];
 
         $utilities = Utility::all();
 
-        Post::factory(1600)->create()->each(function ($post) use ($images, $utilities) {
+        Post::factory(40)->create()->each(function ($post) use ($images, $utilities) {
 
             $ward = Ward::inRandomOrder()->first();   // Lấy ward ngẫu nhiên
 
@@ -61,6 +65,8 @@ class PostSeeder extends Seeder
                 PostImage::create([
                     'post_id'    => $post->id,
                     'image_path' => $img,
+                    'thumb_path' => $img,
+                    'medium_path' => $img,
                 ]);
             }
 

@@ -8,6 +8,9 @@ class Payment extends Model
 {
     protected $fillable = [
         'user_id',
+        // 'post_id',
+        'subscription_id',
+        'days',
         'method',
         'status',
         'currency',
@@ -16,7 +19,6 @@ class Payment extends Model
         'order_id',
         'payment_url',
         'metadata',
-        'subscription_id',
     ];
 
     protected $casts = [

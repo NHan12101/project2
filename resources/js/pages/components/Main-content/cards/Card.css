@@ -14,7 +14,7 @@
 
 .property-card {
     width: 100%;
-    height: 438px;
+    max-width: 346px;
     border-radius: 16px;
     overflow: hidden;
     background: #fff;
@@ -52,16 +52,14 @@
 }
 
 .property-title {
-    height: 4.2rem;
     font-size: 2rem;
     font-weight: 600;
     margin: 8px 0 10px;
     color: var(--card-text);
+    white-space: nowrap;
     overflow: hidden;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    line-height: 1.02;
+    text-overflow: ellipsis;
+    line-height: 1.36;
 }
 
 .property-meta {
@@ -168,6 +166,7 @@
     width: 100%;
     height: 210px;
     border-radius: 12px;
+    background: #d1d1d1;
     overflow: hidden;
 }
 

@@ -12,7 +12,9 @@ class Ward extends Model
     protected $fillable = [
         'ward_name',
         'ward_code',
-        'city_id'
+        'city_id',
+        'latitude',
+        'longitude',
     ];
 
     public function city()

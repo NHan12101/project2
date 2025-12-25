@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            
+
             $table->string('title');
 
             $table->text('description');
@@ -21,6 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('price');
 
             $table->string('address');
+
+            $table->string('address_detail')->nullable();
 
             $table->decimal('area', 10, 2);
 
@@ -31,8 +33,6 @@ return new class extends Migration
             $table->integer('livingrooms');
 
             $table->integer('kitchens');
-
-            $table->boolean('is_vip')->default(false);
 
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions');
 
@@ -66,7 +66,19 @@ return new class extends Migration
 
             $table->string('furniture')->nullable(); // đầy đủ / cơ bản / trống
 
+            $table->string('video')->nullable();
+
+            $table->string('youtube_url')->nullable();
+
             $table->timestamps();
+
+            // --- Tạo index để tìm kiếm nhanh ---
+            $table->index('title');
+            $table->index('price');
+            $table->index('area');
+            $table->index('city_id');
+            $table->index('ward_id');
+            $table->index('status');
         });
     }
 

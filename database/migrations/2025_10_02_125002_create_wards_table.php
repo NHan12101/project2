@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('ward_name')->index();  // tìm kiếm nhanh
             $table->string('ward_code');
             $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }

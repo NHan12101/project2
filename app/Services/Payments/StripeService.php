@@ -7,9 +7,13 @@ use Stripe\Checkout\Session;
 
 class StripeService
 {
-    public function pay($amount, $currency, $returnUrl, $cancelUrl, $postId = null)
+    public function pay($amount, $currency, $returnUrl, $cancelUrl)
     {
         Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $unitAmount = strtolower($currency) === 'vnd'
+            ? (int) $amount        // KHÔNG nhân 100
+            : (int) $amount * 100; // USD, EUR...
 
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -17,7 +21,7 @@ class StripeService
                 'price_data' => [
                     'currency' => strtolower($currency),
                     'product_data' => ['name' => 'Thanh toán hóa đơn'],
-                    'unit_amount' => $amount * 100,
+                    'unit_amount' => $unitAmount,
                 ],
                 'quantity' => 1,
             ]],

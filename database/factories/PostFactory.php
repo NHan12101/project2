@@ -23,7 +23,6 @@ class PostFactory extends Factory
             'bathrooms' => $this->faker->numberBetween(1, 4),
             'livingrooms' => $this->faker->numberBetween(1, 3),
             'kitchens' => $this->faker->numberBetween(1, 2),
-            'is_vip' => fake()->boolean(30),
             'status' => $this->faker->randomElement(['hidden', 'visible']),
             'type' => $this->faker->randomElement(['rent', 'sale']),
             'user_id' => User::inRandomOrder()->first()->id,

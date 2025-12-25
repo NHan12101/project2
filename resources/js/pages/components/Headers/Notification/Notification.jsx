@@ -54,7 +54,7 @@ export default function Notification({ isLogin, setShowAuth }) {
     const { notifications } = usePage().props;
     const [isOpen, setIsOpen] = useState(false);
 
-    console.log(notifications);
+    // console.log(notifications);
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 

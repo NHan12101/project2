@@ -8,13 +8,16 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */ 
+     */
     public function up(): void
     {
         Schema::create('post_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
             $table->string('image_path');
+            $table->string('thumb_path')->nullable();
+            $table->string('medium_path')->nullable();
+            $table->boolean('is360')->default(false)->index();
             $table->timestamps();
         });
     }

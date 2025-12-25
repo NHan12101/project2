@@ -9,20 +9,28 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('subscription_id')->nullable()->constrained()->onDelete('cascade');
 
-            $table->string('method'); // stripe, paypal, momo, vnpay
-            $table->string('status')->default('pending'); // pending | success | failed
-            $table->string('currency')->default('USD');
-            $table->decimal('amount', 15, 2);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('subscription_id')->constrained()->cascadeOnDelete();
 
-            $table->string('transaction_id')->nullable(); 
-            $table->string('order_id')->nullable(); // dùng cho MoMo / VNPAY
+            $table->integer('days'); // số ngày user chọn (15 / 30 / 60)
+
+            $table->string('method'); // momo, vnpay, stripe
+            $table->string('status')->default('pending');
+            // pending | success | failed
+
+            $table->string('currency')->default('VND');
+            $table->decimal('amount', 15, 2); // tổng tiền
+
+            $table->string('transaction_id')->nullable();
+            $table->string('order_id')->nullable();
             $table->text('payment_url')->nullable();
             $table->json('metadata')->nullable();
 
             $table->timestamps();
+
+            $table->index('status');
         });
     }
 

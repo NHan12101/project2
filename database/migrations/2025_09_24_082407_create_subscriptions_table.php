@@ -9,10 +9,16 @@ return new class extends Migration {
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('days'); // số ngày bài được ưu tiên / hiển thị
-            $table->integer('price'); // giá tiền (VND hoặc USD)
+
+            $table->string('name'); // Tin thường, VIP bạc...
+            $table->integer('price_per_day'); // giá / ngày
             $table->string('currency')->default('VND');
+
+            $table->unsignedTinyInteger('priority')->default(1);
+            // priority càng cao => hiển thị càng trên
+
+            $table->boolean('active')->default(true);
+
             $table->timestamps();
         });
     }
