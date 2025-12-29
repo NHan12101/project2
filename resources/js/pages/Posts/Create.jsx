@@ -1,5 +1,5 @@
 import { router, useForm } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './Create.css';
 import AdditionalInfoSection from './sections/AdditionalInfoSection.jsx';
 import AddressSection from './sections/AddressSection.jsx';
@@ -42,10 +42,41 @@ export default function Create({
         youtube_url: '',
         step: 1,
         post_id: '',
-        subscription_id: '',
+        subscription_id: 1,
         days: 15,
         payment_method: 'momo',
     });
+
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const endDate = (() => {
+        const d = new Date();
+        d.setDate(d.getDate() + form.data.days);
+        return d.toLocaleDateString('vi-VN');
+    })();
+
+    const previewImage = useMemo(() => {
+        if (!form.data.images?.length) return '/images/no-image.png';
+
+        const url = URL.createObjectURL(form.data.images[0].file);
+        return url;
+    }, [form.data.images]);
+
+    useEffect(() => {
+        return () => {
+            if (previewImage.startsWith('blob:')) {
+                URL.revokeObjectURL(previewImage);
+            }
+        };
+    }, [previewImage]);
+
+    const selectedPackage = subscriptions.find(
+        (s) => s.id === form.data.subscription_id,
+    );
+
+    const totalPrice = selectedPackage
+        ? selectedPackage.price_per_day * form.data.days
+        : 0;
 
     const [step, setStep] = useState(1);
 
@@ -56,15 +87,20 @@ export default function Create({
         try {
             const { data, savedAt } = JSON.parse(raw);
 
-            // timeout 2 phút
-            if (Date.now() - savedAt > 2 * 60 * 1000) {
+            if (Date.now() - savedAt > 10 * 60 * 1000) {
                 sessionStorage.removeItem('create-post-draft');
                 return;
             }
 
-            form.setData(data);
-            setStep(data.step ?? 1);
-        } catch (e) {
+            form.setData((prev) => ({
+                ...prev,
+                ...data,
+                images: [],
+                video: null,
+            }));
+
+            setStep(1);
+        } catch {
             sessionStorage.removeItem('create-post-draft');
         }
     }, []);
@@ -92,10 +128,12 @@ export default function Create({
         if (step !== 1) return;
 
         const t = setTimeout(() => {
+            const { images, video, ...safeData } = form.data;
+
             sessionStorage.setItem(
                 'create-post-draft',
                 JSON.stringify({
-                    data: form.data,
+                    data: safeData,
                     savedAt: Date.now(),
                 }),
             );
@@ -116,9 +154,7 @@ export default function Create({
         });
     }
 
-    function submitStep2(e) {
-        e.preventDefault();
-
+    function submitStep2() {
         const fd = new FormData();
 
         fd.append('step', 2);
@@ -158,7 +194,7 @@ export default function Create({
     }
 
     function submitStep3() {
-        form.post(
+        router.post(
             `/posts/${form.data.post_id}/package`,
             {
                 subscription_id: form.data.subscription_id,
@@ -292,19 +328,118 @@ export default function Create({
                     )}
 
                     {step === 3 && (
-                        <button
-                            type="button"
-                            className="post-create__action post-create__action--exit"
-                            style={{ padding: '12px 20px' }}
-                            disabled={
-                                !form.data.subscription_id || form.processing
-                            }
-                            onClick={submitStep3}
-                        >
-                            Tiếp tục
-                        </button>
+                        <div className="post-create__total">
+                            <div className="post-create__total01">
+                                <span>Tổng tiền </span>
+                                <strong>{totalPrice.toLocaleString()} đ</strong>
+                            </div>
+
+                            <span style={{ color: '#888' }}>|</span>
+
+                            <button
+                                type="button"
+                                className="post-create__action post-create__action--exit"
+                                style={{ padding: '12px 20px' }}
+                                disabled={
+                                    !form.data.subscription_id ||
+                                    form.processing
+                                }
+                                // onClick={submitStep3}
+                                onClick={() => setShowConfirm(true)}
+                            >
+                                Tiếp tục
+                            </button>
+                        </div>
                     )}
                 </div>
+
+                {showConfirm && (
+                    <div className="auth-form">
+                        <div className="confirm-modal">
+                            <h3>Chi tiết thanh toán</h3>
+
+                            {/* BÀI ĐĂNG */}
+                            <div className="confirm-section">
+                                <h4>Thông tin bài đăng</h4>
+
+                                <div className="post-preview">
+                                    <img src={previewImage} alt="home" />
+
+                                    <div className="post-preview01">
+                                        <p className="post-title">
+                                            {form.data.title}
+                                        </p>
+                                        <p className="post-address">
+                                            {form.data.address}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* GÓI ĐĂNG */}
+                            <div className="confirm-section">
+                                <h4>Thông tin gói đăng</h4>
+
+                                <div className="confirm-row">
+                                    <span>Loại tin</span>
+                                    <strong>{selectedPackage?.name}</strong>
+                                </div>
+
+                                <div className="confirm-row">
+                                    <span>Đơn giá</span>
+                                    <strong>
+                                        {selectedPackage?.price_per_day.toLocaleString()}{' '}
+                                        đ/ngày
+                                    </strong>
+                                </div>
+
+                                <div className="confirm-row">
+                                    <span>Số ngày</span>
+                                    <strong>{form.data.days} ngày</strong>
+                                </div>
+
+                                <div className="confirm-row">
+                                    <span>Thời gian kết thúc</span>
+                                    <strong>{endDate}</strong>
+                                </div>
+
+                                <div className="confirm-row">
+                                    <span>Phương thức thanh toán </span>
+
+                                    <strong>{form.data.payment_method}</strong>
+                                </div>
+                            </div>
+
+                            {/* TỔNG TIỀN */}
+                            <div className="confirm-total confirm-row">
+                                <span>Tổng tiền</span>
+                                <strong>{totalPrice.toLocaleString()} đ</strong>
+                            </div>
+
+                            {/* ACTION */}
+                            <div className="confirm-actions">
+                                <button
+                                    type="button"
+                                    className="btn-cancel"
+                                    onClick={() => setShowConfirm(false)}
+                                >
+                                    Quay lại
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn-confirm"
+                                    onClick={() => {
+                                        setShowConfirm(false);
+                                        submitStep3();
+                                    }}
+                                >
+                                    Xác nhận & Thanh toán
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </form>
         </section>
     );

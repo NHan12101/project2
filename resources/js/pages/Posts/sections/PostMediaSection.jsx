@@ -1,21 +1,32 @@
+import useDropdown from '@/hooks/useDropdown.js';
 import { createImagePreview } from '@/utils/createImagePreview';
 import { DndContext, closestCenter } from '@dnd-kit/core';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
     SortableContext,
     arrayMove,
     rectSortingStrategy,
 } from '@dnd-kit/sortable';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { usePage } from '@inertiajs/react';
+import toast from 'react-hot-toast';
 import ImagePreviewItem from './ImagePreviewItem';
 
 export default function PostMediaSection({ form }) {
-    const { data, setData } = form;
+    const { data, setData, errors: errorForm } = form;
+    const { errors } = usePage().props;
 
-    const [openEdit, setOpenEdit] = useState(false);
+    const { menuRef, open: openEdit, setOpen: setOpenEdit } = useDropdown();
     const inputRef = useRef(null);
 
+    const [openImages, setOpenImages] = useState(false);
+    const [openVideo, setOpenVideo] = useState(false);
+
     const [videoUrl, setVideoUrl] = useState(null);
+
+    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         if (!data.video) {
@@ -34,10 +45,26 @@ export default function PostMediaSection({ form }) {
         const files = Array.from(e.target.files);
         let images = [...data.images];
 
+        // Kiểm tra tổng số ảnh nếu vượt quá 24
+        if (
+            images.length +
+                files.filter((f) => f.type.startsWith('image/')).length >
+            24
+        ) {
+            form.setError('images', 'Bạn chỉ có thể tải tối đa 24 ảnh');
+            return; // dừng upload
+        } else {
+            form.clearErrors('images');
+        }
+
         for (const file of files) {
             if (file.type.startsWith('image/')) {
+                // Kiểm tra dung lượng file đầu vào
                 if (file.size > 20 * 1024 * 1024) {
-                    alert(`Ảnh ${file.name} vượt quá 20MB`);
+                    form.setError(
+                        'images',
+                        'Ảnh không thể tải lên do quá dung lượng, tối đa 20MB',
+                    );
                     continue;
                 }
 
@@ -45,6 +72,8 @@ export default function PostMediaSection({ form }) {
                     maxWidth: 1280, // ảnh thường
                     quality: 0.7,
                 });
+
+                form.clearErrors('images');
 
                 images.push({
                     id: crypto.randomUUID(),
@@ -56,8 +85,8 @@ export default function PostMediaSection({ form }) {
 
             if (file.type.startsWith('video/')) {
                 if (data.video) {
-                    alert('Chỉ được tải lên 1 video');
-                    continue;
+                    toast.error('Chỉ được tải lên 1 video');
+                    break;
                 }
                 handleVideoChange(file);
             }
@@ -67,23 +96,21 @@ export default function PostMediaSection({ form }) {
         e.target.value = null;
     }
 
-    // Hàm xóa ảnh
-    function removeImage(id) {
-        setData(
-            'images',
-            data.images.filter((img) => img.id !== id),
-        );
-    }
-
     // Hàm chặn upload video nếu chưa đủ tối thiểu 3 ảnh
     function handleVideoChange(file) {
         if (form.data.images.length < 3) {
-            alert('Vui lòng upload ít nhất 3 ảnh trước khi thêm video');
+            form.setError(
+                'video',
+                'Vui lòng upload ít nhất 3 ảnh trước khi thêm video',
+            );
             return;
         }
 
         if (file.size > 200 * 1024 * 1024) {
-            alert('Video tối đa 200MB');
+            form.setError(
+                'video',
+                'Video không thể tải lên do quá dung lượng, tối đa 200MB',
+            );
             return;
         }
 
@@ -100,36 +127,54 @@ export default function PostMediaSection({ form }) {
             URL.revokeObjectURL(video.src);
 
             if (data.youtube_url) {
-                alert('Bạn đã gắn link YouTube, không thể upload video');
+                form.setError(
+                    'video',
+                    'Bạn đã gắn link YouTube, không thể upload video',
+                );
                 return;
             }
 
             if (video.duration < 5) {
-                alert('Video phải tối thiểu 5 giây');
+                form.setError('video', 'Video phải có độ dài tối thiểu 5 giây');
                 return;
             }
 
             if (video.duration > 120) {
-                alert('Video tối đa 2 phút');
+                form.setError('video', 'Không thể tải lên video quá 2 phút');
                 return;
             }
 
+            form.clearErrors('video');
             form.setData('video', file);
         };
 
         video.src = URL.createObjectURL(file);
     }
 
-    const youtubeId = getYoutubeId(data.youtube_url);
+    const youtubeId = useMemo(
+        () => getYoutubeId(data.youtube_url),
+        [data.youtube_url],
+    );
 
     // Hàm phân tích url
     function getYoutubeId(url) {
         if (!url) return null;
-        
+
         const match = url.match(
             /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
         );
         return match ? match[1] : null;
+    }
+
+    // Hàm xóa ảnh
+    function removeImage(id) {
+        const newImages = data.images.filter((img) => img.id !== id);
+
+        setData('images', newImages);
+
+        if (newImages.length < 3) {
+            return;
+        }
     }
 
     return (
@@ -151,9 +196,63 @@ export default function PostMediaSection({ form }) {
                     </button>
                 )}
             </div>
+
             {/* Hint */}
-            <div className="post-media__hint">
-                <span>Đăng tối thiểu 3 ảnh</span>
+            <div
+                className={`post-media__hint ${errors?.images ? 'post-form__field--error' : ''}`}
+            >
+                {errors.images ? (
+                    <span
+                        className="post-form__field--error-text"
+                        style={{
+                            marginTop: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            color: '#f01313',
+                        }}
+                    >
+                        <img src="/icons/icon-error.svg" alt="error" />
+
+                        {errors.images}
+                    </span>
+                ) : (
+                    <span
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            data-automation-id="svg-icon"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            da-id="svg-icon"
+                        >
+                            <path
+                                fill="#0D1011"
+                                fillRule="evenodd"
+                                d="M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12m8-1a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0v-4.5h-.5A.75.75 0 0 1 10 11"
+                                clipRule="evenodd"
+                            ></path>
+                            <rect
+                                width="1.25"
+                                height="1.25"
+                                x="11.375"
+                                y="7.375"
+                                fill="#0D1011"
+                                stroke="#0D1011"
+                                strokeWidth=".25"
+                                rx=".625"
+                            ></rect>
+                        </svg>
+                        Đăng tối thiểu 3 ảnh
+                    </span>
+                )}
             </div>
 
             {data.images.length > 0 && (
@@ -165,16 +264,28 @@ export default function PostMediaSection({ form }) {
                             index={0}
                             sortable={false}
                             removable={false}
+                            show360Badge
                         />
                     )}
 
                     {data.video && (
                         <div className="post-media__preview-item">
                             {videoUrl && (
-                                <video
-                                    src={videoUrl}
-                                    className="post-media__preview-image"
-                                />
+                                <>
+                                    <span
+                                        className="image-cover-badge"
+                                        style={{
+                                            background: '#e8e8e8',
+                                            color: '#000',
+                                        }}
+                                    >
+                                        Video
+                                    </span>
+                                    <video
+                                        src={videoUrl}
+                                        className="post-media__preview-image"
+                                    />
+                                </>
                             )}
                         </div>
                     )}
@@ -188,13 +299,29 @@ export default function PostMediaSection({ form }) {
                             index={index + 1}
                             sortable={false}
                             removable={false}
+                            is360={item.is360}
+                            show360Badge
                         />
                     ))}
                 </div>
             )}
 
             {/* Upload */}
-            <div className="post-media__upload">
+            <div
+                className={`post-media__upload ${isDragging ? 'dragging' : ''}`}
+                onDragOver={(e) => {
+                    e.preventDefault(); // bắt browser không mở file
+                    setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+
+                    const files = Array.from(e.dataTransfer.files);
+                    handleSelectFiles({ target: { files } }); // tái sử dụng hàm upload hiện có
+                }}
+            >
                 {/* Dropzone */}
                 <div className="post-media__dropzone">
                     <input
@@ -203,7 +330,6 @@ export default function PostMediaSection({ form }) {
                         accept="image/*,video/*"
                         multiple
                         hidden
-                        disabled={data.images.length >= 24}
                         onChange={handleSelectFiles}
                     />
 
@@ -248,18 +374,215 @@ export default function PostMediaSection({ form }) {
                         <span>Tải ảnh / video từ thiết bị</span>
                     </button>
                 </div>
+
+                {(errorForm?.images || errorForm?.video) && (
+                    <span
+                        className="post-form__field--error-text"
+                        style={{
+                            marginTop: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            color: '#f01313',
+                            fontSize: '1.4rem',
+                        }}
+                    >
+                        {errorForm.images || errorForm.video}
+                    </span>
+                )}
             </div>
 
             {/* Guides */}
             <div className="post-media__guide">
                 <div className="post-media__guide-item">
-                    <img src="/icons/media-guide.svg" alt="media-guide" />
-                    <span>Hướng dẫn đăng ảnh / video</span>
+                    <div
+                        className="post-media__guide-item01"
+                        onClick={() => setOpenImages((pre) => !pre)}
+                    >
+                        <div className="post-media__guide-item02">
+                            <img
+                                src="/icons/media-guide.svg"
+                                alt="media-guide"
+                            />
+                            <span>Hướng dẫn đăng ảnh / video</span>
+                        </div>
+
+                        <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className={`dropdown-icon arrow ${openImages ? 'rotate' : ''}`}
+                        />
+                    </div>
+
+                    {openImages && (
+                        <div className="post-media__guide--instruct">
+                            <p>
+                                Để đảm bảo tải lên hình ảnh hợp lệ cho tin đăng,
+                                cần tuân thủ các quy định sau:
+                            </p>
+                            <p style={{ marginTop: '12px' }}>Hình ảnh:</p>
+                            <ul
+                                style={{
+                                    marginTop: '4px',
+                                    lineHeight: '26px',
+                                    listStyle: 'disc',
+                                    padding: '0 0 0 18px',
+                                }}
+                            >
+                                <li>
+                                    Định dạng được hỗ trợ:{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        PNG, JPG, JPEG, GIF, HEIC.
+                                    </span>
+                                </li>
+                                <li>
+                                    Đăng{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối đa 24 ảnh
+                                    </span>{' '}
+                                    với tất cả các loại tin.
+                                </li>
+                                <li>
+                                    Mỗi ảnh kích thước{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối thiểu 100x100 px
+                                    </span>
+                                    , dung lượng{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối đa 15 MB
+                                    </span>
+                                    .
+                                </li>
+                                <li>
+                                    Hãy dùng ảnh thật, không trùng, không chèn
+                                    SĐT.
+                                </li>
+                            </ul>
+
+                            <p style={{ marginTop: '12px' }}>Video:</p>
+                            <ul
+                                style={{
+                                    marginTop: '4px',
+                                    lineHeight: '26px',
+                                    listStyle: 'disc',
+                                    padding: '0 0 0 18px',
+                                }}
+                            >
+                                <li>
+                                    Định dạng được hỗ trợ:{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        MP4, MOV (H.264 hoặc HEVC).
+                                    </span>
+                                </li>
+                                <li>
+                                    Đăng{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối đa 1 video
+                                    </span>{' '}
+                                    cho mỗi tin
+                                </li>
+                                <li>
+                                    Video dung lương{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối đa 200 MB
+                                    </span>
+                                    , thời lượng{' '}
+                                    <span style={{ fontWeight: 600 }}>
+                                        tối thiểu 5 giây, tối đa 2 phút
+                                    </span>
+                                    .
+                                </li>
+                            </ul>
+
+                            <p style={{ marginTop: '12px' }}>
+                                Lưu ý: Hãy dùng hình ảnh/video thật về bất động
+                                sản, không chèn SĐT.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="post-media__guide-item">
-                    <img src="/icons/icon-360.svg" alt="icon-360" />
-                    <span>Hướng dẫn đăng ảnh 360</span>
+                    <div
+                        className="post-media__guide-item01"
+                        onClick={() => setOpenVideo((pre) => !pre)}
+                    >
+                        <div className="post-media__guide-item02">
+                            <img src="/icons/icon-360.svg" alt="icon-360" />
+                            <span>Hướng dẫn đăng ảnh 360°</span>
+                        </div>
+
+                        <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className={`dropdown-icon arrow ${openVideo ? 'rotate' : ''}`}
+                        />
+                    </div>
+
+                    {openVideo && (
+                        <div className="post-media__guide--instruct">
+                            <p style={{ lineHeight: '1.42' }}>
+                                Ảnh 360° được hỗ trợ bao gồm{' '}
+                                <span style={{ fontWeight: 600 }}>
+                                    ảnh dạng hình cầu{' '}
+                                </span>
+                                (Photo Sphere) và{' '}
+                                <span style={{ fontWeight: 600 }}>
+                                    ảnh toàn cảnh
+                                </span>{' '}
+                                (Panorama). <br /> Tin đăng có ảnh 360° sẽ được
+                                <span style={{ fontWeight: 600 }}>
+                                    {' '}
+                                    gắn nhãn 360°
+                                </span>
+                                .
+                            </p>
+                            <p style={{ marginTop: '12px' }}>
+                                Các bước thực hiện:
+                            </p>
+                            <ul
+                                style={{
+                                    marginTop: '4px',
+                                    lineHeight: '26px',
+                                    listStyle: 'decimal ',
+                                    padding: '0 0 0 18px',
+                                }}
+                            >
+                                <li>
+                                    Chụp ảnh 360° bất động sản của bạn theo một
+                                    trong các cách sau:
+                                </li>
+                                <ul
+                                    style={{
+                                        marginTop: '4px',
+                                        lineHeight: '26px',
+                                        listStyle: 'lower-alpha ',
+                                        padding: '0 0 0 18px',
+                                    }}
+                                >
+                                    <li>
+                                        Sử dụng thiết bị chụp ảnh 360° chuyên
+                                        dụng.
+                                    </li>
+                                    <li>
+                                        Sử dụng điện thoại thông minh có chế độ
+                                        chụp ảnh toàn cảnh Panorama.
+                                    </li>
+                                    <li>
+                                        Sử dụng điện thoại thông minh có cài đặt
+                                        ứng dụng bên thứ 3. (VD: Google Street
+                                        View hoặc Cardboard Camera)
+                                    </li>
+                                </ul>
+                                <li>
+                                    Tải ảnh lên bằng nút đăng ảnh hoặc kéo thả
+                                    ảnh như thông thường.
+                                </li>
+                                <li>
+                                    Đánh dấu vào ô 360° để chọn những ảnh bạn
+                                    muốn hiển thị theo chế độ 360°.
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
             {/* Video link */}
@@ -268,20 +591,40 @@ export default function PostMediaSection({ form }) {
                 <div className="post-media__video-link">
                     <textarea
                         className="post-form__input--title"
+                        style={{ minHeight: 68 }}
                         placeholder="Dán đường dẫn Youtube"
                         value={data.youtube_url || ''}
                         onChange={(e) => {
                             const value = e.target.value;
 
-                            // nếu user dán link yt thì xóa video upload
                             if (value && data.video) {
-                                setData('video', null);
+                                form.setError(
+                                    'youtube_url',
+                                    'Bạn đã upload video. Vui lòng xoá video trước khi gắn link YouTube',
+                                );
+                                return;
                             }
 
+                            form.clearErrors('youtube_url');
                             setData('youtube_url', value);
                         }}
                     />
                 </div>
+                {errorForm.youtube_url && (
+                    <span
+                        className="post-form__field--error-text"
+                        style={{
+                            marginTop: '-8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            color: '#f01313',
+                            fontSize: '1.4rem',
+                        }}
+                    >
+                        {errorForm.youtube_url}
+                    </span>
+                )}
             </div>
 
             {youtubeId && (
@@ -304,9 +647,13 @@ export default function PostMediaSection({ form }) {
                     <div
                         className="address-panel"
                         style={{ padding: '20px 10px' }}
+                        ref={menuRef}
                     >
                         {/* Header */}
-                        <div className="address-panel__header">
+                        <div
+                            className="address-panel__header"
+                            style={{ paddingTop: 0 }}
+                        >
                             <h1 className="address-panel__title">
                                 Chỉnh sửa hình ảnh & video ({data.images.length}
                                 )
@@ -383,6 +730,17 @@ export default function PostMediaSection({ form }) {
                                                         className="post-media__preview-item"
                                                         style={{ height: 210 }}
                                                     >
+                                                        <span
+                                                            className="image-cover-badge"
+                                                            style={{
+                                                                background:
+                                                                    '#e8e8e8',
+                                                                color: '#000',
+                                                            }}
+                                                        >
+                                                            Video
+                                                        </span>
+
                                                         <video
                                                             src={videoUrl}
                                                             controls
@@ -399,6 +757,12 @@ export default function PostMediaSection({ form }) {
                                                                 setData(
                                                                     'video',
                                                                     null,
+                                                                );
+                                                                form.clearErrors(
+                                                                    [
+                                                                        'video',
+                                                                        'youtube_url',
+                                                                    ],
                                                                 );
                                                             }}
                                                         >
@@ -463,8 +827,8 @@ export default function PostMediaSection({ form }) {
                                                         !item.is360 &&
                                                         total360 >= 5
                                                     ) {
-                                                        alert(
-                                                            'Tối đa 5 ảnh 360',
+                                                        toast.error(
+                                                            'Tối đa 5 ảnh 360°',
                                                         );
                                                         return;
                                                     }

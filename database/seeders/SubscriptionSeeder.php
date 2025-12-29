@@ -17,19 +17,19 @@ class SubscriptionSeeder extends Seeder
                 'priority' => 1,
             ],
             [
-                'name' => 'VIP bạc',
+                'name' => 'VIP Bạc',
                 'price_per_day' => 70000,
                 'currency' => 'VND',
                 'priority' => 2,
             ],
             [
-                'name' => 'VIP vàng',
+                'name' => 'VIP Vàng',
                 'price_per_day' => 139800,
                 'currency' => 'VND',
                 'priority' => 3,
             ],
             [
-                'name' => 'VIP kim cương',
+                'name' => 'VIP Kim Cương',
                 'price_per_day' => 364000,
                 'currency' => 'VND',
                 'priority' => 4,

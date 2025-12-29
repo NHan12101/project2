@@ -153,17 +153,17 @@ export default function PostContentSection({ form }) {
                             Tiêu đề
                         </span>
                         <div
-                            className={`address-panel__control--title ${
-                                errors?.title || isTitleInvalid
-                                    ? 'post-form__field--error'
-                                    : ''
-                            }`}
+                            className="address-panel__control--title"
                             style={{ position: 'relative' }}
                         >
                             <textarea
                                 rows={3}
                                 placeholder="Mô tả ngắn gọn về loại hình bất động sản, diện tích, địa chỉ, (VD: Cho thuê căn hộ 30m2 tại TP.Hồ Chí Minh"
-                                className="post-form__input--title"
+                                className={`post-form__input--title ${
+                                    errors?.title || isTitleInvalid
+                                        ? 'post-form__field--error'
+                                        : ''
+                                }`}
                                 value={data.title || ''}
                                 onChange={(e) => {
                                     setData('title', e.target.value);
@@ -199,11 +199,7 @@ export default function PostContentSection({ form }) {
                             Mô tả
                         </span>
                         <div
-                            className={`address-panel__control--desc ${
-                                errors?.description || isDescInvalid
-                                    ? 'post-form__field--error'
-                                    : ''
-                            }`}
+                            className="address-panel__control--desc"
                             style={{ position: 'relative' }}
                         >
                             <textarea
@@ -215,7 +211,11 @@ export default function PostContentSection({ form }) {
     • Tình trạng nội thất
     ...
 (VD: Khu nhà có vị trí thuận lợi, gần công viên, trường học...)`}
-                                className="post-form__input--title"
+                                className={`post-form__input--title ${
+                                    errors?.description || isDescInvalid
+                                        ? 'post-form__field--error'
+                                        : ''
+                                }`}
                                 value={data.description || ''}
                                 onChange={(e) => {
                                     setData('description', e.target.value);

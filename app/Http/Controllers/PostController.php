@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPostImage;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Post;
@@ -135,8 +136,6 @@ class PostController extends Controller
 
     private function storeStep2(Request $request)
     {
-        // dd($request->all(), $request->file('video'));
-
         $validated = $request->validate([
             'post_id' => 'required|exists:posts,id',
             'images'   => 'required|array|min:3|max:24',
@@ -149,6 +148,10 @@ class PostController extends Controller
                 'url',
                 'regex:/^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|shorts\/)|youtu\.be\/)/'
             ],
+        ], [
+            'images.required' => 'Vui lòng đăng tối thiểu 3 ảnh',
+            'images.min' => 'Vui lòng đăng tối thiểu 3 ảnh',
+            'images.*.max' => 'Ảnh không thể tải lên do quá dung lượng, tối đa 20MB'
         ]);
 
         if ($request->filled('youtube_url') && $request->hasFile('video')) {
@@ -193,7 +196,7 @@ class PostController extends Controller
 
         if ($normalImages < 3) {
             return back()->withErrors([
-                'images' => 'Cần ít nhất 3 ảnh thường',
+                'images' => 'Cần đăng ít nhất 3 ảnh thường',
             ]);
         }
 
@@ -212,43 +215,60 @@ class PostController extends Controller
         }
 
         $destDir = "posts/{$post->id}";
-        $manager = new ImageManager(new Driver());
+        // $manager = new ImageManager(new Driver());
+
+        // foreach ($request->file('images') as $index => $image) {
+        //     $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+
+        //     $is360 = in_array($index, $images360);
+
+        //     $originalPath = "{$destDir}/original_{$filename}";
+        //     $mediumPath   = "{$destDir}/medium_{$filename}";
+        //     $thumbPath    = "{$destDir}/thumb_{$filename}";
+
+        //     $image->storeAs($destDir, "original_{$filename}", 'public');
+
+        //     $originalFullPath = storage_path("app/public/{$originalPath}");
+
+        //     // MEDIUM
+        //     $manager->read($originalFullPath)
+        //         ->scaleDown($is360 ? 3072 : 1600)
+        //         ->toWebp(75)
+        //         ->save(storage_path("app/public/{$mediumPath}"));
+
+        //     // THUMB
+        //     $manager->read($originalFullPath)
+        //         ->scaleDown($is360 ? 512 : 400)
+        //         ->toWebp(70)
+        //         ->save(storage_path("app/public/{$thumbPath}"));
+
+        //     gc_collect_cycles();
+
+        //     PostImage::create([
+        //         'post_id' => $post->id,
+        //         'image_path' => $originalPath,
+        //         'medium_path' => $mediumPath,
+        //         'thumb_path' => $thumbPath,
+        //         'is360' => $is360,
+        //     ]);
+        // }
 
         foreach ($request->file('images') as $index => $image) {
+
             $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs($destDir, "original_{$filename}", 'public');
 
-            $is360 = in_array($index, $images360);
-
-            $originalPath = "{$destDir}/original_{$filename}";
-            $mediumPath   = "{$destDir}/medium_{$filename}";
-            $thumbPath    = "{$destDir}/thumb_{$filename}";
-
-            $image->storeAs($destDir, "original_{$filename}", 'public');
-
-            $originalFullPath = storage_path("app/public/{$originalPath}");
-
-            // MEDIUM
-            $manager->read($originalFullPath)
-                ->scaleDown($is360 ? 3072 : 1600)
-                ->toWebp(75)
-                ->save(storage_path("app/public/{$mediumPath}"));
-
-            // THUMB
-            $manager->read($originalFullPath)
-                ->scaleDown($is360 ? 512 : 400)
-                ->toWebp(70)
-                ->save(storage_path("app/public/{$thumbPath}"));
-
-            gc_collect_cycles();
-
-            PostImage::create([
+            $postImage = PostImage::create([
                 'post_id' => $post->id,
-                'image_path' => $originalPath,
-                'medium_path' => $mediumPath,
-                'thumb_path' => $thumbPath,
-                'is360' => $is360,
+                'image_path' => $path,
+                'medium_path' => null,
+                'thumb_path'  => null,
+                'is360' => in_array($index, $images360),
             ]);
+
+            ProcessPostImage::dispatch($postImage->id)->delay(now()->addSeconds(1));
         }
+
 
         // Lưu video
         if ($request->hasFile('video')) {
@@ -257,7 +277,7 @@ class PostController extends Controller
                 'status' => 'draft'
             ]);
         }
-        
+
         return back();
     }
 

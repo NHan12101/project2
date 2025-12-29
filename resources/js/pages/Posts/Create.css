@@ -349,7 +349,6 @@
     outline: none;
     resize: none;
     padding: 12px;
-    background: none;
     border-radius: 20px;
     field-sizing: content;
 }
@@ -604,7 +603,7 @@
 
 .post-media__upload {
     margin-top: 16px;
-    border: 1px dashed;
+    border: 1px dashed #000;
     padding: 20px;
     border-radius: 8px;
     display: flex;
@@ -614,11 +613,23 @@
     gap: 14px
 }
 
+/* Khi kéo file vào khu vực upload */
+.post-media__upload.dragging {
+    border: 1px dashed #5f5f5f;
+    /* border nổi bật */
+    background-color: #5151510d;
+    /* nền nhẹ */
+    transition: background-color 0.2s, border 0.2s;
+    /* hiệu ứng mượt */
+}
+
 .post-media__dropzone {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
+    user-select: none;
+    pointer-events: none;
 }
 
 .post-media__dropzone-text {
@@ -634,11 +645,26 @@
 }
 
 .post-media__guide-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     padding: 16px 0;
     border-bottom: 1px solid #d1d1d1;
+}
+
+.post-media__guide-item01 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.post-media__guide-item02 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.post-media__guide--instruct {
+    font-size: 1.56rem;
+    padding: 14px 0 0 30px;
 }
 
 .post-media__video {
@@ -751,8 +777,14 @@
     font-size: 1.22rem;
     padding: 5px 10px;
     border-radius: 6px;
-    z-index: 5;
+    z-index: 1;
     pointer-events: none;
+}
+
+.image-cover-badge--360 {
+    top: 7px;
+    left: 106px;
+    box-shadow: 0px 0px 12px #00000051;
 }
 
 .post-media__youtube {
@@ -788,4 +820,298 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     display: -webkit-box;
+}
+
+/* ============ Phần chọn gói ============= */
+.package-list {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.package-card {
+    flex: 1;
+    border: 1px solid #c1c9d2;
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px 0 rgba(40, 44, 46, .078);
+}
+
+.payment-methods__box.active,
+.package-days__button.active,
+.package-card.active {
+    border: 1px solid transparent;
+    outline: 2px solid #121212;
+    box-shadow: 0 2px 4px 0 rgba(22, 24, 25, 0.078);
+}
+
+.package-name {
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.package-priorty {
+    display: block;
+    margin-top: 8px;
+    font-size: 1.2rem;
+}
+
+.package-price_per_day {
+    font-size: 1.42rem;
+    font-weight: 600;
+}
+
+.package-box {
+    margin: 18px 0;
+    height: 40px;
+}
+
+.package-box__bg {
+    padding: 2px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1.26rem;
+}
+
+.package-box__01 {
+    color: #fff;
+    height: 100%;
+    width: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    padding: 8px;
+    line-height: 1.4;
+}
+
+.package-priorty__span {
+    font-size: 1.18rem;
+    flex: 1;
+    line-height: 1.4;
+    color: #252627;
+}
+
+.package-days {
+    margin-top: 14px;
+    padding: 20px;
+    border-radius: 16px;
+    height: 126px;
+    background: #eff1f5;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.package-days__button {
+    flex: 1;
+    background: #fefefe;
+    border: 1px solid #c1c9d2;
+    box-shadow: 0 2px 4px 0 rgba(40, 44, 46, .078);
+    border-radius: 12px;
+    padding: 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.select-package__radio {
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    border: 1px solid #c1c9d2;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    pointer-events: none;
+    user-select: none;
+}
+
+.select-package__radio::after {
+    display: block;
+    content: '';
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.select-package__radio.active::after {
+    background: #000;
+}
+
+.payment-methods {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.payment-methods__box {
+    height: 128px;
+    border: 1px solid #c1c9d2;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px 0 rgba(40, 44, 46, .078);
+    background: #ffffff;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.payment-methods__box--images {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.5s;
+}
+
+.payment-methods__box--images:hover {
+    filter: grayscale(0%);
+}
+
+.payment-methods__box--images.active {
+    filter: grayscale(0%);
+}
+
+.post-create__total {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-create__total01 {
+    color: #0d1011;
+}
+
+.post-create__total01 strong {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+
+.confirm-modal {
+    width: 420px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px 20px 24px;
+    color: #0d1011;
+}
+
+.confirm-modal h3 {
+    margin-bottom: 14px;
+    font-weight: 600;
+    font-size: 1.64rem;
+    border-bottom: 1px solid #d1d1d1;
+    padding: 10px 0;
+}
+
+.confirm-section {
+    margin-bottom: 22px;
+}
+
+.confirm-section h4 {
+    margin-bottom: 14px;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.post-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.post-preview img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.post-preview01 {
+    padding: 4px 0;
+    width: 80%;
+}
+
+.post-title {
+    line-height: 1.2;
+    font-weight: 600;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+
+.post-address {
+    margin-top: 8px;
+    padding: 2px 0;
+    font-size: 14px;
+    color: #777;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.confirm-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    font-size: 1.46rem;
+}
+
+.confirm-row strong {
+    font-weight: 600;
+}
+
+.confirm-total {
+    padding: 18px 0;
+    border-top: 1px solid #d1d1d1;
+    font-size: 1.5rem;
+}
+
+.confirm-total strong {
+    font-size: 1.8rem;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-cancel {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+    font-size: 1.52rem;
+    font-weight: 600;
+    transition: 0.25s;
+
+    &:hover {
+        background: #dddddd;
+    }
+}
+
+.btn-confirm {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #1c1f22;
+    color: #fff;
+    font-size: 1.52rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        background: #000;
+    }
 }
