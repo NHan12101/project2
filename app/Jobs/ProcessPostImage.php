@@ -8,6 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -15,47 +17,83 @@ class ProcessPostImage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    // retry & timeout cho job (ổn định hơn)
+    public int $tries = 3;
+    public int $timeout = 120;
+
     public function __construct(public int $postImageId) {}
 
-    public function handle()
+    public function handle(): void
     {
         $image = PostImage::find($this->postImageId);
         if (!$image) return;
 
+        // đã xử lý rồi thì bỏ qua
         if ($image->medium_path && $image->thumb_path) {
             return;
         }
 
-        $manager = new ImageManager(new Driver());
+        $disk = Storage::disk('r2');
 
-        $originalPath = storage_path("app/public/{$image->image_path}");
-
-        if (!file_exists($originalPath)) {
+        // kiểm tra file gốc tồn tại trên R2
+        if (!$disk->exists($image->image_path)) {
             return;
         }
 
-        // ===== MEDIUM =====
-        $mediumPath = str_replace('original_', 'medium_', $image->image_path);
+        static $manager;
+        $manager ??= new ImageManager(new Driver());
 
-        $manager->read($originalPath)
-            ->scaleDown($image->is360 ? 3072 : 1600)
-            ->toWebp(75)
-            ->save(storage_path("app/public/{$mediumPath}"));
+        // ===== TẠO FILE TẠM =====
+        $tmpDir = storage_path('app/tmp');
+        if (!is_dir($tmpDir)) {
+            mkdir($tmpDir, 0755, true);
+        }
 
-        // ===== THUMB =====
-        $thumbPath = str_replace('original_', 'thumb_', $image->image_path);
+        $tmpOriginal = $tmpDir . '/' . Str::random(20) . '.orig';
+        $tmpMedium   = $tmpDir . '/' . Str::random(20) . '.webp';
+        $tmpThumb    = $tmpDir . '/' . Str::random(20) . '.webp';
 
-        $manager->read($originalPath)
-            ->scaleDown($image->is360 ? 512 : 400)
-            ->toWebp(70)
-            ->save(storage_path("app/public/{$thumbPath}"));
+        try {
+            // ===== DOWNLOAD ORIGINAL TỪ R2 =====
+            $stream = $disk->readStream($image->image_path);
+            file_put_contents($tmpOriginal, stream_get_contents($stream));
+            fclose($stream);
 
-        gc_collect_cycles();
+            $pathInfo = pathinfo($image->image_path);
 
-        // update DB (giữ nguyên schema)
-        $image->update([
-            'medium_path' => $mediumPath,
-            'thumb_path'  => $thumbPath,
-        ]);
+            // ===== MEDIUM =====
+            $mediumPath = $pathInfo['dirname'] . '/medium_' . $pathInfo['filename'] . '.webp';
+
+            $manager->read($tmpOriginal)
+                ->scaleDown(
+                    width: $image->is360 ? 3072 : 1600
+                )
+                ->toWebp(75)
+                ->save($tmpMedium);
+
+            $disk->put($mediumPath, fopen($tmpMedium, 'r'));
+
+            // ===== THUMB =====
+            $thumbPath  = $pathInfo['dirname'] . '/thumb_' . $pathInfo['filename'] . '.webp';
+
+            $manager->read($tmpOriginal)
+                ->scaleDown($image->is360 ? 512 : 400)
+                ->toWebp(70)
+                ->save($tmpThumb);
+
+            $disk->put($thumbPath, fopen($tmpThumb, 'r'));
+
+            // ===== UPDATE DB =====
+            $image->update([
+                'medium_path' => $mediumPath,
+                'thumb_path'  => $thumbPath,
+            ]);
+        } finally {
+            // ===== CLEANUP (RẤT QUAN TRỌNG) =====
+            @unlink($tmpOriginal);
+            @unlink($tmpMedium);
+            @unlink($tmpThumb);
+            gc_collect_cycles();
+        }
     }
 }

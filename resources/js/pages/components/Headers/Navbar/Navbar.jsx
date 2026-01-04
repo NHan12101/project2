@@ -5,21 +5,25 @@ import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import logo from '../../../../../../public/images/StayHub.svg';
 import AuthForm from '../../../Auth/AuthForm.jsx';
+import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
+import ResetPassword from '../../../Auth/ResetPassword.jsx';
 import VerifyOtp from '../../../Auth/VerifyOtp.jsx';
 import Notification from '../Notification/Notification.jsx';
+import Suggest from '../Suggest.jsx';
 import Dropdown from './Dropdown.jsx';
 import './Navbar.css';
-import ResetPassword from '../../../Auth/ResetPassword.jsx';
-import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
-import Suggest from '../Suggest.jsx';
 
 export default function Navbar() {
-    const { props, url} = usePage();
-    const { auth, flash } = props;
+    const { props, url } = usePage();
+    const { auth, flash, favoritePostIds } = props;
     const [isLogin, setIsLogin] = useState(false);
 
     const { menuRef, open, setOpen } = useDropdown();
-    const { menuRef: saveRef, open: openSave, setOpen: setOpenSave } = useDropdown();
+    const {
+        menuRef: saveRef,
+        open: openSave,
+        setOpen: setOpenSave,
+    } = useDropdown();
 
     const [showAuth, setShowAuth] = useState(false);
     const [showVerify, setShowVerify] = useState(false);
@@ -55,7 +59,7 @@ export default function Navbar() {
         if (!flash) return;
 
         // OTP khi đăng kí
-        if (flash.otp_required && flash.otp_type === "register") {
+        if (flash.otp_required && flash.otp_type === 'register') {
             setShowAuth(false);
             setShowReset(false);
             setVerifyEmail(flash.email);
@@ -63,8 +67,8 @@ export default function Navbar() {
         }
 
         // OTP khi quên mật khẩu
-        if (flash.otp_required && flash.otp_type === "forgot_password") {
-            setShowForgot(false);   // tắt popup nhập email
+        if (flash.otp_required && flash.otp_type === 'forgot_password') {
+            setShowForgot(false); // tắt popup nhập email
             setShowVerify(true);
             setVerifyEmail(flash.email);
         }
@@ -73,11 +77,9 @@ export default function Navbar() {
         if (flash.reset_password_allowed && flash.email) {
             setShowVerify(false);
             setVerifyEmail(flash.email);
-            setShowReset(true);   // bật popup reset mật khẩu
+            setShowReset(true); // bật popup reset mật khẩu
         }
-
     }, [flash]);
-
 
     const [theme, setTheme] = useState(
         document.documentElement.classList.contains('dark') ? 'dark' : 'light',
@@ -87,21 +89,28 @@ export default function Navbar() {
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
 
-    const queryParams = url.includes('?') ? new URLSearchParams(url.split('?')[1]) : null;
+    const queryParams = url.includes('?')
+        ? new URLSearchParams(url.split('?')[1])
+        : null;
     const currentType = queryParams?.get('type') || null;
 
     function handleSearch() {
-        router.get('/home-finder', {keyword: keyword || null}, {
-            preserveState: false,
-            preserveScroll: true,
-        });
+        router.get(
+            '/home-finder',
+            { keyword: keyword || null },
+            {
+                preserveState: false,
+                preserveScroll: true,
+            },
+        );
     }
 
     return (
         <nav
             className="nav"
             style={{
-                background: theme === 'dark' ? '#0a0a0ada' : show ? '#fff' : undefined,
+                background:
+                    theme === 'dark' ? '#0a0a0ada' : show ? '#fff' : undefined,
                 position: show ? 'sticky' : 'relative',
             }}
         >
@@ -112,12 +121,18 @@ export default function Navbar() {
             <div
                 className="nav__item"
                 style={{
-                    boxShadow: show ? '0px 1px 16px rgba(0, 0, 0, 0.08)' : 'none'
+                    boxShadow: show
+                        ? '0px 1px 16px rgba(0, 0, 0, 0.08)'
+                        : 'none',
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
                     <a href="/home">
-                        <img src={logo} alt="Logo" className="nav__item--logo" />
+                        <img
+                            src={logo}
+                            alt="Logo"
+                            className="nav__item--logo"
+                        />
                     </a>
 
                     <ul
@@ -125,7 +140,7 @@ export default function Navbar() {
                     >
                         <li>
                             <button
-                                className={`nav-link ${url === '/home' ? 'active' : ''}`} 
+                                className={`nav-link ${url === '/home' ? 'active' : ''}`}
                                 onClick={() => router.get('/home')}
                             >
                                 Trang chủ
@@ -134,7 +149,9 @@ export default function Navbar() {
                         <li>
                             <button
                                 className={`nav-link ${url.startsWith('/home-finder') && currentType === 'sale' ? 'active' : ''}`}
-                                onClick={() => router.get('/home-finder', { type: 'sale' })}
+                                onClick={() =>
+                                    router.get('/home-finder', { type: 'sale' })
+                                }
                             >
                                 Mua nhà
                             </button>
@@ -142,7 +159,9 @@ export default function Navbar() {
                         <li>
                             <button
                                 className={`nav-link ${url.startsWith('/home-finder') && currentType === 'rent' ? 'active' : ''}`}
-                                onClick={() => router.get('/home-finder', { type: 'rent' })}
+                                onClick={() =>
+                                    router.get('/home-finder', { type: 'rent' })
+                                }
                             >
                                 Thuê nhà
                             </button>
@@ -166,8 +185,13 @@ export default function Navbar() {
                     </ul>
                 </div>
 
-                <div style={{ display: show ? 'block' : 'none', position: 'relative', width: 'calc(100% - 1060px)', }}>
-
+                <div
+                    style={{
+                        display: show ? 'block' : 'none',
+                        position: 'relative',
+                        width: 'calc(100% - 1060px)',
+                    }}
+                >
                     <Suggest
                         value={keyword}
                         setKeyword={setKeyword}
@@ -200,10 +224,7 @@ export default function Navbar() {
                         <div className="nav-dropdown__icon-heart" ref={saveRef}>
                             <button
                                 className="icon-btn"
-                                onClick={() => {
-                                    setOpenSave((pre) => !pre);
-                                    router.visit('/saved');
-                                }}
+                                onClick={() => setOpenSave((pre) => !pre)}
                             >
                                 <img src="/icons/heart.svg" alt="heart-icon" />
                             </button>
@@ -211,30 +232,63 @@ export default function Navbar() {
                             {openSave && (
                                 <div className="nav-dropdown__icon-heart--box">
                                     <div className="nav-dropdown__icon-heart--title">
-                                        <span>Tin đăng đã lưu</span>
-                                    </div>
-                                    <div className="nav-dropdown__icon-heart--content">
                                         <span>
-                                            {isLogin
-                                                ? 'Bạn chưa lưu tin đăng nào'
-                                                : 'Đăng nhập để xem tin đã lưu'}
+                                            Tin đăng đã lưu{' '}
+                                            {favoritePostIds.length > 0 &&
+                                                `(${favoritePostIds.length})`}
                                         </span>
-                                        <p>
-                                            {isLogin
-                                                ? 'Lưu tin yêu thích, tin sẽ hiển thị ở đây để bạn dễ dàng quay lại sau.'
-                                                : 'Bạn có thể thêm và quản lý tin đăng đã lưu sau khi đăng nhập.'}
-                                        </p>
-                                        {!isLogin && (
-                                            <button
-                                                onClick={() => {
-                                                    setShowAuth(true);
-                                                    setOpenSave(false);
-                                                }}
-                                            >
-                                                Đăng nhập
-                                            </button>
+
+                                        {favoritePostIds.length > 0 && (
+                                            <a href="/saved">Xem tất cả</a>
                                         )}
                                     </div>
+                                    {favoritePostIds.length > 0 ? (
+                                        <div className="nav-dropdown__icon-heart--content">
+                                            <img
+                                                src="/images/banner-vip02.jpg"
+                                                alt="thumb-post"
+                                                loading="lazy"
+                                            />
+
+                                            <span
+                                                style={{
+                                                    color: '#222222',
+                                                    fontSize: '1.4rem',
+                                                    fontWeight: 600,
+                                                    lineHeight: '1.28',
+                                                }}
+                                            >
+                                                Lorem, ipsum dolor sit amet
+                                                consectetur adipisicing elit.
+                                                Corrupti perspiciatis itaque.
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <div className="nav-dropdown__icon-heart--nocontent">
+                                            <span>
+                                                {isLogin
+                                                    ? 'Bạn chưa lưu tin đăng nào'
+                                                    : 'Đăng nhập để xem tin đã lưu'}
+                                            </span>
+
+                                            <p>
+                                                {isLogin
+                                                    ? 'Lưu tin yêu thích, tin sẽ hiển thị ở đây để bạn dễ dàng quay lại sau.'
+                                                    : 'Bạn có thể thêm và quản lý tin đăng đã lưu sau khi đăng nhập.'}
+                                            </p>
+
+                                            {!isLogin && (
+                                                <button
+                                                    onClick={() => {
+                                                        setShowAuth(true);
+                                                        setOpenSave(false);
+                                                    }}
+                                                >
+                                                    Đăng nhập
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -260,7 +314,7 @@ export default function Navbar() {
                                 className="nav__btn-story--manager"
                                 onClick={
                                     isLogin
-                                        ? () => router.visit('/')
+                                        ? () => router.visit('/cc')
                                         : () => setShowAuth(true)
                                 }
                             >
@@ -292,8 +346,8 @@ export default function Navbar() {
                                             ? auth.user.avatar_image_url
                                                 ? `/${auth.user.avatar_image_url}`
                                                 : auth.user.avatar
-                                                    ? auth.user.avatar
-                                                    : '/images/ava2.jpg'
+                                                  ? auth.user.avatar
+                                                  : '/images/ava2.jpg'
                                             : '/images/ava2.jpg'
                                     }
                                     alt="avatar"
@@ -329,7 +383,6 @@ export default function Navbar() {
                             setShowAuth(false);
                             setShowForgot(true); // bật form nhập email
                         }}
-
                     />
                 </div>
             )}
@@ -339,7 +392,8 @@ export default function Navbar() {
                     <VerifyOtp
                         email={verifyEmail}
                         onClose={setShowVerify}
-                        flash={flash} />
+                        flash={flash}
+                    />
                 </div>
             )}
 
@@ -363,6 +417,6 @@ export default function Navbar() {
                     />
                 </div>
             )}
-        </nav >
+        </nav>
     );
 }

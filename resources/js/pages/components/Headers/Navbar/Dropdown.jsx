@@ -6,10 +6,9 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
         {
             title: 'Tiện ích',
             items: [
-                { label: 'Tin đăng đã lưu', icon: '/icons/tin-dang-da-luu.svg', href: '/saved-posts' },
+                { label: 'Tin đăng đã lưu', icon: '/icons/tin-dang-da-luu.svg', href: '/saved' },
                 { label: 'Tìm kiếm đã lưu', icon: '/icons/tim-kiem-da-luu.svg', href: '/saved-searches' },
                 { label: 'Lịch sử xem tin', icon: '/icons/lich-su-xem-tin.svg', href: '/view-history' },
-                { label: 'Đánh giá từ tôi', icon: '/icons/danh-gia-tu-toi.svg', href: '/my-reviews' },
             ],
         },
         {

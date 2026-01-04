@@ -1,6 +1,7 @@
 import useDropdown from '@/hooks/useDropdown.js';
 import { createImagePreview } from '@/utils/createImagePreview';
 import { DndContext, closestCenter } from '@dnd-kit/core';
+import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -28,77 +29,239 @@ export default function PostMediaSection({ form }) {
 
     const [isDragging, setIsDragging] = useState(false);
 
+    const [totalImagesToUpload, setTotalImagesToUpload] = useState(0); // tổng số ảnh đang upload lần này
+    const [uploadingImages, setUploadingImages] = useState(false); // đang upload ảnh không
+    const [uploadProgress, setUploadProgress] = useState(0); // số ảnh đã xong / tổng
+
+    const [previewMap, setPreviewMap] = useState({});
+
+    const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
+
     useEffect(() => {
         if (!data.video) {
             setVideoUrl(null);
             return;
         }
 
-        const url = URL.createObjectURL(data.video);
-        setVideoUrl(url);
-
-        return () => URL.revokeObjectURL(url);
+        // nếu là path từ R2
+        if (typeof data.video === 'string') {
+            setVideoUrl(R2_PUBLIC_BASE_URL + '/' + data.video);
+        }
     }, [data.video]);
 
-    // Hàm xử lý file
+    // Thêm
+    useEffect(() => {
+        let cancelled = false;
+
+        async function processImagesFromR2() {
+            try {
+                if (!data.images.length) return;
+
+                // CHỈ xử lý ảnh CHƯA có preview trong previewMap
+                const imagesNeedPreview = data.images.filter(
+                    (img) => img.path && !previewMap[img.id],
+                );
+
+                if (!imagesNeedPreview.length) return;
+
+                const previewedImages = await Promise.all(
+                    imagesNeedPreview.map(async (img) => {
+                        try {
+                            const r2Url = `${R2_PUBLIC_BASE_URL}/${img.path}`;
+                            const response = await fetch(r2Url);
+                            const blob = await response.blob();
+
+                            const compressedPreview = await createImagePreview(
+                                blob,
+                                {
+                                    maxWidth: 800,
+                                    quality: 0.7,
+                                },
+                            );
+
+                            return {
+                                id: img.id,
+                                preview: compressedPreview,
+                            };
+                        } catch {
+                            return {
+                                id: img.id,
+                                preview: `${R2_PUBLIC_BASE_URL}/${img.path}`,
+                            };
+                        }
+                    }),
+                );
+
+                if (!cancelled)
+                    setPreviewMap((prev) => {
+                        const next = { ...prev };
+
+                        previewedImages.forEach((img) => {
+                            if (img.preview) {
+                                next[img.id] = img.preview;
+                            }
+                        });
+
+                        return next;
+                    });
+            } catch (e) {
+                console.error('processImagesFromR2 error', e);
+            }
+        }
+
+        processImagesFromR2();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [data.images, R2_PUBLIC_BASE_URL]);
+
+    const displayImages = useMemo(() => {
+        return data.images.map((img) => ({
+            ...img,
+            preview: img.preview || previewMap[img.id] || null,
+        }));
+    }, [data.images, previewMap]);
+
+    const imagesRef = useRef([]);
+    const videoUrlRef = useRef(null);
+
+    // Update ref mỗi khi data thay đổi
+    useEffect(() => {
+        imagesRef.current = displayImages;
+        videoUrlRef.current = videoUrl;
+    }, [displayImages, videoUrl]);
+
+    // Cleanup chỉ chạy khi unmount
+    useEffect(() => {
+        return () => {
+            imagesRef.current.forEach((img) => {
+                const preview = img.preview;
+                if (preview?.startsWith('blob:')) {
+                    URL.revokeObjectURL(preview);
+                }
+            });
+
+            if (videoUrlRef.current?.startsWith('blob:')) {
+                URL.revokeObjectURL(videoUrlRef.current);
+            }
+        };
+    }, []); // Dependencies rỗng vì dùng ref
+
+    useEffect(() => {
+        setPreviewMap((prev) => {
+            const validIds = new Set(data.images.map((i) => i.id));
+            return Object.fromEntries(
+                Object.entries(prev).filter(([id]) => validIds.has(id)),
+            );
+        });
+    }, [data.images]);
+
     async function handleSelectFiles(e) {
         const files = Array.from(e.target.files);
         let images = [...data.images];
+        let videoFile = null;
 
-        // Kiểm tra tổng số ảnh nếu vượt quá 24
-        if (
-            images.length +
-                files.filter((f) => f.type.startsWith('image/')).length >
-            24
-        ) {
+        // Lọc file ảnh và video
+        const imageFiles = files.filter((f) => f.type.startsWith('image/'));
+        const videoFiles = files.filter((f) => f.type.startsWith('video/'));
+
+        // Kiểm tra tổng số ảnh
+        if (images.length + imageFiles.length > 24) {
             form.setError('images', 'Bạn chỉ có thể tải tối đa 24 ảnh');
-            return; // dừng upload
+            return;
         } else {
             form.clearErrors('images');
         }
 
-        for (const file of files) {
-            if (file.type.startsWith('image/')) {
-                // Kiểm tra dung lượng file đầu vào
-                if (file.size > 20 * 1024 * 1024) {
-                    form.setError(
-                        'images',
-                        'Ảnh không thể tải lên do quá dung lượng, tối đa 20MB',
-                    );
-                    continue;
-                }
+        // === THÊM: Bắt đầu loading ===
+        if (imageFiles.length > 0) {
+            setUploadingImages(true);
+            setUploadProgress(0);
+            setTotalImagesToUpload(imageFiles.length);
+        }
 
-                const preview = await createImagePreview(file, {
-                    maxWidth: 1280, // ảnh thường
-                    quality: 0.7,
-                });
+        // Xử lý ảnh song song
 
-                form.clearErrors('images');
+        try {
+            const processedImages = await uploadWithLimit(
+                imageFiles,
+                async (file) => {
+                    try {
+                        if (file.size > 20 * 1024 * 1024) {
+                            form.setError(
+                                'images',
+                                'Ảnh không thể tải lên do quá dung lượng, tối đa 20MB',
+                            );
+                            return null;
+                        }
 
-                images.push({
-                    id: crypto.randomUUID(),
-                    file, // FILE GỐC (upload)
-                    preview, // PREVIEW NHẸ (render)
-                    is360: false,
-                });
-            }
+                        const preview = await createImagePreview(file, {
+                            maxWidth: 1280,
+                            quality: 0.7,
+                        });
 
-            if (file.type.startsWith('video/')) {
-                if (data.video) {
-                    toast.error('Chỉ được tải lên 1 video');
-                    break;
-                }
-                handleVideoChange(file);
+                        const res = await axios.post('/r2/presign', {
+                            filename: file.name,
+                            post_id: data.post_id,
+                        });
+
+                        const { upload_url, path } = res.data;
+
+                        const uploadRes = await fetch(upload_url, {
+                            method: 'PUT',
+                            body: file,
+                            headers: { 'Content-Type': file.type },
+                        });
+
+                        if (!uploadRes.ok) throw new Error();
+
+                        setUploadProgress((prev) => prev + 1);
+
+                        return {
+                            id: crypto.randomUUID(),
+                            path,
+                            preview,
+                            is360: false,
+                        };
+                    } catch {
+                        toast.error(`Upload thất bại: ${file.name}`);
+                        return null;
+                    }
+                },
+                3,
+            );
+
+            images = [...images, ...processedImages.filter(Boolean)].slice(
+                0,
+                24,
+            );
+            setData('images', images);
+        } finally {
+            if (imageFiles.length > 0) {
+                setUploadingImages(false);
+                setUploadProgress(0);
+                setTotalImagesToUpload(0);
             }
         }
 
-        setData('images', images.slice(0, 24));
+        // Xử lý video (chỉ khi có ít nhất 3 ảnh)
+        if (videoFiles.length > 0) {
+            if (data.video) {
+                toast.error('Mỗi tin chỉ được đăng 1 video');
+                return;
+            }
+
+            videoFile = videoFiles[0]; // chỉ lấy 1 video đầu tiên
+            handleVideoChange(videoFile);
+        }
+
         e.target.value = null;
     }
 
     // Hàm chặn upload video nếu chưa đủ tối thiểu 3 ảnh
-    function handleVideoChange(file) {
-        if (form.data.images.length < 3) {
+    async function handleVideoChange(file) {
+        if (data.images.length < 3) {
             form.setError(
                 'video',
                 'Vui lòng upload ít nhất 3 ảnh trước khi thêm video',
@@ -114,16 +277,16 @@ export default function PostMediaSection({ form }) {
             return;
         }
 
-        validateVideoDuration(file);
+        validateAndUploadVideo(file);
     }
 
     // hàm check thời lượng video
-    function validateVideoDuration(file) {
+    async function validateAndUploadVideo(file) {
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.muted = true;
 
-        video.onloadedmetadata = () => {
+        video.onloadedmetadata = async () => {
             URL.revokeObjectURL(video.src);
 
             if (data.youtube_url) {
@@ -144,8 +307,38 @@ export default function PostMediaSection({ form }) {
                 return;
             }
 
-            form.clearErrors('video');
-            form.setData('video', file);
+            try {
+                form.clearErrors('video');
+
+                // xin presigned url
+                const res = await axios.post('/r2/presign', {
+                    filename: file.name,
+                    post_id: data.post_id,
+                });
+
+                const { upload_url, path } = res.data;
+
+                // upload video lên R2
+                const uploadRes = await fetch(upload_url, {
+                    method: 'PUT',
+                    body: file,
+                    headers: {
+                        'Content-Type': file.type,
+                    },
+                });
+
+                if (!uploadRes.ok) {
+                    throw new Error('Upload video failed');
+                }
+
+                // LƯU PATH vào form
+                form.setData('video', path);
+
+                toast.success('Upload video thành công');
+            } catch (e) {
+                console.error(e);
+                toast.error('Không thể upload video');
+            }
         };
 
         video.src = URL.createObjectURL(file);
@@ -167,14 +360,64 @@ export default function PostMediaSection({ form }) {
     }
 
     // Hàm xóa ảnh
-    function removeImage(id) {
-        const newImages = data.images.filter((img) => img.id !== id);
+    async function removeImage(id) {
+        const image = data.images.find((img) => img.id === id);
+        if (!image) return;
 
-        setData('images', newImages);
+        try {
+            // Revoke blob URL trước khi xóa
+            const preview = image.preview || previewMap[id];
+            if (preview?.startsWith('blob:')) {
+                URL.revokeObjectURL(preview);
+            }
 
-        if (newImages.length < 3) {
-            return;
+            await axios.delete('/r2/delete', {
+                data: { path: image.path },
+            });
+
+            toast.success('Xóa ảnh thành công');
+
+            setData(
+                'images',
+                data.images.filter((img) => img.id !== id),
+            );
+        } catch (e) {
+            toast.error('Không thể xóa ảnh, vui lòng thử lại');
         }
+    }
+
+    // Hàm xóa video
+    async function removeVideo() {
+        if (!data.video) return;
+
+        try {
+            await axios.delete('/r2/delete', {
+                data: { path: data.video },
+            });
+
+            toast.success('Xóa video thành công');
+
+            setData('video', null);
+            form.clearErrors(['video', 'youtube_url']);
+        } catch (e) {
+            toast.error('Không thể xóa video');
+        }
+    }
+
+    async function uploadWithLimit(files, handler, limit = 3) {
+        const results = [];
+        let index = 0;
+
+        async function worker() {
+            while (index < files.length) {
+                const current = files[index++];
+                const result = await handler(current);
+                if (result) results.push(result);
+            }
+        }
+
+        await Promise.all(Array.from({ length: limit }, worker));
+        return results;
     }
 
     return (
@@ -185,14 +428,14 @@ export default function PostMediaSection({ form }) {
                     Hình ảnh & video
                 </span>
 
-                {data.images.length > 0 && (
+                {displayImages.length > 0 && (
                     <button
                         className="post-media__edit"
                         type="button"
                         onClick={() => setOpenEdit(true)}
                     >
                         <img src="/icons/edit-pen.svg" alt="edit" />
-                        <span>Chỉnh sửa ({data.images.length})</span>
+                        <span>Chỉnh sửa ({displayImages.length})</span>
                     </button>
                 )}
             </div>
@@ -255,12 +498,12 @@ export default function PostMediaSection({ form }) {
                 )}
             </div>
 
-            {data.images.length > 0 && (
+            {displayImages.length > 0 && (
                 <div className="post-media__preview">
-                    {data.images[0] && (
+                    {displayImages[0] && (
                         <ImagePreviewItem
-                            key={data.images[0].id}
-                            {...data.images[0]}
+                            key={displayImages[0].id}
+                            {...displayImages[0]}
                             index={0}
                             sortable={false}
                             removable={false}
@@ -283,6 +526,7 @@ export default function PostMediaSection({ form }) {
                                     </span>
                                     <video
                                         src={videoUrl}
+                                        preload="metadata"
                                         className="post-media__preview-image"
                                     />
                                 </>
@@ -290,11 +534,11 @@ export default function PostMediaSection({ form }) {
                         </div>
                     )}
 
-                    {data.images.slice(1).map((item, index) => (
+                    {displayImages.slice(1).map((item, index) => (
                         <ImagePreviewItem
                             key={item.id}
                             id={item.id}
-                            file={item.file}
+                            path={item.path}
                             preview={item.preview}
                             index={index + 1}
                             sortable={false}
@@ -306,6 +550,42 @@ export default function PostMediaSection({ form }) {
                 </div>
             )}
 
+            {uploadingImages && (
+                <div
+                    style={{
+                        marginTop: '12px',
+                        textAlign: 'center',
+                        color: '#fa3719',
+                        fontSize: '1.4rem',
+                        padding: '12px 0',
+                    }}
+                >
+                    Đang tải ảnh lên... {uploadProgress} / {totalImagesToUpload}
+                    <div
+                        style={{
+                            marginTop: '8px',
+                            width: '100%',
+                            height: '6px',
+                            background: '#eee',
+                            borderRadius: '3px',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <div
+                            style={{
+                                width:
+                                    totalImagesToUpload > 0
+                                        ? `${(uploadProgress / totalImagesToUpload) * 100}%`
+                                        : '0%',
+                                height: '100%',
+                                background: '#fa3719',
+                                transition: 'width 0.3s ease',
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+
             {/* Upload */}
             <div
                 className={`post-media__upload ${isDragging ? 'dragging' : ''}`}
@@ -314,6 +594,7 @@ export default function PostMediaSection({ form }) {
                     setIsDragging(true);
                 }}
                 onDragLeave={() => setIsDragging(false)}
+                onDragEnd={() => setIsDragging(false)}
                 onDrop={(e) => {
                     e.preventDefault();
                     setIsDragging(false);
@@ -448,7 +729,7 @@ export default function PostMediaSection({ form }) {
                                     </span>
                                     , dung lượng{' '}
                                     <span style={{ fontWeight: 600 }}>
-                                        tối đa 15 MB
+                                        tối đa 20 MB
                                     </span>
                                     .
                                 </li>
@@ -631,9 +912,7 @@ export default function PostMediaSection({ form }) {
                 <div className="post-media__preview" style={{ marginTop: 16 }}>
                     <div className="post-media__youtube">
                         <iframe
-                            src={`https://www.youtube.com/embed/${getYoutubeId(
-                                data.youtube_url,
-                            )}`}
+                            src={`https://www.youtube.com/embed/${youtubeId}`}
                             className="post-media__youtube--import"
                             frameBorder="0"
                             allowFullScreen
@@ -655,8 +934,8 @@ export default function PostMediaSection({ form }) {
                             style={{ paddingTop: 0 }}
                         >
                             <h1 className="address-panel__title">
-                                Chỉnh sửa hình ảnh & video ({data.images.length}
-                                )
+                                Chỉnh sửa hình ảnh & video (
+                                {displayImages.length})
                             </h1>
                             <button
                                 type="button"
@@ -754,16 +1033,7 @@ export default function PostMediaSection({ form }) {
                                                             className="post-media__preview-remove"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                setData(
-                                                                    'video',
-                                                                    null,
-                                                                );
-                                                                form.clearErrors(
-                                                                    [
-                                                                        'video',
-                                                                        'youtube_url',
-                                                                    ],
-                                                                );
+                                                                removeVideo();
                                                             }}
                                                         >
                                                             <svg
@@ -804,11 +1074,11 @@ export default function PostMediaSection({ form }) {
                                         className="post-media__preview"
                                         style={{ marginTop: 12 }}
                                     >
-                                        {data.images.map((item, index) => (
+                                        {displayImages.map((item, index) => (
                                             <ImagePreviewItem
                                                 key={item.id}
                                                 id={item.id}
-                                                file={item.file}
+                                                path={item.path}
                                                 preview={item.preview}
                                                 index={index}
                                                 sortable

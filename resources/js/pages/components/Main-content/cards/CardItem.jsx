@@ -8,7 +8,7 @@ export default function CardItem({ item, favoritePostIds }) {
     const [direction, setDirection] = useState(0);
 
     const { isLiked, toggle } = useFavorite(item.id);
-    
+
     useEffect(() => {
         initFavorites(favoritePostIds);
     }, [favoritePostIds]);
@@ -54,10 +54,23 @@ export default function CardItem({ item, favoritePostIds }) {
         }
     }
 
+    const formatTime = (createdAt) => {
+        const now = new Date();
+        const postDate = new Date(createdAt);
+        const diffInMinutes = Math.floor((now - postDate) / (1000 * 60));
+
+        if (diffInMinutes < 60) return `${diffInMinutes} Phút Trước`;
+        if (diffInMinutes < 1440)
+            return `${Math.floor(diffInMinutes / 60)} Giờ Trước`;
+        return `${Math.floor(diffInMinutes / 1440)} Ngày Trước`;
+    };
+
+    const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
+
     const currentIndex = currentImageIndex[item.id] || 0;
-    const imageSrc = `/storage/${
+    const imageSrc = `${R2_PUBLIC_BASE_URL}/${
         item?.images?.[currentIndex]?.medium_path ??
-        item?.images?.[currentIndex]?.image_path
+        item?.images?.[currentIndex]?.thumb_path
     }`;
 
     return (
@@ -172,7 +185,7 @@ export default function CardItem({ item, favoritePostIds }) {
 
                 <div className="property-heart">
                     <p className="property-posted">
-                        Đăng {new Date().toLocaleDateString()}
+                        Đăng {formatTime(item?.created_at)}
                     </p>
 
                     <button

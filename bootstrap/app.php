@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth403' => Auth403::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'r2/presign',
+        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,

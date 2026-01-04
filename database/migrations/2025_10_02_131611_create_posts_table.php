@@ -70,6 +70,8 @@ return new class extends Migration
 
             $table->string('youtube_url')->nullable();
 
+            $table->timestamp('last_activity_at')->nullable()->index();
+
             $table->timestamps();
 
             // --- Tạo index để tìm kiếm nhanh ---

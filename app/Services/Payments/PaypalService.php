@@ -14,7 +14,7 @@ class PaypalService
         if ($currency === 'VND') {
             $currency = 'USD';
             // Chuyển đổi tiền tệ VND -> USD (1 USD ~ 26_400 VND)
-            $amount = round($amount / 26400, 2);
+            $amount = round($amount / 26200, 2);
         }
 
         $clientId = env('PAYPAL_CLIENT_ID');
@@ -35,14 +35,6 @@ class PaypalService
         if (!$accessToken) {
             dd('No access token', $tokenRes->json());
         }
-
-        // dd([
-        //     'amount' => $amount,
-        //     'currency' => $currency,
-        //     'returnUrl' => $returnUrl,
-        //     'cancelUrl' => $cancelUrl
-        // ]);
-
 
         // Tạo order
         $order = Http::withToken($accessToken)

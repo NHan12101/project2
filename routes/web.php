@@ -15,6 +15,7 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\R2Controller;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -91,7 +92,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/home-finder', [FilterController::class, 'index']);
 
 //  ========= YÊU THÍCH ===============
-Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
+});
+
 
 // ========== TẠO BÀI POST VÀ THANH TOÁN ================
 Route::middleware(['auth'])->group(function () {
@@ -104,10 +110,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payments/momo/ipn', [PaymentController::class, 'momoIpn'])->name('payment.momo.ipn');
 
     Route::post('/posts/{post}/package', [PostPackageController::class, 'store'])->name('posts.package.store');
+
+    Route::post('/r2/presign', [R2Controller::class, 'presign']);
+    Route::delete('/r2/delete', [R2Controller::class, 'delete']);
 });
-
-
-
 
 
 
@@ -125,14 +131,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
     Route::delete('/notifications', [NotificationController::class, 'clearAll']);
-});
-
-
-
-
-//==========Lưu tin yêu thích//==============
-Route::middleware('auth')->group(function () {
-    Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::post('/favorites/toggle', [FavoriteController::class, 'toggle']);
-    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
 });

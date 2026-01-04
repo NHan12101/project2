@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class PostController extends Controller
 {
@@ -82,7 +80,6 @@ class PostController extends Controller
             'bathrooms' => 'nullable|integer',
             'livingrooms' => 'nullable|integer',
             'kitchens' => 'nullable|integer',
-            'status' => 'in:hidden,visible,draft',
             'type' => 'required|in:rent,sale',
             'category_id' => 'required|exists:categories,id',
             'city_id' => 'required|exists:cities,id',
@@ -110,9 +107,56 @@ class PostController extends Controller
                 ->where('status', 'draft')
                 ->firstOrFail();
 
-            $post->update($validated);
+            if ($post->title !== $validated['title']) {
+                $slug = Str::slug($validated['title']);
+                $counter = 1;
+
+                while (
+                    Post::where('slug', $slug)
+                    ->where('id', '!=', $post->id)
+                    ->exists()
+                ) {
+                    $slug = Str::slug($validated['title']) . '-' . $counter++;
+                }
+
+                $post->slug = $slug;
+            }
+
+            $post->update([
+                ...$validated,
+                'last_activity_at' => now(),
+            ]);
 
             return redirect()->back()->with('post_id', $post->id);
+        }
+
+        $existingDraft = Post::where('user_id', Auth::id())
+            ->where('status', 'draft')
+            ->latest('last_activity_at')
+            ->first();
+
+        if ($existingDraft) {
+            if ($existingDraft->title !== $validated['title']) {
+                $slug = Str::slug($validated['title']);
+                $counter = 1;
+
+                while (
+                    Post::where('slug', $slug)
+                    ->where('id', '!=', $existingDraft->id)
+                    ->exists()
+                ) {
+                    $slug = Str::slug($validated['title']) . '-' . $counter++;
+                }
+
+                $existingDraft->slug = $slug;
+            }
+
+            $existingDraft->fill([
+                ...$validated,
+                'last_activity_at' => now(),
+            ])->save();
+
+            return back()->with('post_id', $existingDraft->id);
         }
 
         // CREATE mới nếu chưa có
@@ -126,6 +170,7 @@ class PostController extends Controller
 
         $post = Post::create([
             ...$validated,
+            'last_activity_at' => now(),
             'slug' => $slug,
             'user_id' => Auth::id(),
             'status' => 'draft',
@@ -134,15 +179,15 @@ class PostController extends Controller
         return redirect()->back()->with('post_id', $post->id);
     }
 
+
     private function storeStep2(Request $request)
     {
         $validated = $request->validate([
             'post_id' => 'required|exists:posts,id',
-            'images'   => 'required|array|min:3|max:24',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:20480', //20MB
-            'images_360'   => 'nullable|array|max:5',
-            'images_360.*' => 'integer',
-            'video' => 'nullable|mimes:mp4,mov,webm|max:204800', // 200MB
+            'images' => 'required|array|min:3|max:24',
+            'images.*.path' => 'required|string',
+            'images.*.is360' => 'boolean',
+            'video' => 'nullable|string',
             'youtube_url' => [
                 'nullable',
                 'url',
@@ -154,132 +199,41 @@ class PostController extends Controller
             'images.*.max' => 'Ảnh không thể tải lên do quá dung lượng, tối đa 20MB'
         ]);
 
-        if ($request->filled('youtube_url') && $request->hasFile('video')) {
-            return back()->withErrors([
-                'video' => 'Chỉ được chọn 1 trong 2: video upload hoặc link YouTube',
-            ]);
+        if (!empty($validated['video']) && !empty($validated['youtube_url'])) {
+            abort(422, 'Chỉ được chọn 1 trong video hoặc YouTube');
         }
-
-        $validated['youtube_url'] = $this->extractYoutubeId(
-            $validated['youtube_url'] ?? null
-        );
 
         $post = Post::where('id', $validated['post_id'])
             ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->firstOrFail();
 
-        // Nếu có youtube_url -> clear video
-        if (!empty($validated['youtube_url'])) {
-            $post->update([
-                'youtube_url' => $validated['youtube_url'],
-                'video' => null,
-            ]);
-        }
+        // xử lý youtube
+        $post->update([
+            'youtube_url' => $this->extractYoutubeId($validated['youtube_url'] ?? null),
+            'video' => $validated['video'] ?? null,
+            'last_activity_at' => now(),
+        ]);
 
-        // Nếu upload video -> clear youtube_url
-        if ($request->hasFile('video')) {
-            $post->update([
-                'youtube_url' => null,
-            ]);
-        }
+        // xoá ảnh cũ (nếu cần)
+        PostImage::where('post_id', $post->id)->delete();
 
-        // Lấy index ảnh 360
-        $images360 = collect($request->input('images_360', []))
-            ->map(fn($i) => (int) $i)
-            ->toArray();
-
-        // Check nghiệp vụ
-        $totalImages = count($request->file('images'));
-        $total360 = count($images360);
-        $normalImages = $totalImages - $total360;
-
-        if ($normalImages < 3) {
-            return back()->withErrors([
-                'images' => 'Cần đăng ít nhất 3 ảnh thường',
-            ]);
-        }
-
-        if ($total360 > 5) {
-            return back()->withErrors([
-                'images_360' => 'Tối đa 5 ảnh 360',
-            ]);
-        }
-
-        foreach ($images360 as $i) {
-            if ($i < 0 || $i >= $totalImages) {
-                return back()->withErrors([
-                    'images_360' => 'Index ảnh 360 không hợp lệ',
-                ]);
-            }
-        }
-
-        $destDir = "posts/{$post->id}";
-        // $manager = new ImageManager(new Driver());
-
-        // foreach ($request->file('images') as $index => $image) {
-        //     $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-
-        //     $is360 = in_array($index, $images360);
-
-        //     $originalPath = "{$destDir}/original_{$filename}";
-        //     $mediumPath   = "{$destDir}/medium_{$filename}";
-        //     $thumbPath    = "{$destDir}/thumb_{$filename}";
-
-        //     $image->storeAs($destDir, "original_{$filename}", 'public');
-
-        //     $originalFullPath = storage_path("app/public/{$originalPath}");
-
-        //     // MEDIUM
-        //     $manager->read($originalFullPath)
-        //         ->scaleDown($is360 ? 3072 : 1600)
-        //         ->toWebp(75)
-        //         ->save(storage_path("app/public/{$mediumPath}"));
-
-        //     // THUMB
-        //     $manager->read($originalFullPath)
-        //         ->scaleDown($is360 ? 512 : 400)
-        //         ->toWebp(70)
-        //         ->save(storage_path("app/public/{$thumbPath}"));
-
-        //     gc_collect_cycles();
-
-        //     PostImage::create([
-        //         'post_id' => $post->id,
-        //         'image_path' => $originalPath,
-        //         'medium_path' => $mediumPath,
-        //         'thumb_path' => $thumbPath,
-        //         'is360' => $is360,
-        //     ]);
-        // }
-
-        foreach ($request->file('images') as $index => $image) {
-
-            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
-            $path = $image->storeAs($destDir, "original_{$filename}", 'public');
-
+        foreach ($validated['images'] as $img) {
             $postImage = PostImage::create([
                 'post_id' => $post->id,
-                'image_path' => $path,
+                'image_path' => $img['path'],   // path R2
                 'medium_path' => null,
-                'thumb_path'  => null,
-                'is360' => in_array($index, $images360),
+                'thumb_path' => null,
+                'is360' => $img['is360'] ?? false,
             ]);
 
-            ProcessPostImage::dispatch($postImage->id)->delay(now()->addSeconds(1));
-        }
-
-
-        // Lưu video
-        if ($request->hasFile('video')) {
-            $post->update([
-                'video' => $request->file('video')->store($destDir, 'public'),
-                'status' => 'draft'
-            ]);
+            // xử lý resize sau bằng queue
+            ProcessPostImage::dispatch($postImage->id);
         }
 
         return back();
     }
+
 
     private function extractYoutubeId(?string $url): ?string
     {

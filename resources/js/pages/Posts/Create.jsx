@@ -47,6 +47,10 @@ export default function Create({
         payment_method: 'momo',
     });
 
+    const [draftReady, setDraftReady] = useState(false);
+
+    const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
+
     const [showConfirm, setShowConfirm] = useState(false);
 
     const endDate = (() => {
@@ -58,17 +62,12 @@ export default function Create({
     const previewImage = useMemo(() => {
         if (!form.data.images?.length) return '/images/no-image.png';
 
-        const url = URL.createObjectURL(form.data.images[0].file);
-        return url;
-    }, [form.data.images]);
+        const img = form.data.images[0];
 
-    useEffect(() => {
-        return () => {
-            if (previewImage.startsWith('blob:')) {
-                URL.revokeObjectURL(previewImage);
-            }
-        };
-    }, [previewImage]);
+        if (img.path) return `${R2_PUBLIC_BASE_URL}/${img.path}`;
+
+        return '/images/no-image.png';
+    }, [form.data.images]);
 
     const selectedPackage = subscriptions.find(
         (s) => s.id === form.data.subscription_id,
@@ -82,26 +81,41 @@ export default function Create({
 
     useEffect(() => {
         const raw = sessionStorage.getItem('create-post-draft');
-        if (!raw) return;
+        if (!raw) {
+            setDraftReady(true);
+            return;
+        }
 
         try {
             const { data, savedAt } = JSON.parse(raw);
 
             if (Date.now() - savedAt > 10 * 60 * 1000) {
                 sessionStorage.removeItem('create-post-draft');
+                setDraftReady(true);
                 return;
             }
+
+            const restoredImages = data.images.map((img) => ({
+                id: crypto.randomUUID(),
+                path: img.path,
+                preview: null,
+                is360: img.is360 || false,
+            }));
+
+            const restoredVideo = data.video ? data.video.path : null;
 
             form.setData((prev) => ({
                 ...prev,
                 ...data,
-                images: [],
-                video: null,
+                images: restoredImages,
+                video: restoredVideo,
             }));
 
-            setStep(1);
+            setStep(data.step || 1);
         } catch {
             sessionStorage.removeItem('create-post-draft');
+        } finally {
+            setDraftReady(true);
         }
     }, []);
 
@@ -125,15 +139,29 @@ export default function Create({
     ]);
 
     useEffect(() => {
-        if (step !== 1) return;
+        if (step === 3) return;
 
         const t = setTimeout(() => {
-            const { images, video, ...safeData } = form.data;
+            const { images, ...safeData } = form.data;
+
+            const imagesForDraft = images.map((img) => ({
+                path: img.path,
+                is360: img.is360 || false,
+            }));
+
+            const videoForDraft = form.data.video
+                ? { path: form.data.video }
+                : null;
 
             sessionStorage.setItem(
                 'create-post-draft',
                 JSON.stringify({
-                    data: safeData,
+                    data: {
+                        ...safeData,
+                        step,
+                        images: imagesForDraft,
+                        video: videoForDraft,
+                    },
                     savedAt: Date.now(),
                 }),
             );
@@ -155,42 +183,28 @@ export default function Create({
     }
 
     function submitStep2() {
-        const fd = new FormData();
+        router.post(
+            '/posts',
+            {
+                step: 2,
+                post_id: form.data.post_id,
 
-        fd.append('step', 2);
-        fd.append('post_id', form.data.post_id);
+                video: form.data.video,
 
-        // youtube
-        if (form.data.youtube_url) {
-            fd.append('youtube_url', form.data.youtube_url);
-        }
+                youtube_url: form.data.youtube_url || null,
 
-        // images
-        const images360Indexes = [];
-
-        form.data.images.forEach((img, index) => {
-            fd.append('images[]', img.file);
-            if (img.is360) images360Indexes.push(index);
-        });
-
-        // images 360
-        images360Indexes.forEach((i) => {
-            fd.append('images_360[]', i);
-        });
-
-        if (form.data.video) {
-            fd.append('video', form.data.video);
-        }
-
-        router.post('/posts', fd, {
-            forceFormData: true,
-            preserveScroll: true,
-
-            onSuccess: () => {
-                sessionStorage.removeItem('create-post-draft');
-                setStep(3);
+                images: form.data.images.map((img) => ({
+                    path: img.path, //path R2 đã upload
+                    is360: img.is360 || false,
+                })),
             },
-        });
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setStep(3);
+                },
+            },
+        );
     }
 
     function submitStep3() {
@@ -203,6 +217,10 @@ export default function Create({
             },
             {
                 preserveScroll: true,
+
+                onFinish: () => {
+                    sessionStorage.removeItem('create-post-draft');
+                },
             },
         );
     }
@@ -221,7 +239,10 @@ export default function Create({
                         </button>
                         <button
                             className="post-create__action post-create__action--exit"
-                            onClick={() => window.history.back()}
+                            onClick={() => {
+                                sessionStorage.removeItem('create-post-draft');
+                                window.history.back();
+                            }}
                         >
                             Thoát
                         </button>
@@ -309,6 +330,7 @@ export default function Create({
                             type="button"
                             className="post-create__action post-create__action--exit"
                             style={{ padding: '12px 20px', marginLeft: 'auto' }}
+                            disabled={!draftReady || form.processing}
                             onClick={submitStep1}
                         >
                             Tiếp tục

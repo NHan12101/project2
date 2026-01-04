@@ -30,7 +30,7 @@ class FavoriteController extends Controller
             ]);
         }
 
-        // QUAN TRỌNG: Không được trả JSON nếu gọi bằng Inertia
+        // Không được trả JSON nếu gọi bằng Inertia
         return back();
     }
 

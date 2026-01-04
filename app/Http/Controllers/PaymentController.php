@@ -63,14 +63,39 @@ class PaymentController extends Controller
     // ===================== SUCCESS PAYMENT =====================
     public function success(Request $request)
     {
+        Log::info('PAYMENT SUCCESS HIT', [
+            'query' => $request->query(),
+            'auth_id' => Auth::id(),
+        ]);
+
         $paymentId = $request->query('payment_id');
         $provider  = $request->query('provider');
 
         $payment = Payment::findOrFail($paymentId);
         $post    = Post::findOrFail($payment->metadata['post_id']);
 
+        Log::info('PAYMENT & POST LOADED', [
+            'payment_id' => $payment->id,
+            'payment_status' => $payment->status,
+            'payment_method' => $payment->method,
+            'provider' => $provider,
+            'post_id' => $post->id,
+        ]);
+
+        if ($payment->status === 'success') {
+            return redirect()->route('propertyDetail.show', $post->slug)
+                ->with('success', 'Thanh toán đã được xử lý.');
+        }
+
         abort_if($payment->status !== 'pending', 403);
-        abort_if($post->user_id !== Auth::id(), 403);
+        abort_if($payment->method !== $provider, 403);
+
+        Log::info('BEFORE ABORT CHECK', [
+            'payment_status' => $payment->status,
+            'payment_method' => $payment->method,
+            'provider' => $provider,
+        ]);
+
 
         $verified = false;
 
@@ -94,12 +119,16 @@ class PaymentController extends Controller
         // ------- PAYPAL --------
         elseif ($provider === 'paypal') {
 
-            $token   = $request->query('token');      // PayPal Order ID
-            $payerId = $request->query('PayerID');    // User's PayPal payer ID
+            Log::info('ENTER PAYPAL VERIFY', [
+                'payment_id' => $payment->id,
+                'query' => $request->query(),
+            ]);
 
-            if (!$token || !$payerId) {
+            $token   = $request->query('token');      // PayPal Order ID
+
+            if (!$token) {
                 return redirect()->route('posts.create')
-                    ->with('error', 'Paypal không có token hợp lệ.');
+                    ->with('error', 'Paypal callback thiếu order token.');
             }
 
             // Lấy Access Token
@@ -119,36 +148,100 @@ class PaymentController extends Controller
 
             $accessToken = $auth->json()['access_token'];
 
-            // Capture đơn hàng
-            $capture = Http::withToken($accessToken)
-                ->withHeaders([
-                    'Content-Type' => 'application/json'
-                ])
-                ->withBody('{}', 'application/json')
-                ->post("https://api-m.sandbox.paypal.com/v2/checkout/orders/$token/capture");
+            $orderCheck = Http::withToken($accessToken)
+                ->get("https://api-m.sandbox.paypal.com/v2/checkout/orders/$token");
 
-            if ($capture->failed()) {
+            if (!$orderCheck->ok()) {
                 return redirect()->route('posts.create')
-                    ->with('error', 'PayPal capture thất bại.');
+                    ->with('error', 'Không kiểm tra được trạng thái PayPal.');
             }
 
-            $status = $capture->json()['status'] ?? null;
 
-            if ($status !== 'COMPLETED') {
+            $orderStatus = $orderCheck->json()['status'] ?? null;
+
+            Log::info('PAYPAL ORDER STATUS', [
+                'order_id' => $token,
+                'status' => $orderStatus,
+                'raw' => $orderCheck->json(),
+            ]);
+
+
+            if (!in_array($orderStatus, ['APPROVED', 'COMPLETED'])) {
+                Log::warning('PayPal order not approved', [
+                    'order_id' => $token,
+                    'status' => $orderStatus,
+                    'response' => $orderCheck->json(),
+                ]);
+
+                return redirect()->route('posts.create')
+                    ->with('error', 'PayPal order chưa được approve.');
+            }
+
+            // Capture đơn hàng
+            if ($orderStatus === 'APPROVED') {
+                $capture = Http::withToken($accessToken)
+                    ->withHeaders([
+                        'Content-Type' => 'application/json'
+                    ])
+                    ->withBody('{}', 'application/json')
+                    ->post("https://api-m.sandbox.paypal.com/v2/checkout/orders/$token/capture");
+
+                Log::info('PAYPAL CAPTURE RESPONSE', [
+                    'capture_status' => $capture->status(),
+                    'body' => $capture->body(),
+                ]);
+            } else {
+                // Đã COMPLETED sẵn
+                $capture = $orderCheck;
+            }
+
+            if ($capture->status() === 422) {
+
+                $error = $capture->json('details.0.issue');
+
+                if ($error === 'INSTRUMENT_DECLINED') {
+
+                    Log::warning('PAYPAL INSTRUMENT DECLINED', [
+                        'order_id' => $token,
+                    ]);
+
+                    // Redirect user quay lại PayPal để chọn funding source khác
+                    $redirectUrl = collect($capture->json('links'))
+                        ->firstWhere('rel', 'redirect')['href'] ?? null;
+
+                    if ($redirectUrl) {
+                        return redirect()->away($redirectUrl);
+                    }
+
+                    return redirect()->route('posts.create')
+                        ->with('error', 'Phương thức thanh toán bị từ chối, vui lòng thử lại.');
+                }
+            }
+
+
+            Log::info('PayPal capture response', [
+                'payment_id' => $payment->id,
+                'response' => $capture->json(),
+            ]);
+
+            if (($capture->json()['status'] ?? null) !== 'COMPLETED') {
                 return redirect()->route('posts.create')
                     ->with('error', 'PayPal chưa hoàn tất giao dịch.');
             }
 
             // transaction id
-            $transactionId = $capture->json()['purchase_units'][0]['payments']['captures'][0]['id'] ?? null;
-
-            // update request
-            $request->merge([
-                'transaction_id' => $transactionId,
-                'paypal_order_id' => $token,
-            ]);
+            $transactionId = data_get(
+                $capture->json(),
+                'purchase_units.0.payments.captures.0.id'
+            );
 
             $verified = true;
+
+            Log::info('PAYMENT VERIFIED', [
+                'payment_id' => $payment->id,
+                'provider' => $provider,
+                'transaction_id' => $transactionId ?? null,
+            ]);
         }
 
 
@@ -195,15 +288,26 @@ class PaymentController extends Controller
                 ->with('error', 'Thanh toán không xác thực.');
         }
 
+        $metadata = array_merge($payment->metadata ?? [], [
+            'verified_at' => now(),
+        ]);
+
+        if ($provider === 'paypal') {
+            $metadata['paypal_order_id'] = $token;
+        }
+
+        Log::info('UPDATING PAYMENT', [
+            'payment_id' => $payment->id,
+        ]);
+
+
         // ===== CẬP NHẬT PAYMENT =====
         $payment->update([
             'status' => 'success',
-            'transaction_id' => $request->query('transaction_id'),
-            'metadata' => array_merge($payment->metadata ?? [], [
-                'paypal_order_id' => $request->query('paypal_order_id'),
-                'verified_at' => now(),
-            ]),
+            'transaction_id' => $transactionId ?? null,
+            'metadata' => $metadata,
         ]);
+
 
 
         // ===== CẬP NHẬT POST =====
@@ -211,6 +315,10 @@ class PaymentController extends Controller
             'status' => 'visible',
             'subscription_id' => $payment->subscription_id,
             'package_expired_at' => now()->addDays($payment->days),
+        ]);
+
+        Log::info('PAYMENT SUCCESS REDIRECT', [
+            'post_slug' => $post->slug,
         ]);
 
         return redirect()->route('propertyDetail.show', $post->slug)
@@ -221,6 +329,8 @@ class PaymentController extends Controller
     // ===================== CANCEL PAYMENT =====================
     public function cancel(Request $request)
     {
+        Log::info('PAYPAL CANCEL HIT', $request->all());
+
         $paymentId = $request->query('payment_id');
 
         $payment = Payment::find($paymentId);

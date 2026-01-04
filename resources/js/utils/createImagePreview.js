@@ -23,7 +23,7 @@ export function createImagePreview(
 
                     resolve(URL.createObjectURL(blob));
                 },
-                'image/jpeg',
+                'image/webp',
                 quality
             );
         };
