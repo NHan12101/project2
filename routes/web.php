@@ -15,6 +15,7 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PostViewedController;
 use App\Http\Controllers\R2Controller;
 
 // ===== TRANG MẶC ĐỊNH =====
@@ -115,6 +116,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/r2/delete', [R2Controller::class, 'delete']);
 });
 
+
+// ========== LỊCH SỬ XEM TIN ================
+Route::middleware('auth')->get('/posts/viewed', [PostViewedController::class, 'index'])->name('posts.viewed');
 
 
 

@@ -1,8 +1,8 @@
 import useDropdown from '@/hooks/useDropdown.js';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { router, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useEffect, useMemo, useState } from 'react';
 import logo from '../../../../../../public/images/StayHub.svg';
 import AuthForm from '../../../Auth/AuthForm.jsx';
 import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
@@ -15,7 +15,13 @@ import './Navbar.css';
 
 export default function Navbar() {
     const { props, url } = usePage();
-    const { auth, flash, favoritePostIds } = props;
+    const { auth, flash, favoritePostIds, latestFavoritePostId, posts } = props;
+
+    const latestFavoritePost = useMemo(() => {
+        if (!latestFavoritePostId || !posts) return null;
+        return posts.find((post) => post.id === latestFavoritePostId);
+    }, [latestFavoritePostId, posts]);
+
     const [isLogin, setIsLogin] = useState(false);
 
     const { menuRef, open, setOpen } = useDropdown();
@@ -35,6 +41,8 @@ export default function Navbar() {
     const [keyword, setKeyword] = useState('');
 
     const [show, setShow] = useState(false);
+
+    const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
 
     useEffect(() => {
         setIsLogin(!!auth?.user);
@@ -242,27 +250,22 @@ export default function Navbar() {
                                             <a href="/saved">Xem tất cả</a>
                                         )}
                                     </div>
-                                    {favoritePostIds.length > 0 ? (
-                                        <div className="nav-dropdown__icon-heart--content">
+
+                                    {latestFavoritePost ? (
+                                        <Link
+                                            href={`/property-detail/${latestFavoritePost.slug}`}
+                                            className="nav-dropdown__icon-heart--content"
+                                        >
                                             <img
-                                                src="/images/banner-vip02.jpg"
+                                                src={`${R2_PUBLIC_BASE_URL}/${latestFavoritePost?.images[0]?.thumb_path}`}
                                                 alt="thumb-post"
                                                 loading="lazy"
                                             />
 
-                                            <span
-                                                style={{
-                                                    color: '#222222',
-                                                    fontSize: '1.4rem',
-                                                    fontWeight: 600,
-                                                    lineHeight: '1.28',
-                                                }}
-                                            >
-                                                Lorem, ipsum dolor sit amet
-                                                consectetur adipisicing elit.
-                                                Corrupti perspiciatis itaque.
+                                            <span>
+                                                {latestFavoritePost.title}
                                             </span>
-                                        </div>
+                                        </Link>
                                     ) : (
                                         <div className="nav-dropdown__icon-heart--nocontent">
                                             <span>

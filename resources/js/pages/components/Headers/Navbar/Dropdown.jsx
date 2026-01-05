@@ -8,7 +8,7 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
             items: [
                 { label: 'Tin đăng đã lưu', icon: '/icons/tin-dang-da-luu.svg', href: '/saved' },
                 { label: 'Tìm kiếm đã lưu', icon: '/icons/tim-kiem-da-luu.svg', href: '/saved-searches' },
-                { label: 'Lịch sử xem tin', icon: '/icons/lich-su-xem-tin.svg', href: '/view-history' },
+                { label: 'Lịch sử xem tin', icon: '/icons/lich-su-xem-tin.svg', href: '/posts/viewed' },
             ],
         },
         {

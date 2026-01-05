@@ -129,4 +129,10 @@ class Post extends Model
     {
         return $this->belongsToMany(Utility::class, 'post_utilities');
     }
+
+    public function viewers()
+    {
+        return $this->belongsToMany(User::class, 'post_view_histories')
+            ->withPivot('viewed_at');
+    }
 }

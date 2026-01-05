@@ -1,5 +1,6 @@
 import useDropdown from '@/hooks/useDropdown.js';
 import { initFavorites, useFavorite } from '@/hooks/useFavorite.js';
+import { formatPrice } from '@/utils/formatPrice';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -248,18 +249,6 @@ export default function PropertyDetail({
             window.removeEventListener('resize', checkScroll);
         };
     }, []);
-
-    function formatPrice(price) {
-        if (!price) return 'Liên hệ';
-
-        if (price >= 1_000_000_000) {
-            return (price / 1_000_000_000).toFixed(1).replace('.', ',') + ' tỷ';
-        } else if (price >= 1_000_000) {
-            return (price / 1_000_000).toFixed(1).replace('.', ',') + ' triệu';
-        } else {
-            return price.toLocaleString('vi-VN');
-        }
-    }
 
     const handleStartChat = async () => {
         try {

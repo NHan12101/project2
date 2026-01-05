@@ -1,10 +1,11 @@
+import { formatPrice } from '@/utils/formatPrice';
 import { router, usePage } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
-import Pagination from './Pagination.jsx';
 import './HomeFinder.css';
+import Pagination from './Pagination.jsx';
 
 export default function HomeFinder() {
     const {
@@ -17,17 +18,6 @@ export default function HomeFinder() {
     const [filters, setFilters] = useState(initialFilters || {});
     const [showFilters, setShowFilters] = useState(false);
     const debounceRef = useRef(null);
-
-    // Hàm format giá
-    function formatPrice(price) {
-        if (price >= 1_000_000_000) {
-            return (price / 1_000_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' tỷ';
-        } else if (price >= 1_000_000) {
-            return (price / 1_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' triệu';
-        } else {
-            return price.toLocaleString('vi-VN');
-        }
-    }
 
     // Các mốc giá (tính bằng VNĐ)
     const priceOptions = [
@@ -197,11 +187,12 @@ export default function HomeFinder() {
                             <div className="filter-group">
                                 <label>Khoảng giá</label>
                                 <div className="range-inputs">
-                                    
                                     <span className="range-separator">-</span>
                                     <select
                                         name="maxPrice"
-                                        value={filters.maxPrice?.toString() ?? ''}
+                                        value={
+                                            filters.maxPrice?.toString() ?? ''
+                                        }
                                         onChange={handleFilterChange}
                                         className="filter-input"
                                     >

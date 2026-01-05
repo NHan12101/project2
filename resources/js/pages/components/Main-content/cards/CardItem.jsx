@@ -1,4 +1,5 @@
 import { initFavorites, useFavorite } from '@/hooks/useFavorite';
+import { formatPrice } from '@/utils/formatPrice';
 import { router } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -43,16 +44,6 @@ export default function CardItem({ item, favoritePostIds }) {
             opacity: 0,
         }),
     };
-
-    function formatPrice(price) {
-        if (price >= 1_000_000_000) {
-            return (price / 1_000_000_000).toFixed(1).replace('.', ',') + ' tỷ';
-        } else if (price >= 1_000_000) {
-            return (price / 1_000_000).toFixed(1).replace('.', ',') + ' triệu';
-        } else {
-            return price.toLocaleString('vi-VN');
-        }
-    }
 
     const formatTime = (createdAt) => {
         const now = new Date();

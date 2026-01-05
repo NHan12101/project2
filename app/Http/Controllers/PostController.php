@@ -32,6 +32,29 @@ class PostController extends Controller
             ->where('status', 'visible')
             ->firstOrFail();
 
+        // GHI LỊCH SỬ XEM
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            // Ghi / cập nhật lịch sử xem
+            $user->viewedPosts()->syncWithoutDetaching([
+                $post->id => [
+                    'viewed_at' => now(),
+                ],
+            ]);
+
+            // GIỮ LẠI 100 TIN GẦN NHẤT
+            $viewedIds = $user->viewedPosts()
+                ->pluck('posts.id');
+
+            if ($viewedIds->count() > 100) {
+                $idsToDelete = $viewedIds->slice(100);
+
+                $user->viewedPosts()->detach($idsToDelete);
+            }
+        }
+
+
         $related = Post::with('images', 'city', 'ward')
             ->where('status', 'visible')
             ->where('id', '!=', $post->id)

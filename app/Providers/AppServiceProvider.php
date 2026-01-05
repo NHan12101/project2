@@ -37,6 +37,15 @@ class AppServiceProvider extends ServiceProvider
                     ->toArray();
             },
 
+            // Chỉ dùng cho Navbar phần hiển thị tin đã lưu
+            'latestFavoritePostId' => function () {
+                return Auth::check()
+                    ? Favorite::where('user_id', Auth::id())
+                    ->latest()
+                    ->value('post_id') // trả về 1 id duy nhất
+                    : null;
+            },
+
             'notifications' => function () {
                 return Notification::where('user_id', Auth::id())
                     ->orderBy('created_at', 'desc')

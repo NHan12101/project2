@@ -92,7 +92,7 @@ export default function PostPackageSection({ form, subscriptions }) {
     }, [selectedPriority]);
 
     const paymentMethodImages = {
-        momo: '/images/MOMO.svg',
+        momo: '/images/Momo.svg',
         vnpay: '/images/VNPAY.svg',
         stripe: '/images/STRIPE.svg',
         paypal: '/images/PAYPAL.svg',
