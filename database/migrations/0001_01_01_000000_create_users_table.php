@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->boolean('notification')->default(1);
             $table->enum('role', ['user', 'admin'])->default('user');
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

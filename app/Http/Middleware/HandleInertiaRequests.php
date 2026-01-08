@@ -56,6 +56,8 @@ class HandleInertiaRequests extends Middleware
                 'reset_password_allowed' => fn() => $request->session()->get('reset_password_allowed'),
                 'email' => fn() => $request->session()->get('email'),
                 'post_id' => fn() => $request->session()->get('post_id'),
+                'phone_otp_required' => fn() => $request->session()->get('phone_otp_required'),
+                'phone' => fn() => $request->session()->get('phone'),
             ],
         ];
     }

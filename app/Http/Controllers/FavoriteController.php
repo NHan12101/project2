@@ -6,6 +6,7 @@ use App\Models\Favorite;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class FavoriteController extends Controller
@@ -30,6 +31,8 @@ class FavoriteController extends Controller
             ]);
         }
 
+        Cache::forget('latest_favorite_post_' . Auth::id());
+
         // Không được trả JSON nếu gọi bằng Inertia
         return back();
     }
@@ -44,6 +47,8 @@ class FavoriteController extends Controller
         Favorite::where('user_id', Auth::id())
             ->where('post_id', $request->post_id)
             ->delete();
+
+        Cache::forget('latest_favorite_post_' . Auth::id());
 
         // QUAN TRỌNG: Không được trả JSON
         return back();

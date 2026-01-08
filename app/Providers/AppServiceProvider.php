@@ -6,6 +6,7 @@ use App\Models\Favorite;
 use App\Models\Notification;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
@@ -38,12 +39,21 @@ class AppServiceProvider extends ServiceProvider
             },
 
             // Chỉ dùng cho Navbar phần hiển thị tin đã lưu
-            'latestFavoritePostId' => function () {
-                return Auth::check()
-                    ? Favorite::where('user_id', Auth::id())
-                    ->latest()
-                    ->value('post_id') // trả về 1 id duy nhất
-                    : null;
+            'latestFavoritePost' => function () {
+                if (!Auth::check()) return null;
+
+                return Cache::remember(
+                    'latest_favorite_post_' . Auth::id(),
+                    now()->addMinutes(5),
+                    function () {
+                        return Post::with('images')
+                            ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+                            ->where('favorites.user_id', Auth::id())
+                            ->orderBy('favorites.created_at', 'desc')
+                            ->select('posts.*')
+                            ->first();
+                    }
+                );
             },
 
             'notifications' => function () {

@@ -2,12 +2,14 @@ import useDropdown from '@/hooks/useDropdown.js';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../../../../../../public/images/StayHub.svg';
 import AuthForm from '../../../Auth/AuthForm.jsx';
 import ForgotPasswordForm from '../../../Auth/ForgotPasswordForm.jsx';
+import PhoneInputForm from '../../../Auth/PhoneInputForm.jsx';
 import ResetPassword from '../../../Auth/ResetPassword.jsx';
 import VerifyOtp from '../../../Auth/VerifyOtp.jsx';
+import VerifyPhoneOtp from '../../../Auth/VerifyPhoneOtp.jsx';
 import Notification from '../Notification/Notification.jsx';
 import Suggest from '../Suggest.jsx';
 import Dropdown from './Dropdown.jsx';
@@ -15,12 +17,8 @@ import './Navbar.css';
 
 export default function Navbar() {
     const { props, url } = usePage();
-    const { auth, flash, favoritePostIds, latestFavoritePostId, posts } = props;
+    const { auth, flash, favoritePostIds, latestFavoritePost } = props;
 
-    const latestFavoritePost = useMemo(() => {
-        if (!latestFavoritePostId || !posts) return null;
-        return posts.find((post) => post.id === latestFavoritePostId);
-    }, [latestFavoritePostId, posts]);
 
     const [isLogin, setIsLogin] = useState(false);
 
@@ -37,6 +35,10 @@ export default function Navbar() {
 
     const [showReset, setShowReset] = useState(false);
     const [showForgot, setShowForgot] = useState(false);
+
+    const [showVerifyPhone, setShowVerifyPhone] = useState(false);
+    const [showPhone, setShowPhone] = useState(false);
+    const [verifyPhone, setVerifyPhone] = useState('');
 
     const [keyword, setKeyword] = useState('');
 
@@ -86,6 +88,18 @@ export default function Navbar() {
             setShowVerify(false);
             setVerifyEmail(flash.email);
             setShowReset(true); // bật popup reset mật khẩu
+        }
+
+        // OTP xác thực số điện thoại
+        if (flash.phone_otp_required) {
+            setVerifyPhone(flash.phone);
+            setShowPhone(true);
+        }
+
+        // OTP xác thực số điện thoại
+        if (flash.phone_otp_required && flash.phone) {
+            setShowPhone(false);
+            setShowVerifyPhone(true);
         }
     }, [flash]);
 
@@ -417,6 +431,22 @@ export default function Navbar() {
                         email={verifyEmail}
                         flash={flash}
                         onClose={() => setShowReset(false)}
+                    />
+                </div>
+            )}
+
+            {showPhone && (
+                <div className="auth-form">
+                    <PhoneInputForm onClose={() => setShowPhone(false)} />
+                </div>
+            )}
+
+            {showVerifyPhone && (
+                <div className="auth-form">
+                    <VerifyPhoneOtp
+                        phone={verifyPhone}
+                        flash={flash}
+                        onClose={() => setShowVerifyPhone(false)}
                     />
                 </div>
             )}

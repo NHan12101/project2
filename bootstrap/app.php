@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Auth403;
+use App\Http\Middleware\EnsurePhoneVerified;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
         $middleware->alias([
             'auth403' => Auth403::class,
+            'phone.verified' => EnsurePhoneVerified::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'r2/presign',

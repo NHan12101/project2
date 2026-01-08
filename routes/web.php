@@ -15,6 +15,7 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PhoneOtpController;
 use App\Http\Controllers\PostViewedController;
 use App\Http\Controllers\R2Controller;
 
@@ -37,6 +38,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ===== XÁC THỰC / GỬI LẠI OTP =========
 Route::post('/verify-otp', [EmailOtpController::class, 'verifyOtp'])->name('otp.verify');
 Route::post('/resend-otp', [EmailOtpController::class, 'sendOtp'])->name('otp.resend');
+
+// ========== XÁC THỰC SMS ================
+Route::middleware('auth')->group(function () {
+    Route::post('/phone/send-otp', [PhoneOtpController::class, 'sendOtp'])->name('phone.send');
+    Route::post('/phone/verify-otp', [PhoneOtpController::class, 'verifyOtp'])->name('phone.verify');
+});
 
 // ===== QUÊN MẬT KHẨU =============
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
@@ -101,7 +108,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 // ========== TẠO BÀI POST VÀ THANH TOÁN ================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 

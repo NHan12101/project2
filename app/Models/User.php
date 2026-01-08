@@ -21,6 +21,7 @@ class User extends Authenticatable
         'avatar_image_url',
         'avatar',
         'notification',
+        'phone_verified_at',
     ];
 
     protected $hidden = [
@@ -30,6 +31,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime'
     ];
 
     protected $appends = ['avatar_url'];
