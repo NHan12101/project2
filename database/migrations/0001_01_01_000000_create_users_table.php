@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('name')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('password')->nullable(); // để login bằng Google
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('avatar_image_url')->nullable();
             $table->boolean('notification')->default(1);
             $table->enum('role', ['user', 'admin'])->default('user');

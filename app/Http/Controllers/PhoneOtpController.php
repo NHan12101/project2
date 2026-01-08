@@ -19,9 +19,17 @@ class PhoneOtpController extends Controller
 
         Validator::validate(['phone' => $phone], [
             'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-        ]);
+        ], ['phone' => 'Vui lòng nhập đúng định dạng']);
 
         $user = $request->user();
+
+        // Kiểm tra số điện thoại đã có người dùng khác
+        $existingUser = User::where('phone', $phone)->first();
+        if ($existingUser && $existingUser->id !== $user?->id) {
+            return back()->withErrors([
+                'message' => 'Số điện thoại này đã được sử dụng',
+            ]);
+        }
 
         // ===== Rate limit: 1 phút / số =====
         if (RateLimiter::tooManyAttempts("send-phone-otp:" . $phone, 1)) {
@@ -110,6 +118,12 @@ class PhoneOtpController extends Controller
             return back()->withErrors([
                 'message' => 'Không tìm thấy user',
             ]);
+        }
+
+        // Kiểm tra số điện thoại có user khác chưa
+        $otherUser = User::where('phone', $phone)->where('id', '!=', $user->id)->first();
+        if ($otherUser) {
+            return back()->withErrors(['message' => 'Số điện thoại này đã được người khác xác thực']);
         }
 
         $user->update([

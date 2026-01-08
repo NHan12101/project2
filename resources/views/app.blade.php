@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark'=> ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
@@ -7,32 +7,18 @@
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>
-        (function() {
-            const userPref = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            // Ưu tiên người dùng chọn, nếu chưa chọn thì theo hệ thống
-            const isDark = userPref === 'dark' || (!userPref && systemPrefersDark);
-
-            if (isDark) {
-                document.documentElement.classList.add('dark');
+        // Chỉ gán hàm toggle, không bật dark mặc định
+        window.toggleTheme = function() {
+            const html = document.documentElement;
+            const currentlyDark = html.classList.contains('dark');
+            if (currentlyDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
             } else {
-                document.documentElement.classList.remove('dark');
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
             }
-
-            // Gán hàm toggle để React có thể gọi
-            window.toggleTheme = function() {
-                const html = document.documentElement;
-                const currentlyDark = html.classList.contains('dark');
-                if (currentlyDark) {
-                    html.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    html.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                }
-            };
-        })();
+        };
     </script>
 
 

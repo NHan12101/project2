@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export default function ForceLogout() {
   useEffect(() => {
-    // localStorage.clear();
+    localStorage.clear();
     sessionStorage.clear();
 
     window.location.href = "/home";

@@ -19,7 +19,6 @@ export default function Navbar() {
     const { props, url } = usePage();
     const { auth, flash, favoritePostIds, latestFavoritePost } = props;
 
-
     const [isLogin, setIsLogin] = useState(false);
 
     const { menuRef, open, setOpen } = useDropdown();
@@ -91,15 +90,14 @@ export default function Navbar() {
         }
 
         // OTP xác thực số điện thoại
-        if (flash.phone_otp_required) {
-            setVerifyPhone(flash.phone);
-            setShowPhone(true);
-        }
+        const isPhoneVerified =
+            localStorage.getItem('phone_verified') === 'true';
 
         // OTP xác thực số điện thoại
-        if (flash.phone_otp_required && flash.phone) {
-            setShowPhone(false);
-            setShowVerifyPhone(true);
+        if (flash.phone_otp_required && !isPhoneVerified) {
+            setVerifyPhone(flash.phone || '');
+            setShowPhone(!flash.phone);
+            setShowVerifyPhone(!!flash.phone);
         }
     }, [flash]);
 
@@ -446,7 +444,10 @@ export default function Navbar() {
                     <VerifyPhoneOtp
                         phone={verifyPhone}
                         flash={flash}
-                        onClose={() => setShowVerifyPhone(false)}
+                        onClose={() => {
+                            setShowVerifyPhone(false);
+                            setVerifyPhone('');
+                        }}
                     />
                 </div>
             )}

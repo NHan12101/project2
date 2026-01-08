@@ -52,11 +52,20 @@ export default function VerifyPhoneOtp({ phone, onClose }) {
         return () => clearInterval(timer);
     }, [countdown]);
 
+    useEffect(() => {
+        if (!flash) {
+            setOtpArray(Array(OTP_LENGTH).fill(''));
+            setData('otp', '');
+            setShake(false);
+        }
+    }, [onClose]);
+
     function handleSubmit(e) {
-        e?.preventDefault();
+        e.preventDefault();
 
         post('/phone/verify-otp', {
             onSuccess: () => {
+                localStorage.setItem('phone_verified', 'true');
                 reset();
                 onClose();
             },
