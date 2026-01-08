@@ -15,7 +15,17 @@ export default function HomeFinder() {
     } = usePage().props;
 
     const [filters, setFilters] = useState(initialFilters || {});
-    const [showFilters, setShowFilters] = useState(false);
+    const [searchInput, setSearchInput] = useState(initialFilters?.q || '');
+    const [showAreaModal, setShowAreaModal] = useState(false);
+    const [showPriceModal, setShowPriceModal] = useState(false);
+    const [tempAreaRange, setTempAreaRange] = useState({
+        min: filters.minArea || '',
+        max: filters.maxArea || ''
+    });
+    const [tempPriceRange, setTempPriceRange] = useState({
+        min: filters.minPrice || '',
+        max: filters.maxPrice || ''
+    });
     const debounceRef = useRef(null);
 
     // Hàm format giá
@@ -29,51 +39,52 @@ export default function HomeFinder() {
         }
     }
 
-    // Các mốc giá (tính bằng VNĐ)
-    const priceOptions = [
-        { value: '', label: 'Chọn giá' },
-        { value: 500000000, label: formatPrice(500000000) },
-        { value: 800000000, label: formatPrice(800000000) },
-        { value: 1000000000, label: formatPrice(1000000000) },
-        { value: 2000000000, label: formatPrice(2000000000) },
-        { value: 3000000000, label: formatPrice(3000000000) },
-        { value: 5000000000, label: formatPrice(5000000000) },
-        { value: 7000000000, label: formatPrice(7000000000) },
-        { value: 10000000000, label: formatPrice(10000000000) },
-        { value: 15000000000, label: formatPrice(15000000000) },
-        { value: 20000000000, label: formatPrice(20000000000) },
-        { value: 30000000000, label: formatPrice(30000000000) },
-        { value: 50000000000, label: formatPrice(50000000000) },
-        { value: 100000000000, label: formatPrice(100000000000) },
+    // Các mốc diện tích
+    const areaOptions = [
+        { min: '', max: 30, label: 'Dưới 30 m²' },
+        { min: 30, max: 50, label: '30 - 50 m²' },
+        { min: 50, max: 80, label: '50 - 80 m²' },
+        { min: 80, max: 100, label: '80 - 100 m²' },
+        { min: 100, max: 150, label: '100 - 150 m²' },
+        { min: 150, max: 200, label: '150 - 200 m²' },
+        { min: 200, max: 250, label: '200 - 250 m²' },
+        
+    ];
+
+    // Các mốc giá
+    const priceRanges = [
+        { label: 'Thỏa thuận', min: '', max: '' },
+        { label: 'Dưới 500 triệu', min: '', max: 500000000 },
+        { label: '500 - 800 triệu', min: 500000000, max: 800000000 },
+        { label: '800 triệu - 1 tỷ', min: 800000000, max: 1000000000 },
+        { label: '1 - 2 tỷ', min: 1000000000, max: 2000000000 },
+        { label: '2 - 3 tỷ', min: 2000000000, max: 3000000000 },
+        { label: '3 - 5 tỷ', min: 3000000000, max: 5000000000 },
+        { label: '5 - 7 tỷ', min: 5000000000, max: 7000000000 },
+        { label: '7 - 10 tỷ', min: 7000000000, max: 10000000000 },
+        { label: '10 - 20 tỷ', min: 10000000000, max: 20000000000 },
+        { label: '20 - 30 tỷ', min: 20000000000, max: 30000000000 },
+        
     ];
 
     const activeFilterCount = Object.values(filters).filter(
         (v) => v !== null && v !== undefined && v !== '',
     ).length;
 
-    function handleFilterChange(e) {
-        const { name, value, type } = e.target;
-
-        const val =
-            value === '' || value === null
-                ? undefined
-                : type === 'number'
-                  ? Number(value)
-                  : value;
-
-        // clone filters
+    function handleFilterChange(name, value) {
         const newFilters = { ...filters };
 
-        // cập nhật filter hiện tại
-        if (val === undefined) delete newFilters[name];
-        else newFilters[name] = val;
+        if (value === undefined || value === '' || value === null) {
+            delete newFilters[name];
+        } else {
+            newFilters[name] = value;
+        }
 
         setFilters(newFilters);
 
         if (debounceRef.current) clearTimeout(debounceRef.current);
 
         debounceRef.current = setTimeout(() => {
-            // loại bỏ các filter rỗng/undefined/null trước khi gửi
             const query = Object.fromEntries(
                 Object.entries({ ...newFilters, page: 1 }).filter(
                     ([_, v]) => v !== undefined && v !== null && v !== '',
@@ -81,25 +92,90 @@ export default function HomeFinder() {
             );
 
             router.get('/home-finder', query, {
-                preserveState: false,
-                replace: false,
-                scroll: 'top',
+                preserveState: true,
+                replace: true,
+                preserveScroll: true,
             });
         }, 300);
     }
 
+    function handleSearchSubmit(e) {
+        e.preventDefault();
+        
+        const newFilters = { ...filters };
+        
+        if (searchInput.trim() === '') {
+            delete newFilters.q;
+        } else {
+            newFilters.q = searchInput.trim();
+        }
+
+        setFilters(newFilters);
+
+        const query = Object.fromEntries(
+            Object.entries({ ...newFilters, page: 1 }).filter(
+                ([_, v]) => v !== undefined && v !== null && v !== '',
+            ),
+        );
+
+        console.log('Search params:', query); // Debug
+
+        router.get('/home-finder', query, {
+            preserveState: false,
+            replace: false,
+            preserveScroll: false,
+        });
+    }
+
     function handleResetFilters() {
         setFilters({});
+        setSearchInput('');
+        router.get('/home-finder', {}, {
+            preserveState: false,
+            replace: false,
+        });
+    }
 
-        router.get(
-            '/home-finder',
-            {},
-            {
-                preserveState: false,
-                replace: false,
-                scroll: 'top',
-            },
-        );
+    function handleAreaSelect(min, max) {
+        setTempAreaRange({ min: min || '', max: max || '' });
+    }
+
+    function handleApplyArea() {
+        if (tempAreaRange.min) handleFilterChange('minArea', Number(tempAreaRange.min));
+        else handleFilterChange('minArea', undefined);
+        
+        if (tempAreaRange.max) handleFilterChange('maxArea', Number(tempAreaRange.max));
+        else handleFilterChange('maxArea', undefined);
+        
+        setShowAreaModal(false);
+    }
+
+    function handlePriceSelect(min, max) {
+        handleFilterChange('minPrice', min || undefined);
+        handleFilterChange('maxPrice', max || undefined);
+        setShowPriceModal(false);
+    }
+
+    function getAreaLabel() {
+        if (filters.minArea && filters.maxArea) {
+            return `${filters.minArea} - ${filters.maxArea} m²`;
+        } else if (filters.minArea) {
+            return `Từ ${filters.minArea} m²`;
+        } else if (filters.maxArea) {
+            return `Đến ${filters.maxArea} m²`;
+        }
+        return 'Diện tích';
+    }
+
+    function getPriceLabel() {
+        if (filters.minPrice && filters.maxPrice) {
+            return `${formatPrice(filters.minPrice)} - ${formatPrice(filters.maxPrice)}`;
+        } else if (filters.minPrice) {
+            return `Từ ${formatPrice(filters.minPrice)}`;
+        } else if (filters.maxPrice) {
+            return `Đến ${formatPrice(filters.maxPrice)}`;
+        }
+        return 'Khoảng giá';
     }
 
     return (
@@ -107,174 +183,173 @@ export default function HomeFinder() {
             <Navbar />
             <div className="list-page">
                 <div className="list-container">
-                    {/* Header */}
-                    <div className="list-header">
-                        <div className="list-header-content">
-                            <h1 className="list-title">
-                                Danh sách bất động sản
-                            </h1>
-                            <p className="list-subtitle">
-                                Tìm thấy
-                                <span className="highlight">
-                                    {list.total ?? 0}
-                                </span>
-                                kết quả
-                            </p>
-                        </div>
-                        <button
-                            className="filter-toggle-btn"
-                            onClick={() => setShowFilters(!showFilters)}
-                        >
-                            Bộ lọc
-                            {activeFilterCount > 0 && (
-                                <span className="filter-badge">
-                                    {activeFilterCount}
-                                </span>
-                            )}
-                        </button>
-                    </div>
-
-                    {/* Filter Panel */}
-                    <div
-                        className={`filter-panel ${showFilters ? 'show' : ''}`}
-                    >
-                        <div className="filter-header">
-                            <h3>Lọc kết quả</h3>
-                            <button
-                                className="reset-btn"
-                                onClick={handleResetFilters}
-                            >
-                                Đặt lại
-                            </button>
-                        </div>
-
-                        <div className="filter-grid">
-                            {/* City */}
-                            <div className="filter-group">
-                                <label>Khu vực</label>
-                                <select
-                                    name="city_id"
-                                    value={filters.city_id?.toString() ?? ''}
-                                    onChange={handleFilterChange}
-                                    className="filter-input"
-                                >
-                                    <option value="">Tất cả thành phố</option>
-                                    {cities.map((city) => (
-                                        <option
-                                            key={city.id}
-                                            value={city.id.toString()}
-                                        >
-                                            {city.name}
-                                        </option>
-                                    ))}
-                                </select>
+                    {/* Search Bar */}
+                    <div className="search-section">
+                        {/* Quick Stats */}
+                        <div className="quick-stats">
+                            <div className="stat-item">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 2L3 7v11h5v-6h4v6h5V7l-7-5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                <div className="stat-info">
+                                    <span className="stat-number">{list.total?.toLocaleString('vi-VN') ?? 0}</span>
+                                    <span className="stat-label">Bất động sản</span>
+                                </div>
                             </div>
+                            <div className="stat-divider"></div>
+                            <div className="stat-item">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16z" stroke="currentColor" strokeWidth="1.5"/>
+                                    <path d="M10 6v4l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                                <div className="stat-info">
+                                    <span className="stat-number">Hôm nay</span>
+                                    <span className="stat-label">Cập nhật mới</span>
+                                </div>
+                            </div>
+                            <div className="stat-divider"></div>
+                            <div className="stat-item">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M2.5 10h15M10 2.5v15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                                <div className="stat-info">
+                                    <span className="stat-number">{activeFilterCount}</span>
+                                    <span className="stat-label">Bộ lọc đang dùng</span>
+                                </div>
+                            </div>
+                        </div>
 
-                            {/* Category */}
-                            <div className="filter-group">
-                                <label>Loại hình</label>
-                                <select
-                                    name="category_id"
-                                    value={
-                                        filters.category_id?.toString() ?? ''
-                                    }
-                                    onChange={handleFilterChange}
-                                    className="filter-input"
+                        {/* Filter Pills */}
+                        <div className="filter-pills">
+                            <button 
+                                className={`filter-pill ${activeFilterCount > 0 ? 'active' : ''}`}
+                                onClick={handleResetFilters}
+                                type="button"
+                            >
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M2 4h12M5 4V2.5M11 4V2.5M5 8h6M7 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                                {activeFilterCount > 0 ? 'Xóa lọc' : 'Bộ lọc'}
+                                {activeFilterCount > 0 && (
+                                    <span className="filter-count">{activeFilterCount}</span>
+                                )}
+                            </button>
+
+                            <select 
+                                className={`filter-pill ${filters.city_id ? 'active' : ''}`}
+                                value={filters.city_id?.toString() || ''}
+                                onChange={(e) => handleFilterChange('city_id', e.target.value ? Number(e.target.value) : undefined)}
+                            >
+                                <option value="">Tất cả khu vực</option>
+                                {cities.map((city) => (
+                                    <option key={city.id} value={city.id.toString()}>
+                                        {city.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <button className="filter-pill" type="button">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
+                                    <path d="M8 5v3l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                                Tin xác thực
+                                <label className="toggle-switch">
+                                    <input type="checkbox" />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </button>
+
+                            <div className="filter-pill-group">
+                                <select 
+                                    className={`filter-pill ${filters.category_id ? 'active' : ''}`}
+                                    value={filters.category_id?.toString() || ''}
+                                    onChange={(e) => handleFilterChange('category_id', e.target.value ? Number(e.target.value) : undefined)}
                                 >
-                                    <option value="">Tất cả loại hình</option>
+                                    <option value="">Loại nhà đất</option>
                                     {categories.map((category) => (
-                                        <option
-                                            key={category.id}
-                                            value={category.id.toString()}
-                                        >
+                                        <option key={category.id} value={category.id.toString()}>
                                             {category.name}
                                         </option>
                                     ))}
                                 </select>
-                            </div>
 
-                            {/* Price */}
-                            <div className="filter-group">
-                                <label>Khoảng giá</label>
-                                <div className="range-inputs">
-                                    
-                                    <span className="range-separator">-</span>
-                                    <select
-                                        name="maxPrice"
-                                        value={filters.maxPrice?.toString() ?? ''}
-                                        onChange={handleFilterChange}
-                                        className="filter-input"
-                                    >
-                                        {priceOptions.map((option) => (
-                                            <option
-                                                key={`max-${option.value}`}
-                                                value={option.value}
-                                            >
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Area */}
-                            <div className="filter-group">
-                                <label>Diện tích (m²)</label>
-                                <div className="range-inputs">
-                                    <input
-                                        type="number"
-                                        name="minArea"
-                                        placeholder="Từ"
-                                        value={filters.minArea ?? ''}
-                                        onChange={handleFilterChange}
-                                        className="filter-input"
-                                    />
-                                    <span className="range-separator">-</span>
-                                    <input
-                                        type="number"
-                                        name="maxArea"
-                                        placeholder="Đến"
-                                        value={filters.maxArea ?? ''}
-                                        onChange={handleFilterChange}
-                                        className="filter-input"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Bedrooms */}
-                            <div className="filter-group">
-                                <label>Số phòng ngủ</label>
-                                <input
-                                    type="number"
-                                    name="bedrooms"
-                                    placeholder="Nhập số phòng"
-                                    value={filters.bedrooms ?? ''}
-                                    onChange={handleFilterChange}
-                                    className="filter-input"
-                                    min="0"
-                                />
-                            </div>
-
-                            {/* Sort */}
-                            <div className="filter-group">
-                                <label>Sắp xếp</label>
-                                <select
-                                    name="sort"
-                                    value={filters.sort?.toString() ?? ''}
-                                    onChange={handleFilterChange}
-                                    className="filter-input"
+                                <button 
+                                    type="button"
+                                    className={`filter-pill ${filters.minPrice || filters.maxPrice ? 'active' : ''}`}
+                                    onClick={() => setShowPriceModal(true)}
                                 >
-                                    <option value="">Mặc định</option>
-                                    <option value="price_asc">
-                                        Giá tăng dần
-                                    </option>
-                                    <option value="price_desc">
-                                        Giá giảm dần
-                                    </option>
+                                    {getPriceLabel()}
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                <button 
+                                    type="button"
+                                    className={`filter-pill ${filters.minArea || filters.maxArea ? 'active' : ''}`}
+                                    onClick={() => setShowAreaModal(true)}
+                                >
+                                    {getAreaLabel()}
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                <select 
+                                    className={`filter-pill ${filters.bedrooms ? 'active' : ''}`}
+                                    value={filters.bedrooms?.toString() || ''}
+                                    onChange={(e) => handleFilterChange('bedrooms', e.target.value ? Number(e.target.value) : undefined)}
+                                >
+                                    <option value="">Số phòng ngủ</option>
+                                    <option value="1">1 phòng</option>
+                                    <option value="2">2 phòng</option>
+                                    <option value="3">3 phòng</option>
+                                    <option value="4">4 phòng</option>
+                                    <option value="5">5+ phòng</option>
+                                </select>
+
+                                <select 
+                                    className={`filter-pill ${filters.sort ? 'active' : ''}`}
+                                    value={filters.sort?.toString() || ''}
+                                    onChange={(e) => handleFilterChange('sort', e.target.value || undefined)}
+                                >
+                                    <option value="">Sắp xếp</option>
+                                    <option value="price_asc">Giá tăng dần</option>
+                                    <option value="price_desc">Giá giảm dần</option>
+                                    <option value="area_asc">Diện tích tăng dần</option>
+                                    <option value="area_desc">Diện tích giảm dần</option>
+                                    <option value="newest">Mới nhất</option>
                                 </select>
                             </div>
+
+                            {/* <button className="filter-pill" type="button">
+                                Môi giới chuyên nghiệp
+                                <label className="toggle-switch">
+                                    <input type="checkbox" />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </button> */}
                         </div>
                     </div>
+
+                    {/* Results Header */}
+                    <div className="results-header">
+                        {/* <div className="breadcrumb">
+                            Bán / Hồ Chí Minh / Tất cả BĐS tại Hồ Chí Minh
+                        </div> */}
+                        <div className="results-info">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" stroke="currentColor" strokeWidth="1.5"/>
+                                <path d="M8 8V5M8 10.5h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                            </svg>
+                            Có <strong>{list.total?.toLocaleString('vi-VN') ?? 0}</strong> lượt xem khu vực này trong 7 ngày vừa qua.
+                        </div>
+                    </div>
+
+                    {/* Page Title */}
+                    <h1 className="page-title">Mua Bán Nhà Đất .... Giá Rẻ Mới</h1>
+                    <p className="page-subtitle">Hiện có {list.total?.toLocaleString('vi-VN') ?? 0} bất động sản.</p>
 
                     {/* Results */}
                     <div className="results-section" key={list.current_page}>
@@ -291,10 +366,7 @@ export default function HomeFinder() {
                             <div className="no-results">
                                 <h3>Không tìm thấy kết quả</h3>
                                 <p>Vui lòng thử điều chỉnh bộ lọc của bạn</p>
-                                <button
-                                    onClick={handleResetFilters}
-                                    className="reset-filters-btn"
-                                >
+                                <button onClick={handleResetFilters} className="reset-filters-btn">
                                     Xóa bộ lọc
                                 </button>
                             </div>
@@ -302,6 +374,111 @@ export default function HomeFinder() {
                     </div>
                 </div>
             </div>
+
+            {/* Area Modal */}
+            {showAreaModal && (
+                <div className="modal-overlay" onClick={() => setShowAreaModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Diện tích</h3>
+                            <button className="modal-close" onClick={() => setShowAreaModal(false)}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="range-section">
+                                <h4>Diện tích nhỏ nhất</h4>
+                                <div className="range-inputs-modal">
+                                    <input
+                                        type="number"
+                                        placeholder="Từ"
+                                        value={tempAreaRange.min}
+                                        onChange={(e) => setTempAreaRange({...tempAreaRange, min: e.target.value})}
+                                        className="modal-input"
+                                    />
+                                    <span>→</span>
+                                    <input
+                                        type="number"
+                                        placeholder="Đến"
+                                        value={tempAreaRange.max}
+                                        onChange={(e) => setTempAreaRange({...tempAreaRange, max: e.target.value})}
+                                        className="modal-input"
+                                    />
+                                </div>
+                            </div>
+                            <h4>Tất cả diện tích</h4>
+                            <div className="options-grid">
+                                <button
+                                    type="button"
+                                    className={`option-btn ${!filters.minArea && !filters.maxArea ? 'active' : ''}`}
+                                    onClick={() => handleAreaSelect('', '')}
+                                >
+                                    Tất cả
+                                </button>
+                                {areaOptions.map((option, index) => (
+                                    <button
+                                        type="button"
+                                        key={index}
+                                        className={`option-btn ${filters.minArea == option.min && filters.maxArea == option.max ? 'active' : ''}`}
+                                        onClick={() => handleAreaSelect(option.min, option.max)}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn-apply" onClick={handleApplyArea}>
+                                Áp dụng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Price Modal */}
+            {showPriceModal && (
+                <div className="modal-overlay" onClick={() => setShowPriceModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Khoảng giá</h3>
+                            <button className="modal-close" onClick={() => setShowPriceModal(false)}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            <h4>Lọc theo khoảng giá</h4>
+                            <div className="options-list">
+                                {priceRanges.map((range, index) => (
+                                    <button
+                                        type="button"
+                                        key={index}
+                                        className={`option-item ${filters.minPrice == range.min && filters.maxPrice == range.max ? 'active' : ''}`}
+                                        onClick={() => handlePriceSelect(range.min, range.max)}
+                                    >
+                                        <span className="radio-circle"></span>
+                                        {range.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <h4>Lọc theo diện tích</h4>
+                            <div className="options-list">
+                                {areaOptions.map((option, index) => (
+                                    <button
+                                        type="button"
+                                        key={index}
+                                        className={`option-item ${filters.minArea == option.min && filters.maxArea == option.max ? 'active' : ''}`}
+                                        onClick={() => {
+                                            handleFilterChange('minArea', option.min || undefined);
+                                            handleFilterChange('maxArea', option.max || undefined);
+                                        }}
+                                    >
+                                        <span className="radio-circle"></span>
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </>
     );

@@ -2,6 +2,7 @@ import blog1 from '../../../../../../public/images/blog1.png';
 import blog2 from '../../../../../../public/images/blog2.png';
 import blog3 from '../../../../../../public/images/blog3.png';
 import blog4 from '../../../../../../public/images/blog4.png';
+import Navbar from '../../Headers/Navbar/Navbar';
 import './BlogList.css';
 import { Link } from '@inertiajs/react';
 
@@ -34,7 +35,9 @@ const newsData = [
 
 const BlogList = () => {
     return (
+        
         <div className="news-section">
+                      
             <div className="main-contain">
                 <h1 className='header_title'>Tin tức bất động sản</h1>
                 <div className="news-grid">
