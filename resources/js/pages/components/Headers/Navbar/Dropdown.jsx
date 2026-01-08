@@ -6,26 +6,61 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
         {
             title: 'Tiện ích',
             items: [
-                { label: 'Tin đăng đã lưu', icon: '/icons/tin-dang-da-luu.svg', href: '/saved-posts' },
-                { label: 'Tìm kiếm đã lưu', icon: '/icons/tim-kiem-da-luu.svg', href: '/saved-searches' },
-                { label: 'Lịch sử xem tin', icon: '/icons/lich-su-xem-tin.svg', href: '/view-history' },
-                { label: 'Đánh giá từ tôi', icon: '/icons/danh-gia-tu-toi.svg', href: '/my-reviews' },
+                {
+                    label: 'Tin đăng đã lưu',
+                    icon: '/icons/tin-dang-da-luu.svg',
+                    href: '/saved',
+                },
+                {
+                    label: 'Tìm kiếm đã lưu',
+                    icon: '/icons/tim-kiem-da-luu.svg',
+                    href: '/saved-searches',
+                },
+                {
+                    label: 'Lịch sử xem tin',
+                    icon: '/icons/lich-su-xem-tin.svg',
+                    href: '/posts/viewed',
+                },
             ],
         },
         {
             title: 'Dịch vụ trả phí',
             items: [
-                { label: 'Gói Pro', icon: '/icons/goi-pro.svg', href: '/pro-plans' },
-                { label: 'Lịch sử giao dịch', icon: '/icons/lich-su-xem-tin.svg', href: '/transactions' },
+                {
+                    label: 'Gói Pro',
+                    icon: '/icons/goi-pro.svg',
+                    href: '/pro-plans',
+                },
+                {
+                    label: 'Lịch sử giao dịch',
+                    icon: '/icons/lich-su-xem-tin.svg',
+                    href: '/transactions',
+                },
             ],
         },
         {
             title: 'Khác',
             items: [
-                { label: 'Cài đặt tài khoản', icon: '/icons/cai-dat.svg', href: '/settings' },
-                { label: 'Trợ giúp', icon: '/icons/tro-giup.svg', href: '/help' },
+                {
+                    label: 'Cài đặt tài khoản',
+                    icon: '/icons/cai-dat.svg',
+                    href: '/settings',
+                },
+                {
+                    label: 'Trợ giúp',
+                    icon: '/icons/tro-giup.svg',
+                    href: '/help',
+                    guest: true,
+                },
                 ...(isLogin
-                    ? [{ label: 'Đăng xuất', icon: '/icons/dang-xuat.svg', href: '/logout', method: 'post' }]
+                    ? [
+                          {
+                              label: 'Đăng xuất',
+                              icon: '/icons/dang-xuat.svg',
+                              href: '/logout',
+                              method: 'post',
+                          },
+                      ]
                     : []),
             ],
         },
@@ -36,7 +71,8 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
             {isLogin ? (
                 <div>
                     <div className="dropdown-menu__login">
-                        <a href="/profile"
+                        <a
+                            href="/profile"
                             style={{
                                 display: 'flex',
                                 justifyContent: 'center',
@@ -53,8 +89,8 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
                                     auth.user.avatar_image_url
                                         ? `/${auth.user.avatar_image_url}`
                                         : auth.user.avatar
-                                            ? auth.user.avatar
-                                            : '/images/ava2.jpg'
+                                          ? auth.user.avatar
+                                          : '/images/ava2.jpg'
                                 }
                                 alt="avatar"
                                 className="dropdown-menu__login--avatar"
@@ -69,7 +105,8 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
                     </div>
 
                     <div className="dropdown-menu__login--name">
-                        <a href="/profile"
+                        <a
+                            href="/profile"
                             style={{
                                 color: '#222',
                                 fontSize: '1.8rem',
@@ -95,10 +132,7 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
                         </span>
                         <span className="aw__snh7o1a">Đăng nhập cái đã!</span>
                     </div>
-                    <div
-                        className="dropdown-menu__none--btn"
-                        onClick={onLogin}
-                    >
+                    <div className="dropdown-menu__none--btn" onClick={onLogin}>
                         Đăng nhập
                     </div>
                 </div>
@@ -110,6 +144,8 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
                         title={section.title}
                         items={section.items}
                         onNavigate={setOpen}
+                        onLogin={onLogin}
+                        auth={auth}
                     />
                 ))}
             </div>

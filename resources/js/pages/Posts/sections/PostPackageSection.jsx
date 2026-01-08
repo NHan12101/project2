@@ -1,60 +1,272 @@
+import { useEffect } from 'react';
+
 export default function PostPackageSection({ form, subscriptions }) {
     const { data, setData } = form;
 
-    const selectedPackage = subscriptions.find(s => s.id === data.subscription_id);
-    const totalPrice = selectedPackage ? selectedPackage.price_per_day * data.days : 0;
+    const priorityLabels = {
+        1: 'Hiển thị cuối cùng',
+        2: 'Dưới VIP Vàng',
+        3: 'Dưới VIP Kim Cương',
+        4: 'Hiển thị trên cùng',
+    };
+
+    const colorPackage = [
+        {
+            1: '#1C1F22',
+            2: '#009194',
+            3: '#C3810A',
+            4: '#C20000',
+        },
+        {
+            1: '#95d1d2',
+            2: '#95d1d2',
+            3: '#e6cb99',
+            4: '#e69696',
+        },
+        {
+            1: '0',
+            2: '8',
+            3: '15',
+            4: '30',
+        },
+    ];
+
+    const getRectColorsAndHeights = (priority) => {
+        switch (priority) {
+            case 3: // Vip Vàng
+                return {
+                    colors: ['#C1C9D2', '#C3810A', '#C1C9D2', '#C1C9D2'],
+                    heights: [4, 8, 4, 4],
+                    rx: [2, 4, 2, 2],
+                    y: [4, 10, 20, 26],
+                };
+            case 2: // Vip Bạc
+                return {
+                    colors: ['#C1C9D2', '#C1C9D2', '#009194', '#C1C9D2'],
+                    heights: [4, 4, 8, 4],
+                    rx: [2, 2, 4, 2],
+                    y: [4, 10, 16, 26],
+                };
+            case 1: // Tin thường
+                return {
+                    colors: ['#C1C9D2', '#C1C9D2', '#C1C9D2', '#1C1F22'],
+                    heights: [4, 4, 4, 8],
+                    rx: [2, 2, 2, 4],
+                    y: [4, 10, 16, 22],
+                };
+            default: // Vip Kim Cương
+                return {
+                    colors: ['#C20000', '#C1C9D2', '#C1C9D2', '#C1C9D2'],
+                    heights: [8, 4, 4, 4],
+                    rx: [4, 2, 2, 2],
+                    y: [4, 14, 20, 26],
+                };
+        }
+    };
+
+    const selectedPackage = subscriptions.find(
+        (s) => s.id === data.subscription_id,
+    );
+
     const paymentMethods = ['momo', 'vnpay', 'stripe', 'paypal'];
+
+    const selectedPriority = selectedPackage?.priority;
+
+    // Danh sách ngày theo loại tin
+    const daysOptions =
+        selectedPriority === 1
+            ? [15, 30, 60] // Tin thường
+            : [7, 10, 15]; // VIP
+
+    // Reset ngày mặc định khi đổi gói
+    useEffect(() => {
+        if (!selectedPriority) return;
+
+        if (selectedPriority === 1) {
+            // Tin thường
+            setData('days', 15);
+        } else {
+            // VIP
+            setData('days', 7);
+        }
+    }, [selectedPriority]);
+
+    const paymentMethodImages = {
+        momo: '/images/Momo.svg',
+        vnpay: '/images/VNPAY.svg',
+        stripe: '/images/STRIPE.svg',
+        paypal: '/images/PAYPAL.svg',
+    };
 
     return (
         <div className="post-package">
-            <h2>Cấu hình gói đăng tin</h2>
+            <span className="post-form__label post-media__title">
+                Chọn loại tin
+            </span>
 
             <div className="package-list">
-                {subscriptions.map((pkg) => (
+                {subscriptions.map((pkg) => {
+                    const { colors, heights, rx, y } = getRectColorsAndHeights(
+                        pkg.priority,
+                    );
+
+                    return (
+                        <div
+                            key={pkg.id}
+                            className={
+                                'package-card ' +
+                                (data.subscription_id === pkg.id
+                                    ? 'active'
+                                    : '')
+                            }
+                            onClick={() => setData('subscription_id', pkg.id)}
+                        >
+                            <svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 32 34"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <rect
+                                    x="4"
+                                    y={y[0]}
+                                    width="24"
+                                    height={heights[0]}
+                                    rx={rx[0]}
+                                    fill={colors[0]}
+                                />
+                                <rect
+                                    x="4"
+                                    y={y[1]}
+                                    width="24"
+                                    height={heights[1]}
+                                    rx={rx[1]}
+                                    fill={colors[1]}
+                                />
+                                <rect
+                                    x="4"
+                                    y={y[2]}
+                                    width="24"
+                                    height={heights[2]}
+                                    rx={rx[2]}
+                                    fill={colors[2]}
+                                />
+                                <rect
+                                    x="4"
+                                    y={y[3]}
+                                    width="24"
+                                    height={heights[3]}
+                                    rx={rx[3]}
+                                    fill={colors[3]}
+                                />
+                            </svg>
+
+                            <h4 className="package-name">{pkg.name}</h4>
+                            <span className="package-priorty">
+                                {priorityLabels[pkg.priority]}
+                            </span>
+
+                            <div className="package-box">
+                                {pkg.priority !== 1 && (
+                                    <div
+                                        className="package-box__bg"
+                                        style={{
+                                            backgroundImage: `linear-gradient(90deg, ${colorPackage[1][pkg.priority]} 0, #fff 75%)`,
+                                        }}
+                                    >
+                                        <div
+                                            className="package-box__01"
+                                            style={{
+                                                background: `${colorPackage[0][pkg.priority]}`,
+                                            }}
+                                        >
+                                            X{colorPackage[2][pkg.priority]}
+                                        </div>
+                                        <span className="package-priorty__span">
+                                            lượt liên hệ <br /> so với tin
+                                            thường
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <p className="package-price_per_day">
+                                {pkg.price_per_day.toLocaleString()} đ/ngày
+                            </p>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <span
+                className="post-form__label"
+                style={{ marginTop: 26, display: 'block' }}
+            >
+                Chọn số ngày
+            </span>
+            <div className="package-days">
+                {daysOptions.map((d) => (
                     <div
-                        key={pkg.id}
-                        className={'package-card ' + (data.subscription_id === pkg.id ? 'active' : '')}
-                        onClick={() => setData('subscription_id', pkg.id)}
+                        key={d}
+                        className={`package-days__button ${
+                            data.days === d ? 'active' : ''
+                        }`}
+                        onClick={() => setData('days', d)}
                     >
-                        <h4>{pkg.name}</h4>
-                        <p>{pkg.price_per_day.toLocaleString()}đ / ngày</p>
-                        <small>Ưu tiên: {pkg.priority}</small>
+                        <div>
+                            <span style={{ fontWeight: 600 }}>{d} ngày</span>
+
+                            {selectedPackage && (
+                                <p style={{ marginTop: '12px' }}>
+                                    {(
+                                        selectedPackage.price_per_day * d
+                                    ).toLocaleString()}{' '}
+                                    đ
+                                </p>
+                            )}
+                        </div>
+
+                        <input
+                            id="select-package"
+                            type="radio"
+                            name="select-package"
+                            hidden
+                        />
+                        <label
+                            htmlFor="select-package"
+                            className={`select-package__radio ${
+                                data.days === d ? 'active' : ''
+                            }`}
+                        ></label>
                     </div>
                 ))}
             </div>
 
-            <div className="package-days">
-                <h4>Chọn số ngày</h4>
-                {[7, 10, 15, 30, 60].map(d => (
-                    <button
-                        key={d}
-                        type="button"
-                        className={data.days === d ? 'active' : ''}
-                        onClick={() => setData('days', d)}
-                    >
-                        {d} ngày
-                    </button>
-                ))}
-            </div>
-
-            {selectedPackage && (
-                <div className="package-total">
-                    Tổng tiền: <strong>{totalPrice.toLocaleString()}đ</strong>
-                </div>
-            )}
+            <span
+                className="post-form__label"
+                style={{ marginTop: 26, display: 'block' }}
+            >
+                Chọn phương thức thanh toán
+            </span>
 
             <div className="payment-methods">
-                {paymentMethods.map(method => (
-                    <label key={method}>
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value={method}
-                            checked={data.payment_method === method}
-                            onChange={() => setData('payment_method', method)}
+                {paymentMethods.map((method) => (
+                    <div
+                        key={method}
+                        className={`payment-methods__box ${
+                            data.payment_method === method ? 'active' : ''
+                        }`}
+                        onClick={() => setData('payment_method', method)}
+                    >
+                        <img
+                            src={paymentMethodImages[method]}
+                            alt={method}
+                            className={`payment-methods__box--images ${
+                                data.payment_method === method ? 'active' : ''
+                            }`}
                         />
-                        {method.toUpperCase()}
-                    </label>
+                    </div>
                 ))}
             </div>
         </div>

@@ -1,8 +1,15 @@
 import { router } from '@inertiajs/react';
 
-export default function DropdownSection({ title, items, onNavigate }) {
+export default function DropdownSection({
+    title,
+    items,
+    onNavigate,
+    onLogin,
+    auth,
+}) {
     const handleClick = (item) => {
         if (onNavigate) onNavigate();
+
         if (item.method === 'post') {
             router.post(item.href);
         } else {
@@ -19,7 +26,16 @@ export default function DropdownSection({ title, items, onNavigate }) {
             <div className="aw__g19ew3vq">
                 {items.map((item, index) => (
                     <div className="aw__l18daxzw" key={index}>
-                        <a onClick={() => handleClick(item)} className="aw__i168xjue" >
+                        <a
+                            onClick={() => {
+                                if (auth.user || item.guest) {
+                                    handleClick(item);
+                                } else {
+                                    onLogin();
+                                }
+                            }}
+                            className="aw__i168xjue"
+                        >
                             <div className="aw__l1o6v83t">
                                 <img src={item.icon} alt={item.label} />
                             </div>

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Post;
 
 class User extends Authenticatable
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable
         'avatar_image_url',
         'avatar',
         'notification',
+        'phone_verified_at',
     ];
 
     protected $hidden = [
@@ -29,6 +31,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime'
     ];
 
     protected $appends = ['avatar_url'];
@@ -64,5 +67,12 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function viewedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'post_view_histories')
+            ->withPivot('viewed_at')
+            ->orderByDesc('post_view_histories.viewed_at');
     }
 }

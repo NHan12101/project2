@@ -25,18 +25,21 @@ createInertiaApp({
                             color: '#fff',
                             fontWeight: '500',
                             fontSize: '1.38rem',
-                            minWidth: '360px',
+                            minWidth: '340px',
                             maxWidth: '500px',
-                            background: '#000000ab'
+                            background: '#000000ab',
                         },
                         success: {
                             style: {
                                 background: '#000000ab',
+                                minWidth: '260px',
                             },
                         },
                         error: {
                             style: {
                                 background: '#000000ab',
+                                minWidth: '300px',
+                                maxWidth: '500px',
                             },
                         },
                         loading: {

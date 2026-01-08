@@ -1,12 +1,13 @@
 import useDropdown from '@/hooks/useDropdown.js';
 import { initFavorites, useFavorite } from '@/hooks/useFavorite.js';
+import { formatPrice } from '@/utils/formatPrice';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import Chat from '../Chat.jsx';
-import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import Footer from '../components/Footer/Footer.jsx';
+import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
 import MapView from '../MapView.jsx';
 import Image360Viewer from '../Posts/modals/Image360Viewer.jsx';
@@ -18,87 +19,122 @@ export default function PropertyDetail({
     favoritePostIds,
     auth,
 }) {
-    const utilities = [
-        { id: 1, icon: '/icons/bed-icon.png', value: post.bedrooms },
-        { id: 2, icon: '/icons/bathroom-icon.png', value: post.bathrooms },
-        { id: 3, icon: '/icons/livingroom-icon.png', value: post.livingrooms },
-        { id: 4, icon: '/icons/kitchen-icon.png', value: post.kitchens },
-    ];
+    const utilities = useMemo(
+        () => [
+            { id: 1, icon: '/icons/bed-icon.png', value: post.bedrooms },
+            { id: 2, icon: '/icons/bathroom-icon.png', value: post.bathrooms },
+            {
+                id: 3,
+                icon: '/icons/livingroom-icon.png',
+                value: post.livingrooms,
+            },
+            { id: 4, icon: '/icons/kitchen-icon.png', value: post.kitchens },
+        ],
+        [post],
+    );
 
-    const attribute = [
-        {
-            id: 1,
-            icon: '/icons/apartment_type.png',
-            lable: 'Loại hình căn hộ',
-            value: post.category.name,
-        },
+    const attribute = useMemo(
+        () => [
+            {
+                id: 1,
+                icon: '/icons/apartment_type.png',
+                lable: 'Loại hình căn hộ',
+                value: post.category.name,
+            },
+            {
+                id: 2,
+                icon: '/icons/price.png',
+                lable: 'Khoảng giá',
+                value: formatPrice(post.price),
+            },
+            {
+                id: 3,
+                icon: '/icons/size.png',
+                lable: 'Diện tích',
+                value: `${post.area} m²`,
+            },
+            {
+                id: 4,
+                icon: '/icons/bed-icon.png',
+                lable: 'Số phòng ngủ',
+                value: post.bedrooms,
+            },
+            {
+                id: 5,
+                icon: '/icons/bathroom-icon.png',
+                lable: 'Số phòng tắm, vệ sinh',
+                value: post.bathrooms,
+            },
+            {
+                id: 6,
+                icon: '/icons/livingroom-icon.png',
+                lable: 'Số phòng khách',
+                value: post.livingrooms,
+            },
+            {
+                id: 7,
+                icon: '/icons/kitchen-icon.png',
+                lable: 'Số phòng bếp',
+                value: post.kitchens,
+            },
+            {
+                id: 8,
+                icon: '/icons/floor.png',
+                lable: 'Số tầng',
+                value: post.floors,
+            },
+            {
+                id: 9,
+                icon: '/icons/direction.png',
+                lable: 'Hướng nhà',
+                value: post.direction,
+            },
+            {
+                id: 10,
+                icon: '/icons/property_legal_document.png',
+                lable: 'Giấy tờ pháp lý',
+                value: post.legal,
+            },
+            {
+                id: 11,
+                icon: '/icons/noithat.png',
+                lable: 'Nội thất',
+                value: post.furniture,
+            },
+        ],
+        [post],
+    );
+
+    const subscription = {
+        1: 'Tin thường',
+        2: 'VIP Bạc',
+        3: 'VIP Vàng',
+        4: 'VIP Kim Cương',
+    };
+
+    const meta = [
+        { id: 1, title: 'Ngày đăng', value: formatDate(post.updated_at) },
         {
             id: 2,
-            icon: '/icons/price.png',
-            lable: 'Khoảng giá',
-            value: formatPrice(post.price),
+            title: 'Ngày hết hạn',
+            value: formatDate(post.package_expired_at),
         },
         {
             id: 3,
-            icon: '/icons/size.png',
-            lable: 'Diện tích',
-            value: `${post.area} m²`,
-        },
-        {
-            id: 4,
-            icon: '/icons/bed-icon.png',
-            lable: 'Số phòng ngủ',
-            value: post.bedrooms,
-        },
-        {
-            id: 5,
-            icon: '/icons/bathroom-icon.png',
-            lable: 'Số phòng tắm, vệ sinh',
-            value: post.bathrooms,
-        },
-        {
-            id: 6,
-            icon: '/icons/livingroom-icon.png',
-            lable: 'Số phòng khách',
-            value: post.livingrooms,
-        },
-        {
-            id: 7,
-            icon: '/icons/kitchen-icon.png',
-            lable: 'Số phòng bếp',
-            value: post.kitchens,
-        },
-        {
-            id: 8,
-            icon: '/icons/floor.png',
-            lable: 'Số tầng',
-            value: post.floors,
-        },
-        {
-            id: 9,
-            icon: '/icons/direction.png',
-            lable: 'Hướng nhà',
-            value: post.direction,
-        },
-        {
-            id: 10,
-            icon: '/icons/property_legal_document.png',
-            lable: 'Giấy tờ pháp lý',
-            value: post.legal,
-        },
-        {
-            id: 11,
-            icon: '/icons/noithat.png',
-            lable: 'Nội thất',
-            value: post.furniture,
+            title: 'Loại đăng',
+            value: subscription[post.subscription_id],
         },
     ];
 
-    const meta = [
-        { id: 1, title: 'Ngày đăng', value: '09/12/2025' },
-        { id: 2, title: 'Ngày hết hạn', value: '29/12/2025' },
-        { id: 3, title: 'Loại đăng', value: 'Tin thường' },
-    ];
+    function formatDate(dateString) {
+        const d = new Date(dateString);
+
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
 
     const { menuRef, open, setOpen } = useDropdown();
     const galleryRef = useRef(null);
@@ -107,8 +143,14 @@ export default function PropertyDetail({
 
     const { isLiked, toggle } = useFavorite(post.id);
 
-    const [mediaList, setMediaList] = useState([]);
+    useEffect(() => {
+        initFavorites(favoritePostIds);
+    }, [favoritePostIds]);
+
+    // const [mediaList, setMediaList] = useState([]);
     const [activeMedia, setActiveMedia] = useState(null);
+
+    const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
 
     const buildMediaList = (post) => {
         const list = [];
@@ -117,7 +159,7 @@ export default function PropertyDetail({
             list.push({
                 id: 'video',
                 type: 'video',
-                src: `/storage/${post.video}`,
+                src: `${R2_PUBLIC_BASE_URL}/${post.video}`,
             });
         }
 
@@ -133,50 +175,53 @@ export default function PropertyDetail({
             list.push({
                 id: `img-${index}`,
                 type: img.is360 ? '360' : 'image',
-                src: `/storage/${img.medium_path}`, // ảnh chính
-                thumb: `/storage/${img.thumb_path}`, // thumbnail
-                full: `/storage/${img.image_path}`, // ảnh gốc (nếu cần)
+                src: `${R2_PUBLIC_BASE_URL}/${img.medium_path}`, // ảnh medium
+                thumb: `${R2_PUBLIC_BASE_URL}/${img.thumb_path}`, // thumbnail
+                full: `${R2_PUBLIC_BASE_URL}/${img.image_path}`, // ảnh full
             });
         });
 
         return list;
     };
 
+    const mediaList = useMemo(
+        () => buildMediaList(post),
+        [post.id, post.images, post.video, post.youtube_url],
+    );
+
     useEffect(() => {
-        const list = buildMediaList(post);
-        setMediaList(list);
-
-        const defaultMedia =
-            list.find((m) => m.type === 'video') ||
-            list.find((m) => m.type === 'youtube') ||
-            list.find((m) => m.type === '360') ||
-            list.find((m) => m.type === 'image');
-
-        setActiveMedia(defaultMedia);
-    }, [post]);
+        setActiveMedia(
+            mediaList.find((m) => m.type === 'video') ||
+                mediaList.find((m) => m.type === 'youtube') ||
+                mediaList.find((m) => m.type === '360') ||
+                mediaList.find((m) => m.type === 'image'),
+        );
+    }, [mediaList]);
 
     // Tối ưu cảm giác load
     useEffect(() => {
         if (activeMedia?.type === 'image' || activeMedia?.type === '360') {
             const img = new Image();
             img.src = activeMedia.src;
+
+            return () => {
+                img.src = '';
+            };
         }
     }, [activeMedia]);
-
-    useEffect(() => {
-        initFavorites(favoritePostIds);
-    }, [favoritePostIds]);
 
     // Hàm kiểm tra scroll
     function checkScroll() {
         const el = galleryRef.current;
         if (!el) return;
 
-        const tolerance = 2;
-        setCanScrollLeft(el.scrollLeft > 0);
-        setCanScrollRight(
-            el.scrollLeft + el.clientWidth < el.scrollWidth - tolerance,
-        );
+        requestAnimationFrame(() => {
+            const tolerance = 2;
+            setCanScrollLeft(el.scrollLeft > 0);
+            setCanScrollRight(
+                el.scrollLeft + el.clientWidth < el.scrollWidth - tolerance,
+            );
+        });
     }
 
     function scrollGallery(direction = 1) {
@@ -205,16 +250,6 @@ export default function PropertyDetail({
         };
     }, []);
 
-    function formatPrice(price) {
-        if (price >= 1_000_000_000) {
-            return (price / 1_000_000_000).toFixed(1).replace('.', ',') + ' tỷ';
-        } else if (price >= 1_000_000) {
-            return (price / 1_000_000).toFixed(1).replace('.', ',') + ' triệu';
-        } else {
-            return price.toLocaleString('vi-VN');
-        }
-    }
-
     const handleStartChat = async () => {
         try {
             const res = await axios.post('/conversations/start', {
@@ -224,8 +259,12 @@ export default function PropertyDetail({
             router.visit(`/chatbox?open=${conversationId}`);
         } catch (err) {
             console.error('Error starting conversation:', err);
-            alert('Không thể bắt đầu cuộc trò chuyện.');
+            toast.error('Không thể bắt đầu cuộc trò chuyện.');
         }
+    };
+
+    const handleSelectMedia = (media) => {
+        setActiveMedia(media);
     };
 
     return (
@@ -242,7 +281,7 @@ export default function PropertyDetail({
                             playsInline
                             muted
                             width="100%"
-                            height="100%"
+                            height="100.2%"
                             key={activeMedia.id}
                         >
                             <source src={activeMedia.src} type="video/mp4" />
@@ -274,19 +313,13 @@ export default function PropertyDetail({
                     {activeMedia?.type === 'image' && (
                         <img
                             key={activeMedia.id}
-                            src={activeMedia.full}
+                            src={activeMedia.src} // medium
+                            data-full={activeMedia.full}
+                            alt={post.title}
                             loading="eager"
                             decoding="async"
                         />
                     )}
-
-                    {/* <iframe
-                        src="https://kuula.co/share/hSwx8?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1&autorotate=0.2&autopause=1&hideinfo=1&hidefullscreen=1&hidecontrols=1&hidetitle=1&hideinst=1"
-                        style={{ width: '100%', height: '604px' }}
-                        frameBorder="0"
-                        allow="vr; gyroscope; accelerometer"
-                        allowFullScreen
-                    /> */}
                 </div>
 
                 <div className="property-detail__content">
@@ -315,10 +348,21 @@ export default function PropertyDetail({
                                                 ? 'is-active'
                                                 : ''
                                         }`}
-                                        onClick={() => setActiveMedia(media)}
+                                        style={{ position: 'relative' }}
+                                        onClick={() => handleSelectMedia(media)}
                                     >
                                         {media.type === 'video' && (
-                                            <div className="video-thumb video-thumb__video"></div>
+                                            <div className="video-thumb video-thumb__video">
+                                                <img
+                                                    style={{
+                                                        height: 62,
+                                                        width: 62,
+                                                        objectFit: 'cover',
+                                                    }}
+                                                    src="/icons/icon-play.svg"
+                                                    alt="icon-play"
+                                                />
+                                            </div>
                                         )}
 
                                         {media.type === 'youtube' && (
@@ -339,6 +383,18 @@ export default function PropertyDetail({
                                                     ></path>
                                                 </svg>
                                             </div>
+                                        )}
+
+                                        {media.type === '360' && (
+                                            <span
+                                                className="image-cover-badge"
+                                                style={{
+                                                    background: '#e8e8e8',
+                                                    color: '#000',
+                                                }}
+                                            >
+                                                Ảnh 360°
+                                            </span>
                                         )}
 
                                         {(media.type === 'image' ||
@@ -536,7 +592,23 @@ export default function PropertyDetail({
                                 background: '#fff',
                             }}
                         >
-                            sssss
+                            <h1>Thông tin liên hệ</h1>
+                            <div
+                                style={{
+                                    height: 60,
+                                    width: 60,
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <img
+                                    style={{ height: '100%' }}
+                                    src={`/${post.user?.avatar_image_url}`}
+                                    alt="avatar"
+                                />
+                            </div>
+                            <p>Chủ sở hữu: {post.user.name}</p>
+                            <p>SĐT: {post.user.phone ?? 'Chưa cập nhật'}</p>
+                            <p>Email: {post.user.email}</p>
                         </div>
                     </div>
                 )}

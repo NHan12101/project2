@@ -36,7 +36,7 @@ export function useFavorite(postId) {
     const { favoritePostIds, setFavorites, toggleLocal } =
         useFavoriteStore((s) => s);
 
-    const isLiked = favoritePostIds.includes(postId);
+    const isLiked = favoritePostIds?.includes(postId);
 
     const toggle = () => {
         if (!auth?.user) {

@@ -7,6 +7,7 @@
     height: 596px;
     width: 100%;
     border-radius: 20px;
+    outline: 1px solid #b0b0b0;
     background: #000000;
     box-shadow: 2px 4px 14px #0000005c;
     overflow: hidden;
@@ -116,13 +117,18 @@
     width: 234px;
     border-radius: 20px;
     background: #adadad;
-    box-shadow: 2px 4px 10px #00000040;
+    box-shadow: 2px 4px 10px #00000052;
     overflow: hidden;
     cursor: pointer;
+    outline: 1px solid #b0b0b0;
+
+    opacity: 0.62;
+    transition: opacity 0.2s ease;
 }
 
 .property-detail__gallery-item.is-active {
-    outline: 4px solid #fa3719;
+    opacity: 1;
+    outline: 3px solid #f84024;
 }
 
 .property-detail__gallery-item img {
@@ -287,12 +293,12 @@
 
 .property-detail__meta {
     margin-top: 32px;
-    width: 32%;
+    width: 31%;
     display: flex;
-    column-gap: 88px;
+    justify-content: space-between;
     border-top: 1px solid #dadada;
     border-bottom: 1px solid #dadada;
-    padding: 16px 6px;
+    padding: 16px 72px 16px 6px;
 }
 
 .property-detail__meta-item {
@@ -451,6 +457,10 @@
     justify-content: center;
     height: 100%;
     width: 100%;
+}
+
+.video-thumb__video{
+    background-image: url('/public/images/banner-vip02.jpg');
 }
 
 .video-thumb__youtube {

@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\MapboxGeocodeController;
 use App\Models\City;
 use App\Models\Ward;
 
@@ -20,3 +21,5 @@ Route::get('/regions/wards/{city_id}', function ($city_id) {
     return Ward::where('city_id', $city_id)->get();
 });
 
+Route::post('/mapbox/geocode', [MapboxGeocodeController::class, 'geocode']);
+Route::post('/mapbox/autocomplete', [MapboxGeocodeController::class, 'autocomplete']);

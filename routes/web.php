@@ -15,6 +15,9 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PhoneOtpController;
+use App\Http\Controllers\PostViewedController;
+use App\Http\Controllers\R2Controller;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {
@@ -35,6 +38,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ===== XÁC THỰC / GỬI LẠI OTP =========
 Route::post('/verify-otp', [EmailOtpController::class, 'verifyOtp'])->name('otp.verify');
 Route::post('/resend-otp', [EmailOtpController::class, 'sendOtp'])->name('otp.resend');
+
+// ========== XÁC THỰC SMS ================
+Route::middleware('auth')->group(function () {
+    Route::post('/phone/send-otp', [PhoneOtpController::class, 'sendOtp'])->name('phone.send');
+    Route::post('/phone/verify-otp', [PhoneOtpController::class, 'verifyOtp'])->name('phone.verify');
+});
 
 // ===== QUÊN MẬT KHẨU =============
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
@@ -91,10 +100,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/home-finder', [FilterController::class, 'index']);
 
 //  ========= YÊU THÍCH ===============
-Route::middleware('auth')->post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorite/toggle', [FavoriteController::class, 'toggle']);
+    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
+});
+
 
 // ========== TẠO BÀI POST VÀ THANH TOÁN ================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
@@ -104,11 +118,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payments/momo/ipn', [PaymentController::class, 'momoIpn'])->name('payment.momo.ipn');
 
     Route::post('/posts/{post}/package', [PostPackageController::class, 'store'])->name('posts.package.store');
+
+    Route::post('/r2/presign', [R2Controller::class, 'presign']);
+    Route::delete('/r2/delete', [R2Controller::class, 'delete']);
 });
 
 
-
-
+// ========== LỊCH SỬ XEM TIN ================
+Route::middleware('auth')->get('/posts/viewed', [PostViewedController::class, 'index'])->name('posts.viewed');
 
 
 
@@ -125,14 +142,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
     Route::delete('/notifications', [NotificationController::class, 'clearAll']);
-});
-
-
-
-
-//==========Lưu tin yêu thích//==============
-Route::middleware('auth')->group(function () {
-    Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::post('/favorites/toggle', [FavoriteController::class, 'toggle']);
-    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
 });

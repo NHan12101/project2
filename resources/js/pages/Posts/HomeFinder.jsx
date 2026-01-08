@@ -1,10 +1,11 @@
+import { formatPrice } from '@/utils/formatPrice';
 import { router, usePage } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
 import CardList from '../components/Main-content/cards/CardList.jsx';
-import Pagination from './Pagination.jsx';
 import './HomeFinder.css';
+import Pagination from './Pagination.jsx';
 
 export default function HomeFinder() {
     const {
@@ -27,17 +28,6 @@ export default function HomeFinder() {
         max: filters.maxPrice || ''
     });
     const debounceRef = useRef(null);
-
-    // Hàm format giá
-    function formatPrice(price) {
-        if (price >= 1_000_000_000) {
-            return (price / 1_000_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' tỷ';
-        } else if (price >= 1_000_000) {
-            return (price / 1_000_000).toFixed(1).replace('.0', '').replace('.', ',') + ' triệu';
-        } else {
-            return price.toLocaleString('vi-VN');
-        }
-    }
 
     // Các mốc diện tích
     const areaOptions = [
@@ -273,46 +263,78 @@ export default function HomeFinder() {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
 
-                                <button 
-                                    type="button"
-                                    className={`filter-pill ${filters.minPrice || filters.maxPrice ? 'active' : ''}`}
-                                    onClick={() => setShowPriceModal(true)}
-                                >
-                                    {getPriceLabel()}
-                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </button>
+                            {/* Price */}
+                            <div className="filter-group">
+                                <label>Khoảng giá</label>
+                                <div className="range-inputs">
+                                    
+                                    <span className="range-separator">-</span>
+                                    <select
+                                        name="maxPrice"
+                                        value={filters.maxPrice?.toString() ?? ''}
+                                        onChange={handleFilterChange}
+                                        className="filter-input"
+                                    >
+                                        {priceOptions.map((option) => (
+                                            <option
+                                                key={`max-${option.value}`}
+                                                value={option.value}
+                                            >
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
 
-                                <button 
-                                    type="button"
-                                    className={`filter-pill ${filters.minArea || filters.maxArea ? 'active' : ''}`}
-                                    onClick={() => setShowAreaModal(true)}
-                                >
-                                    {getAreaLabel()}
-                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </button>
+                            {/* Area */}
+                            <div className="filter-group">
+                                <label>Diện tích (m²)</label>
+                                <div className="range-inputs">
+                                    <input
+                                        type="number"
+                                        name="minArea"
+                                        placeholder="Từ"
+                                        value={filters.minArea ?? ''}
+                                        onChange={handleFilterChange}
+                                        className="filter-input"
+                                    />
+                                    <span className="range-separator">-</span>
+                                    <input
+                                        type="number"
+                                        name="maxArea"
+                                        placeholder="Đến"
+                                        value={filters.maxArea ?? ''}
+                                        onChange={handleFilterChange}
+                                        className="filter-input"
+                                    />
+                                </div>
+                            </div>
 
-                                <select 
-                                    className={`filter-pill ${filters.bedrooms ? 'active' : ''}`}
-                                    value={filters.bedrooms?.toString() || ''}
-                                    onChange={(e) => handleFilterChange('bedrooms', e.target.value ? Number(e.target.value) : undefined)}
-                                >
-                                    <option value="">Số phòng ngủ</option>
-                                    <option value="1">1 phòng</option>
-                                    <option value="2">2 phòng</option>
-                                    <option value="3">3 phòng</option>
-                                    <option value="4">4 phòng</option>
-                                    <option value="5">5+ phòng</option>
-                                </select>
+                            {/* Bedrooms */}
+                            <div className="filter-group">
+                                <label>Số phòng ngủ</label>
+                                <input
+                                    type="number"
+                                    name="bedrooms"
+                                    placeholder="Nhập số phòng"
+                                    value={filters.bedrooms ?? ''}
+                                    onChange={handleFilterChange}
+                                    className="filter-input"
+                                    min="0"
+                                />
+                            </div>
 
-                                <select 
-                                    className={`filter-pill ${filters.sort ? 'active' : ''}`}
-                                    value={filters.sort?.toString() || ''}
-                                    onChange={(e) => handleFilterChange('sort', e.target.value || undefined)}
+                            {/* Sort */}
+                            <div className="filter-group">
+                                <label>Sắp xếp</label>
+                                <select
+                                    name="sort"
+                                    value={filters.sort?.toString() ?? ''}
+                                    onChange={handleFilterChange}
+                                    className="filter-input"
                                 >
                                     <option value="">Sắp xếp</option>
                                     <option value="price_asc">Giá tăng dần</option>

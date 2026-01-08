@@ -10,6 +10,7 @@ export default function ImagePreviewItem({
     onRemove,
     is360 = false,
     onToggle360,
+    show360Badge = false,
 }) {
     const {
         attributes,
@@ -49,7 +50,14 @@ export default function ImagePreviewItem({
                     <span className="image-cover-badge">Ảnh đại diện</span>
                 )}
 
-                {/* {is360 && <span className="image-cover-badge">Ảnh 360</span>} */}
+                {show360Badge && is360 && (
+                    <span
+                        className={`image-cover-badge ${index === 0 ? 'image-cover-badge--360' : ''}`}
+                        style={{ background: '#e8e8e8', color: '#000' }}
+                    >
+                        Ảnh 360°
+                    </span>
+                )}
 
                 <img
                     src={preview}

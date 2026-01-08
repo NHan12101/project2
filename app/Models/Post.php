@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Aws\S3\S3Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,6 +38,7 @@ class Post extends Model
         'furniture',
         'video',
         'youtube_url',
+        'last_activity_at',
     ];
 
     // Ẩn bài đăng có status là 'hidden'
@@ -46,6 +48,48 @@ class Post extends Model
     //         $query->where('status', 'visible');
     //     });
     // }
+
+    // Tự động xóa ảnh và video trên R2 khi bài post bị xóa
+    protected static function booted()
+    {
+        static::deleting(function (Post $post) {
+
+            $client = new S3Client([
+                'version' => 'latest',
+                'region' => 'auto',
+                'endpoint' => config('filesystems.disks.r2.endpoint'),
+                'credentials' => [
+                    'key' => config('filesystems.disks.r2.key'),
+                    'secret' => config('filesystems.disks.r2.secret'),
+                ],
+            ]);
+
+            $prefix = "posts/{$post->id}/";
+
+            try {
+                $objects = $client->listObjectsV2([
+                    'Bucket' => config('filesystems.disks.r2.bucket'),
+                    'Prefix' => $prefix,
+                ]);
+
+                if (!empty($objects['Contents'])) {
+                    $client->deleteObjects([
+                        'Bucket' => config('filesystems.disks.r2.bucket'),
+                        'Delete' => [
+                            'Objects' => collect($objects['Contents'])
+                                ->map(fn($obj) => ['Key' => $obj['Key']])
+                                ->toArray(),
+                        ],
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                logger()->error('Delete R2 folder failed', [
+                    'post_id' => $post->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        });
+    }
 
     // Quan hệ: mỗi bài viết thuộc về 1 người dùng
     public function user()
@@ -84,5 +128,11 @@ class Post extends Model
     public function utilities()
     {
         return $this->belongsToMany(Utility::class, 'post_utilities');
+    }
+
+    public function viewers()
+    {
+        return $this->belongsToMany(User::class, 'post_view_histories')
+            ->withPivot('viewed_at');
     }
 }
