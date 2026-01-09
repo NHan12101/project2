@@ -115,6 +115,34 @@ export default function HomeFinder() {
         }, 300);
     }
 
+    function handleSearchSubmit(e) {
+        e.preventDefault();
+        
+        const newFilters = { ...filters };
+        
+        if (searchInput.trim() === '') {
+            delete newFilters.q;
+        } else {
+            newFilters.q = searchInput.trim();
+        }
+
+        setFilters(newFilters);
+
+        const query = Object.fromEntries(
+            Object.entries({ ...newFilters, page: 1 }).filter(
+                ([_, v]) => v !== undefined && v !== null && v !== '',
+            ),
+        );
+
+        console.log('Search params:', query); // Debug
+
+        router.get('/home-finder', query, {
+            preserveState: false,
+            replace: false,
+            preserveScroll: false,
+        });
+    }
+
     function handleResetFilters() {
         setFilters({});
         router.get(
@@ -388,10 +416,7 @@ export default function HomeFinder() {
                                 >
                                     <option value="">Loại nhà đất</option>
                                     {categories.map((category) => (
-                                        <option
-                                            key={category.id}
-                                            value={category.id.toString()}
-                                        >
+                                        <option key={category.id} value={category.id.toString()}>
                                             {category.name}
                                         </option>
                                     ))}
@@ -591,10 +616,7 @@ export default function HomeFinder() {
                             <div className="no-results">
                                 <h3>Không tìm thấy kết quả</h3>
                                 <p>Vui lòng thử điều chỉnh bộ lọc của bạn</p>
-                                <button
-                                    onClick={handleResetFilters}
-                                    className="reset-filters-btn"
-                                >
+                                <button onClick={handleResetFilters} className="reset-filters-btn">
                                     Xóa bộ lọc
                                 </button>
                             </div>
