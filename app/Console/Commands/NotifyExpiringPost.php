@@ -28,6 +28,8 @@ class NotifyExpiringPosts extends Command
      */
     public function handle(): void
     {
+        // Fake thời gian để test
+        // Carbon::setTestNow(now()->addHours(23));
         $now = Carbon::now();
         $next24h = $now->copy()->addDay();
 

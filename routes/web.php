@@ -128,18 +128,8 @@ Route::middleware(['auth', 'phone.verified'])->group(function () {
 Route::middleware('auth')->get('/posts/viewed', [PostViewedController::class, 'index'])->name('posts.viewed');
 
 
-
-
-
-
-
-
-
-
-
-Route::middleware('auth:sanctum')->group(function () {
+// ========== TẠO THÔNG BÁO ================
+Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
-    Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
-    Route::delete('/notifications', [NotificationController::class, 'clearAll']);
 });

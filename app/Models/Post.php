@@ -135,4 +135,9 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'post_view_histories')
             ->withPivot('viewed_at');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
+    }
 }

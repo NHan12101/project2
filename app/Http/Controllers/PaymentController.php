@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\Post;
 use App\Models\Subscription;
@@ -315,6 +316,16 @@ class PaymentController extends Controller
             'status' => 'visible',
             'subscription_id' => $payment->subscription_id,
             'package_expired_at' => now()->addDays($payment->days),
+        ]);
+
+        // THÔNG BÁO ĐĂNG BÀI THÀNH CÔNG
+        Notification::create([
+            'user_id' => $post->user_id,
+            'type' => 'post_published',
+            'data' => [
+                'post_id' => $post->id,
+                'title' => $post->title,
+            ],
         ]);
 
         Log::info('PAYMENT SUCCESS REDIRECT', [

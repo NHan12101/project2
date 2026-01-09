@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
-use App\Models\Notification;   // 🔔 Thêm dòng này để dùng Notification
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,10 +38,10 @@ class ChatController extends Controller
         // Kiểm tra user có thuộc cuộc trò chuyện không
         $conversation = Conversation::where(function ($q) use ($userId) {
             $q->where('user_one_id', $userId)
-              ->orWhere('user_two_id', $userId);
+                ->orWhere('user_two_id', $userId);
         })
-        ->where('id', $conversationId)
-        ->first();
+            ->where('id', $conversationId)
+            ->first();
 
         if (!$conversation) {
             return response()->json(['error' => 'Unauthorized access to this conversation'], 403);
@@ -78,10 +78,10 @@ class ChatController extends Controller
         // Kiểm tra quyền
         $conversation = Conversation::where(function ($q) use ($senderId) {
             $q->where('user_one_id', $senderId)
-              ->orWhere('user_two_id', $senderId);
+                ->orWhere('user_two_id', $senderId);
         })
-        ->where('id', $request->conversation_id)
-        ->first();
+            ->where('id', $request->conversation_id)
+            ->first();
 
         if (!$conversation) {
             return response()->json(['error' => 'Unauthorized access to this conversation'], 403);
@@ -108,7 +108,7 @@ class ChatController extends Controller
 
         /**
          * =================================================
-         * 🔔 TẠO THÔNG BÁO GỬI ĐẾN NGƯỜI NHẬN
+         * TẠO THÔNG BÁO GỬI ĐẾN NGƯỜI NHẬN
          * =================================================
          */
 
@@ -116,14 +116,19 @@ class ChatController extends Controller
             ? $conversation->user_two_id
             : $conversation->user_one_id;
 
+        $unreadCount = Message::where('conversation_id', $conversation->id)
+            ->where('sender_id', $senderId)
+            ->where('is_read', false)
+            ->count();
+
         Notification::create([
             'user_id' => $receiverId,
             'type' => 'new_message',
             'data' => [
                 'conversation_id' => $conversation->id,
                 'sender_id' => $senderId,
-                'sender_name' => $message->sender->name,
-                'preview' => $request->message ?? 'Đã gửi một hình ảnh',
+                'sender_name' => Auth::user()->name,
+                'unread_count' => $unreadCount,
             ],
         ]);
 
@@ -169,13 +174,13 @@ class ChatController extends Controller
 
         $conversation = Conversation::where(function ($q) use ($senderId, $receiverId) {
             $q->where('user_one_id', $senderId)
-              ->where('user_two_id', $receiverId);
+                ->where('user_two_id', $receiverId);
         })
-        ->orWhere(function ($q) use ($senderId, $receiverId) {
-            $q->where('user_one_id', $receiverId)
-              ->where('user_two_id', $senderId);
-        })
-        ->first();
+            ->orWhere(function ($q) use ($senderId, $receiverId) {
+                $q->where('user_one_id', $receiverId)
+                    ->where('user_two_id', $senderId);
+            })
+            ->first();
 
         if (!$conversation) {
             $conversation = Conversation::create([
@@ -198,12 +203,12 @@ class ChatController extends Controller
 
         $conversation = Conversation::where(function ($q) use ($userId) {
             $q->where('user_one_id', $userId)
-              ->orWhere('user_two_id', $userId);
+                ->orWhere('user_two_id', $userId);
         })
-        ->where('id', $id)
-        ->with(['userOne', 'userTwo'])
-        ->withCount('messages')
-        ->first();
+            ->where('id', $id)
+            ->with(['userOne', 'userTwo'])
+            ->withCount('messages')
+            ->first();
 
         if (!$conversation) {
             return response()->json(['error' => 'Unauthorized access to this conversation'], 403);

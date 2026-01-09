@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
@@ -20,7 +18,7 @@ class NotificationController extends Controller
 
         $notification->update(['is_read' => true]);
 
-        return response()->json(['status' => 'ok']);
+        return back();
     }
 
     /**
@@ -32,7 +30,7 @@ class NotificationController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return response()->json(['status' => 'ok']);
+        return back();
     }
 
     /**
