@@ -44,4 +44,17 @@ return [
     'mapbox' => [
         'token' => env('MAPBOX_TOKEN'),
     ],
+
+    'provider' => env('AI_PROVIDER', 'groq'),
+
+    'groq' => [
+        'base_url' => 'https://api.groq.com/openai/v1',
+        'model' => 'llama-3.3-70b-versatile',
+        'key' => env('GROQ_API_KEY'),
+    ],
+
+    'openai' => [
+        'model' => 'gpt-4o-mini',
+        'key' => env('OPENAI_API_KEY'),
+    ],
 ];

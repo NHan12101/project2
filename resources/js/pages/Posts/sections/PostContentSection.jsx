@@ -1,6 +1,7 @@
 import useDropdown from '@/hooks/useDropdown';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import AIModal from '../modals/AIModal';
 
@@ -19,18 +20,48 @@ export default function PostContentSection({ form }) {
     const [aiResult, setAiResult] = useState(null);
     const [loadingAI, setLoadingAI] = useState(false);
 
+    const aiPayload = {
+        type: data.type,
+        address: data.address,
+        category: data.category_id,
+        area: data.area,
+        price: data.price,
+        legal: data.legal,
+        furniture: data.furniture,
+        bedrooms: data.bedrooms,
+        bathrooms: data.bathrooms,
+        livingrooms: data.livingrooms,
+        kitchens: data.kitchens,
+        floors: data.floors,
+        direction: data.direction,
+    };
+
+    function handleContent(aiResult) {
+        if (!aiResult) return;
+
+        setData('title', aiResult.title);
+        setData('description', aiResult.description);
+
+        setOpenAI(false);
+    }
+
     const handleGenerateAI = async () => {
         setLoadingAI(true);
 
-        // demo fake data – sau này gọi API thật
-        setTimeout(() => {
-            setAiResult({
-                title: 'Cho thuê căn hộ 33m² full nội thất, giá tốt',
-                description:
-                    'Căn hộ thiết kế hiện đại, diện tích 33m², đầy đủ nội thất, vị trí thuận tiện di chuyển, phù hợp sinh viên và người đi làm.',
-            });
+        try {
+            const res = await axios.post('/api/ai/generate-post', aiPayload);
+
+            setAiResult(res.data);
+        } catch (error) {
+            console.error(error);
+
+            console.log(
+                error.response?.data?.message ||
+                    'Không thể tạo nội dung bằng AI, vui lòng thử lại',
+            );
+        } finally {
             setLoadingAI(false);
-        }, 1200);
+        }
     };
 
     const sectionRef = useRef(null);
@@ -144,6 +175,7 @@ export default function PostContentSection({ form }) {
                             aiResult={aiResult}
                             loading={loadingAI}
                             onGenerate={handleGenerateAI}
+                            handleContent={handleContent}
                         />
                     )}
 
@@ -262,9 +294,9 @@ export default function PostContentSection({ form }) {
                                 <h3 className="post-content-preview__label">
                                     Mô tả
                                 </h3>
-                                <p className="post-content-preview__text">
+                                <pre className="post-content-preview__text">
                                     {data.description}
-                                </p>
+                                </pre>
                             </div>
                         </div>
                     ) : (

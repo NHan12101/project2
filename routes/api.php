@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AIController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
@@ -13,6 +14,7 @@ Route::get('/chat', function () {
 });
 Route::post('/chat', [ChatController::class, 'chat']);
 
+
 // ========= GỌI API PHƯỜNG / XÃ ==============
 Route::get('/regions/cities', function () {
     return City::all();
@@ -23,3 +25,7 @@ Route::get('/regions/wards/{city_id}', function ($city_id) {
 
 Route::post('/mapbox/geocode', [MapboxGeocodeController::class, 'geocode']);
 Route::post('/mapbox/autocomplete', [MapboxGeocodeController::class, 'autocomplete']);
+
+
+// ========= GỌI API GỢI Ý TIÊU ĐỀ VÀ MÔ TẢ ==============
+Route::post('/ai/generate-post', [AIController::class, 'generate']);

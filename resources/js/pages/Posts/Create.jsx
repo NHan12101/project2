@@ -233,10 +233,10 @@ export default function Create({
                     <h1 className="post-create__title">Tạo tin đăng</h1>
 
                     <div className="post-create__actions">
-                        <button className="post-create__action post-create__action--preview">
+                        {/* <button className="post-create__action post-create__action--preview">
                             <img src="/icons/eye.svg" alt="eye" />
                             Xem trước
-                        </button>
+                        </button> */}
                         <button
                             className="post-create__action post-create__action--exit"
                             onClick={() => {

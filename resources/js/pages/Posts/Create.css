@@ -342,7 +342,7 @@
 
 .post-form__input--title {
     font-size: 1.42rem;
-    line-height: 20px;
+    line-height: 1.36;
     width: 100%;
     min-height: 86px;
     border: 1px solid #d1d1d1;
@@ -1113,5 +1113,99 @@
 
     &:hover {
         background: #000;
+    }
+}
+
+
+/* ======== Gợi ý nội dung =============== */
+.ai-generate {
+    background: transparent;
+    border: 1px solid #737373;
+    color: #000;
+    padding: 12px;
+    height: 88px;
+    width: 100%;
+    font-size: 1.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background: #f2f2f2;
+    }
+}
+
+.ai-generate.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.rewrite {
+    width: 100%;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid #000;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+        background: #eeeeee;
+    }
+}
+
+.rewrite span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.ai-card {
+    margin-bottom: 16px;
+}
+
+.ai-card-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.ai-card-header button {
+    background: none;
+    border: none;
+    color: #2563eb;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.ai-card-content {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 14px;
+    color: #374151;
+}
+
+.ai-note {
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.apply-content {
+    background: #fa3719;
+    color: #fff;
+    border: 1px solid #fa3719;
+    padding: 0 16px;
+    height: 42px;
+    border-radius: 99px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:  background 0.3s;
+
+    &:hover {
+        background: #e0290d;
     }
 }

@@ -468,9 +468,9 @@ export default function PropertyDetail({
                         <h3 className="property-detail__heading-title">
                             Thông tin mô tả
                         </h3>
-                        <p className="property-detail__description">
+                        <pre className="property-detail__description">
                             {post.description}
-                        </p>
+                        </pre>
 
                         {/* Đặc điểm bất động sản */}
                         <h3 className="property-detail__heading-title">
