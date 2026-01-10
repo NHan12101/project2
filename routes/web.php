@@ -103,7 +103,6 @@ Route::get('/home-finder', [FilterController::class, 'index']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/saved', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('/favorite/toggle', [FavoriteController::class, 'toggle']);
-    Route::post('/favorites/remove', [FavoriteController::class, 'remove']);
 });
 
 

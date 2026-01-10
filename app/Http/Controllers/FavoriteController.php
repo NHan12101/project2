@@ -33,40 +33,21 @@ class FavoriteController extends Controller
 
         Cache::forget('latest_favorite_post_' . Auth::id());
 
-        // Không được trả JSON nếu gọi bằng Inertia
         return back();
     }
 
-    // Xóa khỏi trang SavedList
-    public function remove(Request $request)
-    {
-        $request->validate([
-            'post_id' => 'required|exists:posts,id'
-        ]);
-
-        Favorite::where('user_id', Auth::id())
-            ->where('post_id', $request->post_id)
-            ->delete();
-
-        Cache::forget('latest_favorite_post_' . Auth::id());
-
-        // QUAN TRỌNG: Không được trả JSON
-        return back();
-    }
-
-    // Trả dữ liệu cho SavedList.jsx
     public function index()
     {
-        $savedPosts = Post::with(['user', 'images'])
-            ->whereIn('id', Favorite::where('user_id', Auth::id())->pluck('post_id'))
-            ->latest()
+        $savedPosts = Post::with(['user', 'images', 'city', 'ward'])
+            ->join('favorites', 'favorites.post_id', '=', 'posts.id')  // Join với bảng favorites
+            ->where('favorites.user_id', Auth::id())  // Lọc theo user_id
+            ->orderBy('favorites.created_at', 'desc')  // Sắp xếp theo thời gian thêm yêu thích
+            ->select('posts.*')  // Chỉ chọn các cột của bảng posts
+            ->limit(100)
             ->get();
 
-        return Inertia::render('SavedList/SavedList', [
+        return Inertia::render('Posts/SavedList', [
             'savedPosts' => $savedPosts,
-            'auth' => [
-                'user' => Auth::user()
-            ],
         ]);
     }
 }

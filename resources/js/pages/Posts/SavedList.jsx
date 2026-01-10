@@ -1,20 +1,18 @@
 import { initFavorites } from '@/hooks/useFavorite';
 import { Head, Link } from '@inertiajs/react';
-
 import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer.jsx';
 import Navbar from '../components/Headers/Navbar/Navbar.jsx';
-import './Viewed.css';
 import ViewedPostCard from './ViewedPostCard.jsx';
 
-export default function Viewed({ posts, favoritePostIds }) {
+export default function SavedList({ savedPosts, favoritePostIds }) {
     const [hover, setHover] = useState(false);
 
     const PER_PAGE = 10;
 
     const [visibleCount, setVisibleCount] = useState(PER_PAGE);
 
-    const visibleItems = posts.slice(0, visibleCount);
+    const visibleItems = savedPosts.slice(0, visibleCount);
 
     useEffect(() => {
         initFavorites(favoritePostIds || []);
@@ -22,8 +20,7 @@ export default function Viewed({ posts, favoritePostIds }) {
 
     return (
         <>
-            <Head title="StayHub | Lịch sử xem tin" />
-
+            <Head title="StayHub | Tin đăng đã lưu" />
             <Navbar />
 
             <div className="viewed-container">
@@ -32,11 +29,11 @@ export default function Viewed({ posts, favoritePostIds }) {
                     <div className="viewed-header__link">
                         <Link href="/home">StayHub</Link>
                         <p>/</p>
-                        <p>Lịch sử xem tin</p>
+                        <p>Tin đăng đã lưu</p>
                     </div>
 
                     <div className="viewed-header__title">
-                        <p>Lịch sử xem tin</p>
+                        <p>Tin đăng đã lưu</p>
 
                         <span>
                             <svg
@@ -57,9 +54,13 @@ export default function Viewed({ posts, favoritePostIds }) {
 
                             {hover && (
                                 <div className="viewed-header__suggest">
-                                    <h2>Lịch sử xem tin</h2>
+                                    <h2>
+                                        Tin đăng đã lưu ({savedPosts.length} /
+                                        100)
+                                    </h2>
+
                                     <span>
-                                        Hiển thị 100 tin đã xem gần nhất
+                                        Hiển thị 100 tin đã lưu gần nhất
                                     </span>
                                 </div>
                             )}
@@ -85,11 +86,11 @@ export default function Viewed({ posts, favoritePostIds }) {
                             </svg>
                         </div>
 
-                        <h1>Bạn chưa xem tin nào gần đây</h1>
+                        <h1>Bạn chưa lưu tin nào gần đây</h1>
 
                         <p>
-                            Khi bạn xem tin đăng, những tin gần nhất sẽ hiển thị
-                            tại đây để dễ dàng tìm lại sau
+                            Lưu tin yêu thích, tin sẽ hiển thị ở đây để bạn dễ
+                            dàng quay lại sau.
                         </p>
 
                         <Link href="/home-finder">Xem tin mới nhất</Link>
@@ -110,7 +111,7 @@ export default function Viewed({ posts, favoritePostIds }) {
                         </Link>
                     ))}
 
-                    {visibleCount < posts.length && (
+                    {visibleCount < savedPosts.length && (
                         <div className="viewed-load-more">
                             <button
                                 onClick={() =>
@@ -122,11 +123,12 @@ export default function Viewed({ posts, favoritePostIds }) {
                         </div>
                     )}
 
-                    {visibleCount >= posts.length && posts.length > 0 && (
-                        <p className="viewed-flex__end">
-                            Bạn đã xem hết tin đăng 🥂
-                        </p>
-                    )}
+                    {visibleCount >= savedPosts.length &&
+                        savedPosts.length > 0 && (
+                            <p className="viewed-flex__end">
+                                Bạn đã xem hết tin đã lưu 🥂
+                            </p>
+                        )}
                 </div>
             </div>
 
