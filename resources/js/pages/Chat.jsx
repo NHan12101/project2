@@ -69,9 +69,10 @@ export default function Chat() {
                                         key={i}
                                         className={`chat-msg ${msg.role === 'user' ? 'user' : 'assistant'}`}
                                     >
-                                        <strong style={{ fontWeight: 'bold' }}>
+                                        {/* <strong style={{ fontWeight: 'bold' }}>
                                             {msg.role === 'user' ? '' : 'AI:'}
-                                        </strong>{' '}
+                                        </strong>{' '} */}
+                                        
                                         {msg.content}
                                     </div>
                                 ))}

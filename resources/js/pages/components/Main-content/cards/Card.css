@@ -5,11 +5,11 @@
 .property-grid {
     margin-top: 22px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 0.26fr));
     column-gap: 26px;
     row-gap: 38px;
     padding: 20px 3px;
-    justify-items: center;
+    /* justify-items: center; */
 }
 
 .property-card {

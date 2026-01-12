@@ -20,8 +20,8 @@ export default function Footer() {
                     <div style={{ marginTop: 18 }}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="36"
-                            height="20"
+                            width="32"
+                            height="16"
                             viewBox="0 0 36 29"
                             fill="none"
                         >
@@ -54,9 +54,9 @@ export default function Footer() {
                         <span
                             style={{
                                 display: 'inline-block',
-                                fontSize: '1.46rem',
+                                fontSize: '1.42rem',
                                 fontStyle: 'italic',
-                                color: '#070707'
+                                color: '#070707',
                             }}
                         >
                             – Franklin D. Roosevelt –

@@ -148,6 +148,13 @@
   background: #ffeaea;
 }
 
+.notify-empty {
+  padding: 20px 0;
+  text-align: center;
+  font-style: italic;
+  font-size: 1.5rem;
+}
+
 .sidebar--notlogin {
   padding: 12px 22px;
   text-align: center;

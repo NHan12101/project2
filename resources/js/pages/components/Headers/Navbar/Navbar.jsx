@@ -28,7 +28,11 @@ export default function Navbar() {
         setOpen: setOpenSave,
     } = useDropdown();
 
-    const [showAuth, setShowAuth] = useState(false);
+    const {
+        menuRef: refAuth,
+        open: showAuth,
+        setOpen: setShowAuth,
+    } = useDropdown();
     const [showVerify, setShowVerify] = useState(false);
     const [verifyEmail, setVerifyEmail] = useState('');
 
@@ -391,8 +395,9 @@ export default function Navbar() {
             </div>
 
             {showAuth && (
-                <div className="auth-form" onClick={() => setShowAuth(false)}>
+                <div className="auth-form">
                     <AuthForm
+                        ref={refAuth}
                         onClose={() => setShowAuth(false)}
                         onForgotPassword={() => {
                             setShowAuth(false);

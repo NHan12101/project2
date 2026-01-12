@@ -83,10 +83,10 @@
 }
 
 .chat-msg {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     padding: 8px 12px;
-    border-radius: 18px;
-    max-width: 70%;
+    border-radius: 17px;
+    max-width: 82%;
 }
 
 .chat-msg.user {
@@ -94,7 +94,7 @@
     color: white;
     align-self: flex-end;
     text-align: left;
-    font-size: 1.52rem;
+    font-size: 1.6rem;
     line-height: 1.2;
     margin-left: auto;
     white-space: pre-line;
@@ -103,9 +103,9 @@
 
 .chat-msg.assistant {
     background: #e5e7eb;
-    color: black;
-    font-size: 1.52rem;
-    line-height: 1.36;
+    color: #222;
+    font-size: 1.46rem;
+    line-height: 1.46;
     align-self: flex-start;
     white-space: pre-line;
     word-wrap: break-word;
@@ -115,6 +115,7 @@
 .chat-thinking {
     color: var(--text-color);
     font-style: italic;
+    font-size: 1.42rem;
 }
 
 .chat-form-ai {

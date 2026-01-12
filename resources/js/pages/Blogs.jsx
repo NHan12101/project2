@@ -175,7 +175,7 @@ const Blog = () => {
     };
 
     // State để lưu ID bài viết hiện tại
-    const [currentPostId, setCurrentPostId] = useState(2);
+    const [currentPostId, setCurrentPostId] = useState(1);
 
     // Lấy thông tin bài viết hiện tại
     const currentPost = allBlogPosts[currentPostId];

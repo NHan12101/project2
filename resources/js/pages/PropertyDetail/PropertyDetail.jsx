@@ -561,7 +561,13 @@ export default function PropertyDetail({
                         <div className="property-detail__actions">
                             <button
                                 className="property-detail__button property-detail__button--primary"
-                                onClick={() => setOpen(true)}
+                                onClick={() => {
+                                    auth?.user
+                                        ? setOpen(true)
+                                        : toast.error(
+                                              'Vui đăng nhập trước khi xem thông tin liên hệ!',
+                                          );
+                                }}
                             >
                                 Thông tin liên hệ
                             </button>
@@ -584,31 +590,59 @@ export default function PropertyDetail({
 
                 {open && (
                     <div className="auth-form">
-                        <div
-                            ref={menuRef}
-                            style={{
-                                height: 600,
-                                width: 400,
-                                background: '#fff',
-                            }}
-                        >
-                            <h1>Thông tin liên hệ</h1>
-                            <div
-                                style={{
-                                    height: 60,
-                                    width: 60,
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                <img
-                                    style={{ height: '100%' }}
-                                    src={`/${post.user?.avatar_image_url}`}
-                                    alt="avatar"
-                                />
+                        <div ref={menuRef} className="contact-popup">
+                            <h1 className="contact-popup__title">
+                                Thông tin liên hệ
+                            </h1>
+
+                            <div className="contact-popup__background">
+                                <div className="contact-popup__avatar">
+                                    <img
+                                        className="contact-popup__avatar-img"
+                                        src={`/${post.user?.avatar_image_url}`}
+                                        alt="avatar"
+                                    />
+                                </div>
+
+                                <div>
+                                    <h1>{post.user.name}</h1>
+                                    <span>
+                                        Liên hệ:{' '}
+                                        <span className="contact-popup__value">
+                                            {post.user.phone ?? 'Chưa cập nhật'}
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
-                            <p>Chủ sở hữu: {post.user.name}</p>
-                            <p>SĐT: {post.user.phone ?? 'Chưa cập nhật'}</p>
-                            <p>Email: {post.user.email}</p>
+
+                            <p className="contact-popup__item">
+                                Giới thiệu: <br />
+                                <span
+                                    className="contact-popup__value"
+                                    style={{
+                                        display: 'inline-block',
+                                        marginTop: 5,
+                                        width: '99%'
+                                    }}
+                                >
+                                    {post.user.description ??
+                                        'Người đăng bài hiện chưa cập nhật thông tin giới thiệu bản thân'}
+                                </span>
+                            </p>
+
+                            <p className="contact-popup__item">
+                                Email:{' '}
+                                <span className="contact-popup__value">
+                                    {post.user.email}
+                                </span>
+                            </p>
+
+                            <button
+                                className="contact-popup__button"
+                                onClick={handleStartChat}
+                            >
+                                Trò chuyện ngay
+                            </button>
                         </div>
                     </div>
                 )}
