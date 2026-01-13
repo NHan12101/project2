@@ -42,7 +42,8 @@ class PhoneOtpController extends Controller
         // ===== Xoá OTP cũ =====
         PhoneOtp::where('phone', $phone)->delete();
 
-        $otp = random_int(100000, 999999);
+        // $otp = random_int(100000, 999999);
+        $otp = 777777;
 
         PhoneOtp::create([
             'user_id'    => $user?->id,

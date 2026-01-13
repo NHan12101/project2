@@ -16,14 +16,14 @@ class PostFactory extends Factory
             'title' => $this->faker->sentence(6),
             'slug' => null,
             'description' => $this->faker->paragraph(16),
-            'price' => $this->faker->numberBetween(500000000, 50000000000), // 500tr–50tỷ
+            'price' => $this->faker->numberBetween(50000000, 50000000000), // 50tr–50tỷ
             'address' => $this->faker->address(),
             'area' => $this->faker->randomFloat(2, 30, 500),
             'bedrooms' => $this->faker->numberBetween(1, 6),
             'bathrooms' => $this->faker->numberBetween(1, 4),
             'livingrooms' => $this->faker->numberBetween(1, 3),
             'kitchens' => $this->faker->numberBetween(1, 2),
-            'status' => $this->faker->randomElement(['hidden', 'visible']),
+            'status' => $this->faker->randomElement(['hidden', 'visible', 'expired', 'draft']),
             'type' => $this->faker->randomElement(['rent', 'sale']),
             'user_id' => User::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
@@ -35,7 +35,7 @@ class PostFactory extends Factory
 
             'floors' => $this->faker->numberBetween(1, 12),
             'direction' => $this->faker->randomElement(['Đông', 'Tây', 'Nam', 'Bắc', 'Đông Nam', 'Tây Nam', 'Đông Bắc', 'Tây Bắc']),
-            'legal' => $this->faker->randomElement(['Sổ hồng', 'Sổ đỏ', 'Hợp đồng mua bán', 'Giấy tay']),
+            'legal' => $this->faker->randomElement(['Sổ hồng / Sổ đỏ', 'Hợp đồng mua bán', 'Giấy tay', 'Đang chờ sổ']),
             'furniture' => $this->faker->randomElement(['Đầy đủ', 'Cơ bản', 'Không nội thất']),
         ];
     }

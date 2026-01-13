@@ -104,7 +104,7 @@ export default function Viewed({ posts, favoritePostIds }) {
                             href={`/property-detail/${post.slug}`}
                             className="viewed-card"
                         >
-                            <ViewedPostCard post={post} />
+                            <ViewedPostCard post={post} showActions={false}/>
 
                             <div className="viewed-card__line"></div>
                         </Link>

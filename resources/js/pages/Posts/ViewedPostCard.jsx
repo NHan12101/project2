@@ -4,7 +4,11 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-export default function ViewedPostCard({ post }) {
+export default function ViewedPostCard({
+    post,
+    showActions = true,
+    onRenewClick,
+}) {
     const R2_PUBLIC_BASE_URL = import.meta.env.VITE_R2_PUBLIC_BASE_URL;
 
     const { isLiked, toggle } = useFavorite(post?.id);
@@ -22,6 +26,63 @@ export default function ViewedPostCard({ post }) {
         }
     };
 
+    const ACTIONS_BY_STATUS = {
+        visible: [
+            { key: 'hide', label: 'Ẩn tin', icon: '/icons/eye-off.svg' },
+            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
+        ],
+        expired: [
+            { key: 'renew', label: 'Gia hạn', icon: '/icons/giahan.png' },
+            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
+        ],
+        draft: [
+            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
+        ],
+        hidden: [
+            { key: 'show', label: 'Hiển thị lại', icon: '/icons/eye.svg' },
+            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
+        ],
+    };
+
+    const handleAction = (action, post) => {
+        switch (action) {
+            case 'hide':
+            case 'show':
+                router.patch(`/posts/${post.id}/toggle-status`);
+                break;
+
+            case 'renew':
+                if (onRenewClick) onRenewClick(post); // mở modal
+                break;
+
+            case 'edit':
+                router.get(`/posts/${post.id}/edit`);
+                break;
+
+            case 'delete':
+                if (confirm('Bạn có chắc chắn muốn xóa tin này?')) {
+                    router.delete(`/posts/${post.id}`);
+                }
+                break;
+
+            default:
+                break;
+        }
+    };
+
+    // Kiểm tra trạng thái disabled
+    const isDisabled = ['expired', 'draft', 'hidden'].includes(post.status);
+
+    // Nội dung thông báo khi disabled
+    const disabledText = [];
+    if (post.status === 'expired') disabledText.push('Tin hết hạn');
+    if (post.status === 'draft') disabledText.push('Tin nháp');
+    if (post.status === 'hidden') disabledText.push('Tin đã ẩn');
+
     return (
         <div className="viewed-card__01">
             <div className="viewed-image">
@@ -29,6 +90,9 @@ export default function ViewedPostCard({ post }) {
                     src={`${R2_PUBLIC_BASE_URL}/${post.images?.[0].thumb_path}`}
                     alt={post.title}
                 />
+                {isDisabled && (
+                    <div className="viewed-image__disable">{disabledText}</div>
+                )}
             </div>
 
             <div className="viewed-content">
@@ -83,6 +147,7 @@ export default function ViewedPostCard({ post }) {
                         </p>
                     </div>
 
+                    {/* Button action */}
                     <div
                         style={{
                             display: 'flex',
@@ -90,38 +155,64 @@ export default function ViewedPostCard({ post }) {
                             gap: 8,
                         }}
                     >
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleStartChat();
-                            }}
-                        >
-                            <img
-                                style={{ height: 20 }}
-                                src="/icons/chat.svg"
-                                alt="icon chat"
-                            />
-                            Chat
-                        </button>
+                        {showActions ? (
+                            <>
+                                {ACTIONS_BY_STATUS[post.status]?.map(
+                                    (action) => (
+                                        <button
+                                            className="post-actions"
+                                            key={action.key}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleAction(action.key, post);
+                                            }}
+                                        >
+                                            <img
+                                                style={{ height: 20 }}
+                                                src={action.icon}
+                                                alt="{action.label}"
+                                            />
+                                            {action.label}
+                                        </button>
+                                    ),
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleStartChat();
+                                    }}
+                                >
+                                    <img
+                                        style={{ height: 20 }}
+                                        src="/icons/chat.svg"
+                                        alt="icon chat"
+                                    />
+                                    Chat
+                                </button>
 
-                        <button
-                            className="viewed-card__heart--button"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggle();
-                            }}
-                        >
-                            <img
-                                src={
-                                    isLiked
-                                        ? '/icons/heart-filled.svg'
-                                        : '/icons/heart.svg'
-                                }
-                                alt="heart"
-                            />
-                        </button>
+                                <button
+                                    className="viewed-card__heart--button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        toggle();
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            isLiked
+                                                ? '/icons/heart-filled.svg'
+                                                : '/icons/heart.svg'
+                                        }
+                                        alt="heart"
+                                    />
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

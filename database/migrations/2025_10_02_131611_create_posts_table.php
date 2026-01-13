@@ -36,7 +36,7 @@ return new class extends Migration
 
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions');
 
-            $table->enum('status', ['draft', 'pending', 'visible', 'hidden'])->default('draft');
+            $table->enum('status', ['draft', 'expired', 'visible', 'hidden'])->default('draft');
 
             $table->timestamp('package_expired_at')->nullable();
 

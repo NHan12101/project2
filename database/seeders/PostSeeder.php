@@ -47,7 +47,7 @@ class PostSeeder extends Seeder
 
         $utilities = Utility::all();
 
-        Post::factory(40)->create()->each(function ($post) use ($images, $utilities) {
+        Post::factory(1600)->create()->each(function ($post) use ($images, $utilities) {
 
             $ward = Ward::inRandomOrder()->first();   // Lấy ward ngẫu nhiên
 

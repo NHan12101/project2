@@ -333,7 +333,7 @@ export default function Navbar() {
                                 className="nav__btn-story--manager"
                                 onClick={
                                     isLogin
-                                        ? () => router.visit('/cc')
+                                        ? () => router.visit('/posts/manage')
                                         : () => setShowAuth(true)
                                 }
                             >

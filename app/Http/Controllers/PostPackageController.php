@@ -14,7 +14,9 @@ class PostPackageController extends Controller
     public function store(Request $request, Post $post)
     {
         abort_if($post->user_id !== Auth::id(), 403);
-        abort_if($post->status !== 'draft', 403);
+        
+        // Chỉ cho phép gia hạn nếu status là draft hoặc expired
+        abort_if(!in_array($post->status, ['draft', 'expired']), 403);
 
         $data = $request->validate([
             'subscription_id' => 'required|exists:subscriptions,id',

@@ -18,7 +18,9 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->numerify('0#########'),
             'email_verified_at' => now(),
+            'phone_verified_at' => now(),
             'password' => Hash::make('password'), // mật khẩu mặc định
             'remember_token' => Str::random(10),
             'notification' => $this->faker->boolean ? '1' : '0',

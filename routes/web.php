@@ -13,6 +13,7 @@ use App\Http\Controllers\EmailOtpController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ManagePostController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PhoneOtpController;
@@ -125,6 +126,15 @@ Route::middleware(['auth', 'phone.verified'])->group(function () {
 
 // ========== LỊCH SỬ XEM TIN ================
 Route::middleware('auth')->get('/posts/viewed', [PostViewedController::class, 'index'])->name('posts.viewed');
+
+
+// ========== QUẢN LÝ TIN ĐĂNG ================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/manage', [ManagePostController::class, 'index']);
+    Route::patch('/posts/{post}/toggle-status', [ManagePostController::class, 'toggleStatus']);
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit']);
+    Route::delete('/posts/{post}', [ManagePostController::class, 'destroy']);
+});
 
 
 // ========== TẠO THÔNG BÁO ================

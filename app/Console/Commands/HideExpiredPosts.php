@@ -40,7 +40,7 @@ class HideExpiredPosts extends Command
 
         foreach ($expiredPosts as $post) {
             $post->update([
-                'status' => 'hidden'
+                'status' => 'expired'
             ]);
         }
 

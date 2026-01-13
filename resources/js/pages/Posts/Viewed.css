@@ -57,6 +57,7 @@
 }
 
 .viewed-header__suggest {
+    z-index: 1;
     position: absolute;
     top: 38px;
     left: -20px;
@@ -99,6 +100,7 @@
 
 .viewed-header__suggest span {
     font-size: 1.45rem;
+    line-height: 1.2;
 }
 
 .viewed-header__title svg {
@@ -187,6 +189,18 @@
     border-radius: 8px;
     overflow: hidden;
     background: #eeeeee;
+    position: relative;
+}
+
+.viewed-image__disable {
+    position: absolute;
+    inset: 0;
+    background: #0000008a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.46rem;
+    color: #fff;
 }
 
 .viewed-image img {
@@ -266,6 +280,7 @@
     color: #222;
 }
 
+.viewed-card__user .post-actions,
 .viewed-card__user button:first-child {
     display: flex;
     align-items: center;

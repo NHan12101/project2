@@ -609,7 +609,7 @@ export default function PropertyDetail({
                                     <span>
                                         Liên hệ:{' '}
                                         <span className="contact-popup__value">
-                                            {post.user.phone ?? 'Chưa cập nhật'}
+                                            {post.user.phone ?? 'Chưa cung cấp'}
                                         </span>
                                     </span>
                                 </div>
