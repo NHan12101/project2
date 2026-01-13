@@ -38,7 +38,11 @@ export default function ViewedPostCard({
             { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
         ],
         draft: [
-            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            {
+                key: 'edit',
+                label: 'Tiếp tục chỉnh sửa',
+                icon: '/icons/edit-pen.svg',
+            },
             { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
         ],
         hidden: [

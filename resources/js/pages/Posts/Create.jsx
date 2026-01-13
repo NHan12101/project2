@@ -230,7 +230,8 @@ export default function Create({
         if (isEdit) {
             router.put(`/posts/${form.data.post_id}/media`, payload, {
                 preserveScroll: true,
-                onSuccess: () => setStep(allowPackage ? 3 : 1),
+                onSuccess: () =>
+                    setStep(allowPackage ? 3 : router.visit('/posts/manage')),
             });
             return;
         }

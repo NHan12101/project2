@@ -411,6 +411,6 @@ class PostController extends Controller
             ProcessPostImage::dispatch($postImage->id);
         }
 
-        return redirect('/posts/manage');
+        return back()->with('success', 'Cập nhật hình ảnh thành công');
     }
 }
