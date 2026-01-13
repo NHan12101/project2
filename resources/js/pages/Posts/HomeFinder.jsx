@@ -507,7 +507,7 @@ export default function HomeFinder() {
                                     ))}
                                 </select>
 
-                                <select
+                                {/* <select
                                     className={`filter-pill ${filters.legal ? 'active' : ''}`}
                                     value={filters.legal || ''}
                                     onChange={(e) =>
@@ -526,7 +526,7 @@ export default function HomeFinder() {
                                             {doc.label}
                                         </option>
                                     ))}
-                                </select>
+                                </select> */}
 
                                 <select
                                     className={`filter-pill ${filters.sort ? 'active' : ''}`}
@@ -752,7 +752,7 @@ export default function HomeFinder() {
                                     </button>
                                 ))}
                             </div>
-                            <h4>Lọc theo diện tích</h4>
+                            {/* <h4>Lọc theo diện tích</h4>
                             <div className="options-list">
                                 {areaOptions.map((option, index) => (
                                     <button
@@ -774,7 +774,7 @@ export default function HomeFinder() {
                                         {option.label}
                                     </button>
                                 ))}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
