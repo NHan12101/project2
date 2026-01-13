@@ -27,7 +27,11 @@ export default function AddressSection({ form, cities }) {
         if (errors?.address) {
             setOpenAddress(true);
         }
-    }, [errors?.address]);
+
+        if (errors?.address_detail) {
+            setOpenAddress(true);
+        }
+    }, [errors?.address, errors?.address_detail]);
 
     return (
         <>
@@ -133,6 +137,12 @@ export default function AddressSection({ form, cities }) {
                                         zoom={16}
                                     />
                                 </div>
+
+                                {errors?.address_detail && (
+                                    <span className="post-form__field--error-text">
+                                        {errors?.address_detail}
+                                    </span>
+                                )}
                             </>
                         )}
                     </>

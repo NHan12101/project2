@@ -29,7 +29,7 @@ export default function ViewedPostCard({
     const ACTIONS_BY_STATUS = {
         visible: [
             { key: 'hide', label: 'Ẩn tin', icon: '/icons/eye-off.svg' },
-            { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
+            // { key: 'edit', label: 'Chỉnh sửa', icon: '/icons/edit-pen.svg' },
             { key: 'delete', label: 'Xóa', icon: '/icons/thungrac.png' },
         ],
         expired: [

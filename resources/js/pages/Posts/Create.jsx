@@ -15,33 +15,48 @@ export default function Create({
     city_id,
     ward_id,
     subscriptions,
+
+    post = null,
+    mode = 'create',
+    allowPackage = true,
 }) {
+    const isEdit = mode === 'edit';
+
     const form = useForm({
-        title: '',
-        description: '',
-        price: '',
-        address: '',
-        address_detail: '',
-        area: '',
-        bedrooms: 0,
-        bathrooms: 0,
-        livingrooms: 0,
-        kitchens: 0,
-        floors: 0,
-        type: null,
-        category_id: '',
-        city_id: city_id ?? '',
-        ward_id: ward_id ?? '',
-        direction: '',
-        legal: '',
-        furniture: '',
-        latitude: '',
-        longitude: '',
-        images: [],
-        video: null,
-        youtube_url: '',
+        title: post?.title ?? '',
+        description: post?.description ?? '',
+        price: post?.price ?? '',
+        address: post?.address ?? '',
+        address_detail: post?.address_detail ?? '',
+        area: post?.area ?? '',
+        bedrooms: post?.bedrooms ?? 0,
+        bathrooms: post?.bathrooms ?? 0,
+        livingrooms: post?.livingrooms ?? 0,
+        kitchens: post?.kitchens ?? 0,
+        floors: post?.floors ?? 0,
+        type: post?.type ?? null,
+        category_id: post?.category_id ?? '',
+        city_id: post?.city_id ?? city_id ?? '',
+        ward_id: post?.ward_id ?? ward_id ?? '',
+        direction: post?.direction ?? '',
+        legal: post?.legal ?? '',
+        furniture: post?.furniture ?? '',
+        latitude: post?.latitude ?? '',
+        longitude: post?.longitude ?? '',
+        images: post?.images
+            ? post.images.map((img) => ({
+                  id: crypto.randomUUID(),
+                  path: img.image_path,
+                  preview: null,
+                  is360: img.is360,
+              }))
+            : [],
+        video: post?.video ?? null,
+        youtube_url: post?.youtube_url ?? '',
+
         step: 1,
-        post_id: '',
+        post_id: post?.id ?? '',
+
         subscription_id: 1,
         days: 15,
         payment_method: 'momo',
@@ -80,6 +95,11 @@ export default function Create({
     const [step, setStep] = useState(1);
 
     useEffect(() => {
+        if (isEdit) {
+            setDraftReady(true);
+            return;
+        }
+
         const raw = sessionStorage.getItem('create-post-draft');
         if (!raw) {
             setDraftReady(true);
@@ -139,6 +159,7 @@ export default function Create({
     ]);
 
     useEffect(() => {
+        if (isEdit) return;
         if (step === 3) return;
 
         const t = setTimeout(() => {
@@ -173,8 +194,20 @@ export default function Create({
     function submitStep1() {
         form.setData('step', 1);
 
+        if (isEdit) {
+            form.put(`/posts/${form.data.post_id}`, {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setStep(2);
+                },
+            });
+            return;
+        }
+
         form.post('/posts', {
             preserveScroll: true,
+
             onSuccess: (page) => {
                 form.setData('post_id', page.props.flash.post_id);
                 setStep(2);
@@ -183,28 +216,36 @@ export default function Create({
     }
 
     function submitStep2() {
-        router.post(
-            '/posts',
-            {
-                step: 2,
-                post_id: form.data.post_id,
+        const payload = {
+            step: 2,
+            post_id: form.data.post_id,
+            video: form.data.video,
+            youtube_url: form.data.youtube_url || null,
+            images: form.data.images.map((img) => ({
+                path: img.path,
+                is360: img.is360 || false,
+            })),
+        };
 
-                video: form.data.video,
-
-                youtube_url: form.data.youtube_url || null,
-
-                images: form.data.images.map((img) => ({
-                    path: img.path, //path R2 đã upload
-                    is360: img.is360 || false,
-                })),
-            },
-            {
+        if (isEdit) {
+            router.put(`/posts/${form.data.post_id}/media`, payload, {
                 preserveScroll: true,
-                onSuccess: () => {
-                    setStep(3);
-                },
+                onSuccess: () => setStep(allowPackage ? 3 : 1),
+            });
+            return;
+        }
+
+        router.post('/posts', payload, {
+            preserveScroll: true,
+
+            onSuccess: () => {
+                if (!allowPackage) {
+                    router.visit('/posts/manage');
+                    return;
+                }
+                setStep(3);
             },
-        );
+        });
     }
 
     function submitStep3() {
@@ -230,7 +271,9 @@ export default function Create({
             {/* Phần hiển thị các bước đang làm */}
             <div className="post-create__header">
                 <div className="post-create__header-top">
-                    <h1 className="post-create__title">Tạo tin đăng</h1>
+                    <h1 className="post-create__title">
+                        {isEdit ? 'Chỉnh sửa tin đăng' : 'Tạo tin đăng'}
+                    </h1>
 
                     <div className="post-create__actions">
                         {/* <button className="post-create__action post-create__action--preview">
@@ -305,7 +348,7 @@ export default function Create({
                 {step === 2 && <PostMediaSection form={form} />}
 
                 {/* ===== STEP 3 ===== */}
-                {step === 3 && (
+                {step === 3 && allowPackage && (
                     <PostPackageSection
                         form={form}
                         subscriptions={subscriptions}

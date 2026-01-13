@@ -57,7 +57,7 @@
 }
 
 .viewed-header__suggest {
-    z-index: 1;
+    z-index: 2;
     position: absolute;
     top: 38px;
     left: -20px;

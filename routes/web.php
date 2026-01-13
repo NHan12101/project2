@@ -133,6 +133,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/manage', [ManagePostController::class, 'index']);
     Route::patch('/posts/{post}/toggle-status', [ManagePostController::class, 'toggleStatus']);
     Route::get('/posts/{post}/edit', [PostController::class, 'edit']);
+    Route::put('/posts/{post}', [PostController::class, 'update']);
+    Route::put('/posts/{post}/media', [PostController::class, 'updateMedia']);
     Route::delete('/posts/{post}', [ManagePostController::class, 'destroy']);
 });
 
