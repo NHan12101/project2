@@ -2,6 +2,7 @@ import { useFavorite } from '@/hooks/useFavorite';
 import { formatPrice } from '@/utils/formatPrice';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 export default function ViewedPostCard({
@@ -52,30 +53,66 @@ export default function ViewedPostCard({
         ],
     };
 
+    const [confirmState, setConfirmState] = useState({
+        open: false,
+        action: null,
+        post: null,
+    });
+
+    const openConfirm = (action, post) => {
+        setConfirmState({
+            open: true,
+            action,
+            post,
+        });
+    };
+
     const handleAction = (action, post) => {
         switch (action) {
             case 'hide':
             case 'show':
-                router.patch(`/posts/${post.id}/toggle-status`);
+            case 'delete':
+                openConfirm(action, post);
                 break;
 
             case 'renew':
-                if (onRenewClick) onRenewClick(post); // mở modal
+                if (onRenewClick) onRenewClick(post);
                 break;
 
             case 'edit':
                 router.get(`/posts/${post.id}/edit`);
                 break;
 
+            default:
+                break;
+        }
+    };
+
+    const handleConfirm = () => {
+        const { action, post } = confirmState;
+        if (!action || !post) return;
+
+        switch (action) {
+            case 'hide':
+            case 'show':
+                router.patch(`/posts/${post.id}/toggle-status`, null, {
+                    onSuccess: () => {
+                        toast.success('Cập nhật trạng thái thành công');
+                    },
+                });
+                break;
+
             case 'delete':
-                if (confirm('Bạn có chắc chắn muốn xóa tin này?')) {
-                    router.delete(`/posts/${post.id}`);
-                }
+                router.delete(`/posts/${post.id}`, {
+                    onSuccess: () => toast.success('Đã xóa tin đăng thành công'),
+                });
                 break;
 
             default:
                 break;
         }
+
+        setConfirmState({ open: false, action: null, post: null });
     };
 
     // Kiểm tra trạng thái disabled
@@ -220,6 +257,49 @@ export default function ViewedPostCard({
                     </div>
                 </div>
             </div>
+
+            {confirmState.open && (
+                <div
+                    className="auth-form"
+                    onClick={(e) => e.preventDefault()}
+                    style={{ cursor: 'default' }}
+                >
+                    <div className="confirm-modal__content">
+                        <h1 className="confirm-modal__title">
+                            {confirmState.action === 'delete' &&
+                                'Bạn có chắc chắn muốn xóa tin này?'}
+
+                            {confirmState.action === 'hide' &&
+                                'Bạn muốn ẩn tin đăng này?'}
+
+                            {confirmState.action === 'show' &&
+                                'Bạn muốn hiển thị lại bài đăng này?'}
+                        </h1>
+
+                        <div className="confirm-modal__actions">
+                            <button
+                                className="confirm-modal__button confirm-modal__button--danger"
+                                onClick={handleConfirm}
+                            >
+                                Xác nhận
+                            </button>
+
+                            <button
+                                className="confirm-modal__button confirm-modal__button--cancel"
+                                onClick={() =>
+                                    setConfirmState({
+                                        open: false,
+                                        action: null,
+                                        post: null,
+                                    })
+                                }
+                            >
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

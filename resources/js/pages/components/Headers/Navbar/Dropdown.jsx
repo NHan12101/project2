@@ -11,11 +11,11 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
                     icon: '/icons/tin-dang-da-luu.svg',
                     href: '/saved',
                 },
-                {
-                    label: 'Tìm kiếm đã lưu',
-                    icon: '/icons/tim-kiem-da-luu.svg',
-                    href: '/saved-searches',
-                },
+                // {
+                //     label: 'Tìm kiếm đã lưu',
+                //     icon: '/icons/tim-kiem-da-luu.svg',
+                //     href: '/saved-searches',
+                // },
                 {
                     label: 'Lịch sử xem tin',
                     icon: '/icons/lich-su-xem-tin.svg',
@@ -26,15 +26,15 @@ export default function Dropdown({ isLogin, auth, onLogin, setOpen }) {
         {
             title: 'Dịch vụ trả phí',
             items: [
-                {
-                    label: 'Gói Pro',
-                    icon: '/icons/goi-pro.svg',
-                    href: '/pro-plans',
-                },
+                // {
+                //     label: 'Gói Pro',
+                //     icon: '/icons/goi-pro.svg',
+                //     href: '/pro-plans',
+                // },
                 {
                     label: 'Lịch sử giao dịch',
                     icon: '/icons/lich-su-xem-tin.svg',
-                    href: '/transactions',
+                    href: '/payments/history',
                 },
             ],
         },

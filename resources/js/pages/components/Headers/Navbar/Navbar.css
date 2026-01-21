@@ -433,3 +433,16 @@
         opacity: 1;
     }
 }
+
+
+/* ========== Responsive =================== */
+@media (max-width: 924px) {
+    .nav__item{
+        min-width: auto;
+        padding: 6px 16px;
+    }
+
+    .nav__item--list {
+        display: none;
+    }
+}

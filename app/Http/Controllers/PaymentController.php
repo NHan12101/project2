@@ -14,11 +14,32 @@ use App\Services\Payments\PaypalService;
 use App\Services\Payments\MomoService;
 use App\Services\Payments\VnpayService;
 use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
 class PaymentController extends Controller
 {
+    public function index(Request $request)
+    {
+        $payments = Payment::query()
+            ->where('user_id', $request->user()->id)
+            ->with('subscription')
+            ->when(
+                $request->status,
+                fn($q) =>
+                $q->where('status', $request->status)
+            )
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Posts/PaymentsHistory', [
+            'payments' => $payments,
+            'filters' => $request->only('status'),
+        ]);
+    }
+
     // ===================== CREATE PAYMENT =====================
     public function create(Payment $payment)
     {
@@ -322,9 +343,11 @@ class PaymentController extends Controller
         Notification::create([
             'user_id' => $post->user_id,
             'type' => 'post_published',
+
             'data' => [
                 'post_id' => $post->id,
                 'title' => $post->title,
+                'slug' => $post->slug,
             ],
         ]);
 

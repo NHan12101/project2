@@ -24,6 +24,7 @@ class PostFactory extends Factory
             'livingrooms' => $this->faker->numberBetween(1, 3),
             'kitchens' => $this->faker->numberBetween(1, 2),
             'status' => $this->faker->randomElement(['hidden', 'visible', 'expired', 'draft']),
+            'package_expired_at' => now()->addDay(7),
             'type' => $this->faker->randomElement(['rent', 'sale']),
             'user_id' => User::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,

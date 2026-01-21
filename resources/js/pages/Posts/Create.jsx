@@ -1,5 +1,6 @@
 import { router, useForm } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import './Create.css';
 import AdditionalInfoSection from './sections/AdditionalInfoSection.jsx';
 import AddressSection from './sections/AddressSection.jsx';
@@ -231,7 +232,16 @@ export default function Create({
             router.put(`/posts/${form.data.post_id}/media`, payload, {
                 preserveScroll: true,
                 onSuccess: () =>
-                    setStep(allowPackage ? 3 : router.visit('/posts/manage')),
+                    setStep(
+                        allowPackage
+                            ? 3
+                            : router.visit('/posts/manage', {
+                                  onSuccess: () =>
+                                      toast.success(
+                                          'Chỉnh sửa tin đăng thành công',
+                                      ),
+                              }),
+                    ),
             });
             return;
         }
@@ -285,10 +295,10 @@ export default function Create({
                             className="post-create__action post-create__action--exit"
                             onClick={() => {
                                 sessionStorage.removeItem('create-post-draft');
-                                window.history.back();
+                                router.visit('/home');
                             }}
                         >
-                            Thoát
+                            Quay lại trang chủ
                         </button>
                     </div>
                 </div>

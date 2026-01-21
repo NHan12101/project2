@@ -29,7 +29,7 @@ class ManagePostController extends Controller
         $posts = Post::with('images', 'city', 'ward', 'user')
             ->where('user_id', Auth::id())
             ->where('status', $status)
-            ->orderByDesc('created_at')
+            ->orderByDesc('updated_at')
             ->get();
 
         // Tính tổng số bài đăng từng trạng thái
@@ -80,6 +80,6 @@ class ManagePostController extends Controller
 
         $post->delete();
 
-        return back()->with('success', 'Đã xóa tin');
+        return back()->with('success', 'Đã xóa tin đăng thành công');
     }
 }

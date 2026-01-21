@@ -139,6 +139,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+// ========== LỊCH SỬ GIAO DỊCH ================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/payments/history', [PaymentController::class, 'index'])
+        ->name('payments.history');
+});
+
+
 // ========== TẠO THÔNG BÁO ================
 Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);

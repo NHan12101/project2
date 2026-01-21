@@ -48,7 +48,7 @@ export default function HotNews() {
             },
         ],
 
-        asideImages: ['/images/blog4.png', '/images/blog4.png'],
+        asideImages: ['/images/qc.jpg', '/images/qc1.jpg'],
     };
 
     // State lưu bài chính
@@ -148,7 +148,7 @@ export default function HotNews() {
                     <div className="hot-news__aside">
                         {hotNews.asideImages.map((img, index) => (
                             <div key={index} className="hot-news__aside--box">
-                                {/* <img src={img} alt="" /> */}
+                                {/* <img src={img} alt="qc" /> */}
                                 <h3
                                     style={{
                                         textAlign: 'center',

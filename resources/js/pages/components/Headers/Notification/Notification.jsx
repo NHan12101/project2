@@ -41,7 +41,9 @@ function NotificationList({
 
                         case 'post_published':
                         case 'post_expiring':
-                            router.visit(`/posts/${notification.data.post_id}`);
+                            router.visit(
+                                `/property-detail/${notification.data.slug}`,
+                            );
                             break;
 
                         default:
