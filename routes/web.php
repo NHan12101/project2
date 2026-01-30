@@ -19,6 +19,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PhoneOtpController;
 use App\Http\Controllers\PostViewedController;
 use App\Http\Controllers\R2Controller;
+use App\Http\Controllers\StatisticsController;
 
 // ===== TRANG MẶC ĐỊNH =====
 Route::get('/', function () {

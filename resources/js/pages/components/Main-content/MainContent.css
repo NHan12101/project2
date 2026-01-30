@@ -68,14 +68,17 @@
 .partner__content--right {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 120px;
+    column-gap: 120px;
+    row-gap: 100px;
 }
 
 .partner-span {
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
     user-select: none;
+    width: 220px;
 }
 
 .partner__content--span {

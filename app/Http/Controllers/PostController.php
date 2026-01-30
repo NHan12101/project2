@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessPostImage;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Payment;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -22,6 +25,12 @@ class PostController extends Controller
         return Inertia::render('Home', [
             'posts' => $posts,
             'isHome' => true,
+
+            // statics
+            'posts_per_month' => Post::whereMonth('created_at', now()->month)->count(),
+            'success_transactions' => Payment::where('status', 'success')->count(),
+            'customers' => User::count(),
+            'views' => DB::table('post_view_histories')->count(),
         ]);
     }
 

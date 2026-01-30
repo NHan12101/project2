@@ -213,7 +213,8 @@ export default function Navbar() {
                     style={{
                         display: show ? 'block' : 'none',
                         position: 'relative',
-                        width: 'calc(100% - 1060px)',
+                        flex: 1,
+                        margin: '0 16px',
                     }}
                 >
                     <Suggest
