@@ -28,34 +28,37 @@ class NotifyExpiringPosts extends Command
      */
     public function handle(): void
     {
-        // Fake thời gian để test
-        // Carbon::setTestNow(now()->addHours(23));
         $now = Carbon::now();
         $next24h = $now->copy()->addDay();
 
-        // Lọc bài: chưa hết hạn, nhưng còn dưới 24h
         $posts = Post::whereNotNull('package_expired_at')
             ->where('package_expired_at', '>', $now)
             ->where('package_expired_at', '<=', $next24h)
-            ->whereDoesntHave('notifications', function ($query) {
-                $query->where('type', 'post_expiring');
-            })
             ->get();
 
         foreach ($posts as $post) {
 
+            // ✅ CHECK TRÙNG THÔNG BÁO Ở ĐÂY
+            $exists = Notification::where('user_id', $post->user_id)
+                ->where('type', 'post_expiring')
+                ->where('data->post_id', $post->id)
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
             Notification::create([
                 'user_id' => $post->user_id,
                 'type' => 'post_expiring',
-                'message' => "Bài đăng '{$post->title}' của bạn sẽ hết hạn trong vòng 24 giờ.",
                 'data' => [
                     'post_id' => $post->id,
+                    'title' => $post->title,
                     'expired_at' => $post->package_expired_at,
-                    'hour_left' => 24,
                 ],
             ]);
         }
 
-        $this->info($posts->count() . ' bài gần hết hạn đã được gửi thông báo.');
+        $this->info('Notify expiring posts done');
     }
 }

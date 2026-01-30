@@ -21,6 +21,7 @@ export default function Create({
     mode = 'create',
     allowPackage = true,
 }) {
+    console.log(allowPackage);
     const isEdit = mode === 'edit';
 
     const form = useForm({
@@ -232,6 +233,7 @@ export default function Create({
             router.put(`/posts/${form.data.post_id}/media`, payload, {
                 preserveScroll: true,
                 onSuccess: () =>
+
                     setStep(
                         allowPackage
                             ? 3
@@ -242,6 +244,9 @@ export default function Create({
                                       ),
                               }),
                     ),
+
+                    setStep(allowPackage ? 3 : router.visit('/posts/manage')),
+
             });
             return;
         }

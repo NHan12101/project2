@@ -16,32 +16,30 @@ class GoogleController extends Controller
 
     public function callback()
     {
-        try {
-            $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception $e) {
-            // Một số phiên Google không có state → fallback sang stateless
-            return redirect()->route('home');
-            $googleUser = Socialite::driver('google')->stateless()->user();
-        }
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
-        // Kiểm tra user tồn tại
+        // Tìm user theo email
         $user = User::where('email', $googleUser->getEmail())->first();
 
-        if ($user) {
-            Auth::login($user);
-            return redirect('/home');
+        if (!$user) {
+            // CHƯA CÓ USER → TẠO MỚI
+            $user = User::create([
+                'name'              => $googleUser->getName(),
+                'email'             => $googleUser->getEmail(),
+                'google_id'         => $googleUser->getId(),
+                'password'          => null, // ❌ KHÔNG CẦN PASSWORD
+                'email_verified_at' => now(), // ✅ COI NHƯ ĐÃ VERIFY
+            ]);
+        } else {
+            // ĐÃ CÓ USER → đảm bảo email đã verify
+            if (!$user->email_verified_at) {
+                $user->update([
+                    'email_verified_at' => now(),
+                ]);
+            }
         }
-
-        // Nếu chưa có → lưu session tạm để người dùng nhập mật khẩu bổ sung
-        session([
-            'google_user' => [
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'avatar' => $googleUser->getAvatar(),
-            ],
-        ]);
-
-        return redirect()->route('complete.register');
+        Auth::login($user);
+        return redirect()->route('home');
     }
 
     // Trang nhập mật khẩu sau khi đăng ký bằng Google
