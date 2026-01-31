@@ -41,6 +41,10 @@ class Post extends Model
         'last_activity_at',
     ];
 
+    protected $casts = [
+        'package_expired_at' => 'datetime',
+    ];
+
     // Ẩn bài đăng có status là 'hidden'
     // protected static function booted()
     // {

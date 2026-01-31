@@ -21,7 +21,7 @@ export default function Create({
     mode = 'create',
     allowPackage = true,
 }) {
-    console.log(allowPackage);
+    // console.log(allowPackage);
     const isEdit = mode === 'edit';
 
     const form = useForm({

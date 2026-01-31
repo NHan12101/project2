@@ -18,6 +18,7 @@ Schedule::command('cleanup:draft-posts')
     ->everyMinute() //dailyAt('03:00');
     ->description('Xoá các bài đăng ở trạng thái draft quá hạn và dọn ảnh/video trên R2');
 
-// Schedule::command('posts:notify-expiring')
-//     ->dailyAt('00:00')
-//     ->description('Thông báo bài viết sắp hết hạn');
+// Thông báo sắp hết hạn
+Schedule::command('posts:notify-expiring')
+    ->everyMinute() //dailyAt('00:00');
+    ->description('Thông báo bài viết sắp hết hạn');
