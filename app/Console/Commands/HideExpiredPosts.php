@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Post;
 use Carbon\Carbon;
+use App\Models\Notification;
 
 class HideExpiredPosts extends Command
 {
@@ -27,10 +28,6 @@ class HideExpiredPosts extends Command
      */
     public function handle(): void
     {
-        // Set fake "now" cho tất cả Carbon::now()
-        // Carbon::setTestNow('2026-01-10 12:00:00');
-        //php artisan posts:hide-expired
-
         $now = Carbon::now();
 
         $expiredPosts = Post::where('status', 'visible')
@@ -41,6 +38,15 @@ class HideExpiredPosts extends Command
         foreach ($expiredPosts as $post) {
             $post->update([
                 'status' => 'expired'
+            ]);
+
+            Notification::create([
+                'user_id' => $post->user_id,
+                'type' => 'post_expired',
+                'data' => [
+                    'post_id' => $post->id,
+                    'title'   => $post->title,
+                ],
             ]);
         }
 

@@ -21,6 +21,7 @@ export default function Create({
     mode = 'create',
     allowPackage = true,
 }) {
+    console.log(allowPackage);
     const isEdit = mode === 'edit';
 
     const form = useForm({
@@ -231,17 +232,17 @@ export default function Create({
         if (isEdit) {
             router.put(`/posts/${form.data.post_id}/media`, payload, {
                 preserveScroll: true,
-                onSuccess: () =>
-                    setStep(
-                        allowPackage
-                            ? 3
-                            : router.visit('/posts/manage', {
-                                  onSuccess: () =>
-                                      toast.success(
-                                          'Chỉnh sửa tin đăng thành công',
-                                      ),
-                              }),
-                    ),
+                onSuccess: () => {
+                    if (allowPackage) {
+                        setStep(3);
+                    } else {
+                        router.visit('/posts/manage', {
+                            onSuccess: () => {
+                                toast.success('Chỉnh sửa tin đăng thành công');
+                            },
+                        });
+                    }
+                },
             });
             return;
         }

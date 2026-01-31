@@ -127,6 +127,22 @@ function NotificationList({
                                         </>
                                     )}
 
+                                    {n.type === 'post_renewed' && (
+                                        <>
+                                            Bài đăng{' '}
+                                            <strong>{n.data.title}</strong> đã
+                                            gia hạn thành công
+                                        </>
+                                    )}
+
+                                    {n.type === 'post_expired' && (
+                                        <>
+                                            Bài đăng{' '}
+                                            <strong>{n.data.title}</strong> đã
+                                            hết hạn
+                                        </>
+                                    )}
+
                                     {n.type === 'post_expiring' && (
                                         <>
                                             Bài đăng{' '}

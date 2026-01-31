@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+    import { usePage } from '@inertiajs/react';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 import momo from '../../../../../public/images/Momo.svg';

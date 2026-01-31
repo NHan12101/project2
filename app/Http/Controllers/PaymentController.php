@@ -333,6 +333,7 @@ class PaymentController extends Controller
 
 
         // ===== CẬP NHẬT POST =====
+        $isRenew = $post->package_expired_at && $post->package_expired_at->isPast();
         $post->update([
             'status' => 'visible',
             'subscription_id' => $payment->subscription_id,
@@ -342,7 +343,11 @@ class PaymentController extends Controller
         // THÔNG BÁO ĐĂNG BÀI THÀNH CÔNG
         Notification::create([
             'user_id' => $post->user_id,
+
             'type' => 'post_published',
+
+
+            'type' => $isRenew ? 'post_renewed' : 'post_published',
 
             'data' => [
                 'post_id' => $post->id,
