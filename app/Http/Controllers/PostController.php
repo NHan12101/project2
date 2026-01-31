@@ -27,7 +27,7 @@ class PostController extends Controller
             'isHome' => true,
 
             // statics
-            'posts_per_month' => Post::whereMonth('created_at', now()->month)->count(),
+            'posts_per_month' => Post::where('status', 'visible')->count(),
             'success_transactions' => Payment::where('status', 'success')->count(),
             'customers' => User::count(),
             'views' => DB::table('post_view_histories')->count(),
