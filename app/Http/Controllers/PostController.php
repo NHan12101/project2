@@ -22,9 +22,16 @@ class PostController extends Controller
     {
         $posts = Post::with('images', 'city', 'ward')->where('status', 'visible')->get();
 
+        $cityPostCounts = Post::where('status', 'visible')
+            ->selectRaw('city_id, COUNT(*) as total')
+            ->groupBy('city_id')
+            ->pluck('total', 'city_id');
+
+
         return Inertia::render('Home', [
             'posts' => $posts,
             'isHome' => true,
+            'cityPostCounts' => $cityPostCounts,
 
             // statics
             'posts_per_month' => Post::where('status', 'visible')->count(),

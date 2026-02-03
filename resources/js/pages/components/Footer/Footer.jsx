@@ -89,7 +89,7 @@ export default function Footer() {
                             </a>
                         </li>
                         <li>
-                            <a href="/blog">Tin tức</a>
+                            <a href="/blogs">Tin tức</a>
                         </li>
                     </ul>
                 </div>

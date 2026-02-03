@@ -12,8 +12,6 @@ function NotificationList({
     notifications,
     unreadCount,
 }) {
-    const { url } = usePage().props;
-
     const markAllAsRead = () => {
         router.post(
             '/notifications/read-all',
