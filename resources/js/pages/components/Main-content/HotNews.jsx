@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import './HotNews.css';
+import { router } from '@inertiajs/react';
 
 export default function HotNews() {
     const hotNews = {
@@ -13,42 +14,42 @@ export default function HotNews() {
         relatedPosts: [
             {
                 id: 1,
-                title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit consequatur quasi commodi enim eum',
-                image: '/images/image.gif',
-                date: '02/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit consequatur quasi commodi enim eum illum hic ullam fugit dolor, facere unde aspernatur iusto deserunt perferendis ea assumenda vitae delectus modi. Mollitia, unde? Nulla, libero vitae.Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit',
+                title: 'Trọn Bộ Lãi Suất Vay Mua Nhà Mới Nhất',
+                image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=600&fit=crop',
+                date: 'Thứ hai, 15/12/2025',
+                desc: 'Tổng hợp đầy đủ các gói lãi suất vay mua nhà từ các ngân hàng lớn tại Việt Nam, giúp bạn có cái nhìn toàn diện...',
             },
             {
                 id: 2,
-                title: 'Suscipit, ipsum? Fuga autem aliquam voluptas.',
-                image: '/images/blog2.png',
-                date: '06/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum laboriosam quam sint debitis magnam!...',
+                title: 'Nhà Ở Xã Hội Tiếp Tục Tăng Giá Mạnh',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=600&fit=crop',
+                date: 'Thứ hai, 12/01/2026',
+                desc: 'Đã tăng giá không ngừng nghỉ của căn hộ thương mại trong suốt những năm gần đây cũng kéo theo đà tăng giá ...',
             },
             {
                 id: 3,
-                title: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-                image: '/images/blog3.png',
-                date: '08/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum laboriosam quam sint debitis magnam!...',
+                title: 'A&T Group Khởi Công Tuyến Đường Ven Sông Sài Gòn',
+                image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&h=600&fit=crop',
+                date: 'Thứ hai, 02/02/2026',
+                desc: 'Dự án quy mô lớn của A&T Group hứa hẹn tạo nên một diện mạo mới cho khu vực ven sông Sài Gòn, mang đến...',
             },
             {
                 id: 4,
-                title: 'Suscipit, ipsum? Fuga autem aliquam voluptas.',
-                image: '/images/blog4.png',
-                date: '10/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum laboriosam quam sint debitis magnam!...',
+                title: 'Giá Chung Cư Đi Ngang, Nhà Đầu Tư Đứng Ngồi Không Yên',
+                image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=600&fit=crop',
+                date: 'Thứ ba, 18/11/2025',
+                desc: 'Thị trường bất động sản đang trải qua giai đoạn khó khăn khi giá chung cư không tăng trong khi lãi suất...',
             },
             {
                 id: 5,
-                title: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-                image: '/images/blog1.png',
-                date: '12/12/2025',
-                desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum laboriosam quam sint debitis magnam!...',
+                title:  'Hà Nội Đón Nguồn Cung Mới Thời Điểm Cuối Năm',
+                image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=600&fit=crop',
+                date: 'Thứ 2, 12/01/2025',
+                desc: 'Khu vực phía Đông Hà Nội đang chứng kiến làn sóng nguồn cung mới từ nhiều dự án lớn, hứa hẹn mang đến...',
             },
         ],
 
-        asideImages: ['/images/qc.jpg', '/images/qc1.jpg'],
+        asideImages: ['/images/qc.jpg', '/images/qc1.jpg']
     };
 
     // State lưu bài chính
@@ -124,6 +125,7 @@ export default function HotNews() {
                                     <div
                                         key={post.id}
                                         className="hot-news__related-item"
+                                        onClick={()=> router.visit('/blogs')}
                                         onMouseEnter={() =>
                                             handleMouseEnter(post)
                                         }

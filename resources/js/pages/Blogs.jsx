@@ -44,7 +44,7 @@ const Blog = () => {
             id: 2,
             title: 'Nhà Ở Xã Hội Tiếp Tục Tăng Giá Mạnh',
             author: 'Nguyễn Nam',
-            date: '05/11/2025',
+            date: '12/01/2026',
             readTime: '5 phút',
             intro: 'Đã tăng giá không ngừng nghỉ của căn hộ thương mại trong suốt những năm gần đây cũng kéo theo đà tăng giá liên tiếp của nhà ở xã hội trong cùng biến động thời gian. Đến thời điểm hiện tại, nhà ở xã hội đã thiết lập một mặt bằng giá hoàn toàn mới trên thị trường.',
             sections: [
@@ -77,7 +77,7 @@ const Blog = () => {
             id: 3,
             title: 'A&T Group Chính Thức Khởi Công Chính Trang Tuyến Đường Ven Sông Sài Gòn',
             author: 'Lê Thị Oanh',
-            date: '20/11/2025',
+            date: '02/02/2026',
             readTime: '7 phút',
             intro: 'Dự án quy mô lớn của A&T Group hứa hẹn tạo nên một diện mạo mới cho khu vực ven sông Sài Gòn, mang đến không gian sống hiện đại và tiện nghi cho cư dân thành phố.',
             sections: [
