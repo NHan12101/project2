@@ -14,7 +14,7 @@ export default function MainContent() {
     const statsConfig = [
         { key: 'views', label: 'Lượt xem tin đăng' },
         { key: 'customers', label: 'Khách hàng đã đăng ký' },
-        { key: 'posts_per_month', label: 'Tin đăng mới mỗi tháng' },
+        { key: 'posts_per_month', label: 'Tin đăng đang hiển thị' },
         { key: 'success_transactions', label: 'Giao dịch thành công' },
     ];
 

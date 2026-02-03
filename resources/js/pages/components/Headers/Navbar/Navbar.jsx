@@ -190,18 +190,18 @@ export default function Navbar() {
                                 Thuê nhà
                             </button>
                         </li>
-                        <li>
+                        {/* <li>
                             <button
                                 className="nav-link"
                                 onClick={() => router.get('/')}
                             >
                                 Dự án
                             </button>
-                        </li>
+                        </li> */}
                         <li>
                             <button
                                 className="nav-link"
-                                onClick={() => router.get('/')}
+                                onClick={() => router.get('/blogs')}
                             >
                                 Tin tức
                             </button>
@@ -214,7 +214,7 @@ export default function Navbar() {
                         display: show ? 'block' : 'none',
                         position: 'relative',
                         flex: 1,
-                        margin: '0 16px',
+                        margin: '0 26px',
                     }}
                 >
                     <Suggest
